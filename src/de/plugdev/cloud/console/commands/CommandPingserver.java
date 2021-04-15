@@ -25,7 +25,6 @@ public class CommandPingserver extends ConsoleCommand {
 				} else {
 					ConsoleColors.write(ConsoleColors.CYAN, "[PLUGIN] Proxyserver isn't linked.");
 				}
-
 			} else if (ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverId) != null) {
 				SpigotServer spigotServer = ApplicationInterface.getAPI().getInfrastructure()
 						.getSpigotServerById(serverId);

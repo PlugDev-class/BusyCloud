@@ -22,7 +22,6 @@ public class DecodeProxy implements DecodeListener {
 					final String key = event.getData().read();
 					Proxy proxy;
 					(proxy = ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(key)).setConnection(event.getConnection());
-					proxy.setConnection(event.getConnection());
 					ConsoleColors.write(ConsoleColors.GREEN, "[NETWORKING] ProxyChannel \"" + proxy.getProxyid() + "\" connected!");
 				}
 			break;
