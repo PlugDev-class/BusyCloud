@@ -55,7 +55,7 @@ public class Cloud {
 		int step = 100;
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Setup - Version: 0.1");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Welcome to ServerCloud by PlugDev - 0.1");
+		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Welcome to BusyCloud by PlugDev - 0.1");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] We detected a new installation or update to your program.");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Please answer our questions and the server will do the rest");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");

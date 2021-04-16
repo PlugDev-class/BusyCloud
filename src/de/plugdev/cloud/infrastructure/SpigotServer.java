@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Random;
 
 import de.plugdev.cloud.api.ApplicationInterface;
+import de.plugdev.cloud.api.ServerGroup;
+import de.plugdev.cloud.console.ConsoleColors;
 import de.plugdev.cloud.infrastructure.generate.ServerGenerator;
 import de.terrarier.netlistening.Connection;
 import de.terrarier.netlistening.api.DataContainer;
@@ -79,6 +81,28 @@ public class SpigotServer {
 	}
 
 	public void stopServer() {
+		if (getConnection() != null) {
+			if (getConnection().isConnected()) {
+				getConnection().disconnect();
+			}
+		}
+
+		ServerGroup prefferedGroup = null;
+		for (ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
+			if (group.getGroupList().contains(this)) {
+				prefferedGroup = group;
+			}
+		}
+
+		if (prefferedGroup != null) {
+			prefferedGroup.getGroupList().remove(this);
+		}
+
+		ConsoleColors.write(ConsoleColors.GREEN_BOLD,
+				"[CORE] Stopping SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
+		
+		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().remove(this);
+		
 		if (instance.isAlive()) {
 			instance.destroyForcibly();
 		}
@@ -88,6 +112,7 @@ public class SpigotServer {
 		if (prefferedProxy != null) {
 			prefferedProxy.removeSpigotServer(this);
 		}
+
 	}
 
 	public void delete(File root) {
@@ -111,7 +136,7 @@ public class SpigotServer {
 	public boolean doesAcceptEula() {
 		return eula;
 	}
-	
+
 	public void setMinecraftVersion(MinecraftVersion minecraftVersion) {
 		this.minecraftVersion = minecraftVersion;
 	}

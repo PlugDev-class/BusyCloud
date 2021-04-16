@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.plugdev.cloud.api.PlayerInfo;
+import de.plugdev.cloud.console.ConsoleColors;
 import de.plugdev.cloud.infrastructure.generate.ServerGenerator;
 import de.terrarier.netlistening.Connection;
 import de.terrarier.netlistening.api.DataContainer;
@@ -56,9 +57,16 @@ public class Proxy {
 	}
 
 	public void stopProxy() {
+		if(getConnection() != null) {
+			if(getConnection().isConnected()) {
+				getConnection().disconnect();
+			}
+		}
+		ConsoleColors.write(ConsoleColors.GREEN_BOLD, "[CORE] Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
 		if (instance.isAlive()) {
 			instance.destroyForcibly();
 		}
+		
 		delete(new File("server/" + ("temp") + "/" + this.getProxyName()));
 		new File("server/" + ("temp") + "/" + this.getProxyName()).delete();
 	}
