@@ -89,7 +89,9 @@ public class ConsoleInstance {
 
 				ServerGroup group = new ServerGroup(version, startPort, groupName, groupId, null, maxRamEachServer,
 						activeRunningServers, percentage, isMain);
-				ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(group);
+				if (!ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().contains(group)) {
+					ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(group);
+				}
 			}
 		} catch (Exception exception) {
 			ConsoleColors.write(ConsoleColors.RED_BOLD, "[PLUGIN] AN EXCEPTION WAS THROWN! " + exception.getMessage());
@@ -120,7 +122,7 @@ public class ConsoleInstance {
 
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
-		if(inputStream == null) {
+		if (inputStream == null) {
 			return;
 		}
 		BufferedReader stdInput = new BufferedReader(new InputStreamReader(inputStream));

@@ -199,7 +199,9 @@ public class CommandGroup extends ConsoleCommand {
 				prefferedGroup = new ServerGroup(version, startport, groupName, startport, null, maxRam, mainlystarted,
 						percent, isMain);
 				
-				
+				if (!ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().contains(prefferedGroup)) {
+					ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(prefferedGroup);
+				}
 			} else if (args[2].equalsIgnoreCase("rcon")) {
 				StringBuilder stringBuilder = null;
 				for (SpigotServer spigotServer : prefferedGroup.getGroupList()) {
