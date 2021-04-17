@@ -2,7 +2,11 @@ package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.ServerGroup;
@@ -56,7 +60,7 @@ public class SpigotServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		Proxy prefferedProxy = null;
 		for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
 			if (prefferedProxy == null
@@ -77,15 +81,14 @@ public class SpigotServer {
 		}
 
 		prefferedProxy.addSpigotServer(this, isMain);
-
 	}
 
 	public void stopServer() {
-		if (getConnection() != null) {
-			if (getConnection().isConnected()) {
-				getConnection().disconnect();
-			}
-		}
+//		if (getConnection() != null) {
+//			if (getConnection().isConnected()) {
+//				getConnection().disconnect();
+//			}
+//		}
 
 		ServerGroup prefferedGroup = null;
 		for (ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
@@ -106,12 +109,17 @@ public class SpigotServer {
 		if (instance.isAlive()) {
 			instance.destroyForcibly();
 		}
-		delete(new File("server/" + (this.isStatic() ? "static" : "temp") + "/" + this.getServerName()));
-		new File("server/" + (this.isStatic() ? "static" : "temp") + "/" + this.getServerName()).delete();
-
+		
 		if (prefferedProxy != null) {
 			prefferedProxy.removeSpigotServer(this);
 		}
+		
+		if(!isStatic) {
+			return;
+		}
+		
+		delete(new File("server/" + ("temp") + "/" + this.getServerName()));
+		new File("server/" + ("temp") + "/" + this.getServerName()).delete();
 
 	}
 
@@ -127,14 +135,24 @@ public class SpigotServer {
 	}
 
 	public void sendRCON(String command) {
-		DataContainer container = new DataContainer();
-		container.add("rcon");
-		container.add(command);
-		connection.sendData(container);
+		if(getConnection() != null) {
+			if(getConnection().isConnected()) {
+				DataContainer container = new DataContainer();
+				container.add("rcon");
+				container.add(command);
+				connection.sendData(container);
+				return;
+			}
+		}
+		ConsoleColors.write(ConsoleColors.RED, "[CORE] The server isn't linked to any proxy.");
 	}
 
 	public boolean doesAcceptEula() {
 		return eula;
+	}
+	
+	public Process getInstance() {
+		return instance;
 	}
 
 	public void setMinecraftVersion(MinecraftVersion minecraftVersion) {
@@ -180,6 +198,10 @@ public class SpigotServer {
 	public String getRegisterKey() {
 		return registerKey;
 	}
+	
+	public boolean isMain() {
+		return isMain;
+	}
 
 	public int getMaxRam() {
 		return maxRam;
@@ -203,6 +225,43 @@ public class SpigotServer {
 
 	public String getServerGroup() {
 		return serverGroup;
+	}
+
+	public void doTemplate(String servergroup) {
+		
+		if(isStatic) {
+			return;
+		}
+
+		File serverFolder = new File("server/temp/" + getServerName());
+		File backendTemplates = new File("backend/templates/" + servergroup);
+		if(!backendTemplates.exists()) {
+			backendTemplates.mkdirs();
+		} else if(backendTemplates.listFiles().length != 0) {
+			delete(backendTemplates);
+		}
+		try {
+			copyFolder(serverFolder.toPath(), backendTemplates.toPath());
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	public void copyFolder(Path src, Path dest) throws IOException {
+		try (Stream<Path> stream = Files.walk(src)) {
+			stream.forEach(source -> copy(source, dest.resolve(src.relativize(source))));
+		}
+	}
+
+	private void copy(Path source, Path dest) {
+		try {
+			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 }

@@ -23,12 +23,10 @@ public class CommandGroup extends ConsoleCommand {
 			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> startgroup");
 			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> startserver");
 			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> stop");
+			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> template <ServerID>");
 			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> rcon <command>");
-			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> edit");
 			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> del");
-			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> template");
-			ConsoleColors.write(ConsoleColors.RED,
-					"[PLUGIN] /group <groupname> add <Version> <Startport> <MaxRamEachServer> <StartServersByGroupstart> <Percent> <LobbyServer? (true/false)>");
+			ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] /group <groupname> add <Version> <Startport> <MaxRamEachServer> <StartServersByGroupstart> <Percent> <LobbyServer? (true/false)>");
 			return;
 		}
 
@@ -43,7 +41,7 @@ public class CommandGroup extends ConsoleCommand {
 
 		if (prefferedGroup == null) {
 			if (groupName.equalsIgnoreCase("list")) {
-			} else if(args[2].equalsIgnoreCase("add")) {
+			} else if (args[2].equalsIgnoreCase("add")) {
 			} else {
 				ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] ServerGroup with specific name not found.");
 				return;
@@ -112,7 +110,7 @@ public class CommandGroup extends ConsoleCommand {
 				ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().remove(prefferedGroup);
 			}
 			return;
-		} else if (args.length == 9) {
+		} else if (args.length > 3) {
 			if (args[2].equalsIgnoreCase("add")) {
 				MinecraftVersion version = ApplicationInterface.getAPI().getInfrastructure().getVersionById(args[3]);
 				int startport = Integer.parseInt(args[4]);
@@ -200,6 +198,30 @@ public class CommandGroup extends ConsoleCommand {
 
 				prefferedGroup = new ServerGroup(version, startport, groupName, startport, null, maxRam, mainlystarted,
 						percent, isMain);
+			} else if (args[2].equalsIgnoreCase("rcon")) {
+				StringBuilder stringBuilder = null;
+				for (SpigotServer spigotServer : prefferedGroup.getGroupList()) {
+					if (spigotServer.getConnection().isConnected()) {
+						stringBuilder = new StringBuilder();
+						for (int i = 3; i < args.length; i++) {
+							stringBuilder.append(args[i] + " ");
+						}
+						spigotServer
+								.sendRCON(stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1));
+					}
+				}
+				ConsoleColors.write(ConsoleColors.CYAN, "[CORE] Send rcon \"" 
+						+ stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1) 
+						+ "\" to ServerGroup " 
+						+ prefferedGroup.getGroupName());
+			} else if(args[2].equalsIgnoreCase("template")) {
+				int serverId = Integer.parseInt(args[3]);
+				if(ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverId) == null) {
+					ConsoleColors.write(ConsoleColors.RED, "[PLUGIN] Server with specific ID not found.");
+					return;
+				}
+				
+				ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverId).doTemplate(prefferedGroup.getGroupName());
 			}
 		}
 	}

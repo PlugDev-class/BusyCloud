@@ -180,7 +180,8 @@ public class Cloud {
 			ConsoleColors.write(ConsoleColors.CYAN, " ");
 		}
 
-		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] ====================================================================");
+		ConsoleColors.write(ConsoleColors.CYAN,
+				"[SETUP] ====================================================================");
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP]  _____      _               ");
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] /  ___|    | |              ");
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] \\ `--.  ___| |_ _   _ _ __  ");
@@ -189,13 +190,15 @@ public class Cloud {
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] \\____/ \\___|\\__|\\__,_| .__/ ");
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP]                      | |    ");
 		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP]                      |_|    ");
-		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Software by PlugDev and licensed under Apache License v2.0 GPL.");
+		ConsoleColors.write(ConsoleColors.CYAN,
+				"[SETUP] Software by PlugDev and licensed under Apache License v2.0 GPL.");
 		if (string != null) {
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP]  ");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] " + string);
 			feedback = null;
 		}
-		ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] ====================================================================");
+		ConsoleColors.write(ConsoleColors.CYAN,
+				"[SETUP] ====================================================================");
 
 		switch (step) {
 		case 100:
@@ -211,7 +214,8 @@ public class Cloud {
 					"[SETUP] First of all! Thank you for using our cloud and appreciating the work behind it!");
 			ConsoleColors.write(ConsoleColors.CYAN,
 					"[SETUP] To let the program runs third-party software, you are agreeing the third-party license.");
-			ConsoleColors.write(ConsoleColors.RED_BOLD_BRIGHT, "[SETUP] Even though you accept the latest EULA-Minecraft!");
+			ConsoleColors.write(ConsoleColors.RED_BOLD_BRIGHT,
+					"[SETUP] Even though you accept the latest EULA-Minecraft!");
 			ConsoleColors.write(ConsoleColors.RED_BOLD_BRIGHT,
 					"[SETUP] Every violate against the EULA does go to the end user and not to PlugDev!");
 			ConsoleColors.write(ConsoleColors.CYAN,
@@ -220,7 +224,8 @@ public class Cloud {
 			break;
 		case 1:
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Now we have another yes/no question.");
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Do you want to help the Developers to share some statistics.");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Do you want to help the Developers to share some statistics.");
 			ConsoleColors.write(ConsoleColors.CYAN,
 					"[SETUP] This statistics would include this: Activeplayers, Clouderrors, Pluginerrors.");
 			ConsoleColors.write(ConsoleColors.CYAN,
@@ -236,7 +241,8 @@ public class Cloud {
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Answerchoices: <*>");
 			break;
 		case 3:
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Now we need a value how much RAM in MByte do you want to use.");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Now we need a value how much RAM in MByte do you want to use.");
 			ConsoleColors.write(ConsoleColors.CYAN,
 					"[SETUP] Total-Memory: " + (Runtime.getRuntime().totalMemory() * 0.000001) + " MByte");
 			ConsoleColors.write(ConsoleColors.CYAN,
@@ -244,7 +250,8 @@ public class Cloud {
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Answerchoices: <Integervalue> (in MByte)");
 			break;
 		case 4:
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Do you want to optimize for 'Minigames', 'Citybuild' or 'Both'?");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Do you want to optimize for 'Minigames', 'Citybuild' or 'Both'?");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Answerchoices: <'MiniGames', 'CityBuild', 'Both'>");
 			break;
 		case 5:
@@ -261,7 +268,8 @@ public class Cloud {
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Which default minecraft-version do you prefer?");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Possible answerchoices:");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] <'1.7.10'>");
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] <'1.8', '1.8.3', '1.8.4', '1.8.5', '1.8.6', '1.8.7', '1.8.8'*$>");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] <'1.8', '1.8.3', '1.8.4', '1.8.5', '1.8.6', '1.8.7', '1.8.8'*$>");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] <'1.9', '1.9.2'$, '1.9.4'*$>");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] <'1.10', '1.10.2'*>");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] <'1.11', '1.11.1', '1.11.2'*>");
@@ -275,8 +283,10 @@ public class Cloud {
 			break;
 		case 8:
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Do you want to use the thirdparty-plugin ViaVersion?");
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] This plugin will allows your player to join outdated server.");
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Important it only goes downwards! Server 1.8.1 << Client 1.9.1");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] This plugin will allows your player to join outdated server.");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Important it only goes downwards! Server 1.8.1 << Client 1.9.1");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
 			break;
 		case 9:
@@ -287,9 +297,11 @@ public class Cloud {
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Percentage of RAM-use: " + ramUsageInMbyte);
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Server-Optimization: " + optimizationType);
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] BungeeCordFork: " + bungeeCordType.getVersion());
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Preffered Spigotversion: " + spigotServerVersion.getVersion());
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Preffered Spigotversion: " + spigotServerVersion.getVersion());
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Thirdparty ViaVersion: " + useViaversion);
-			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Some settings may aren't changeable after this confirmation!");
+			ConsoleColors.write(ConsoleColors.CYAN,
+					"[SETUP] Some settings may aren't changeable after this confirmation!");
 			ConsoleColors.write(ConsoleColors.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
 			break;
 		default:

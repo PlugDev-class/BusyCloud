@@ -125,6 +125,8 @@ public class Infrastructure {
 		spigotServer.setStatic(isStatic);
 		spigotServer.startServer(serverGroup, minecraftVersion, acceptEula, maxRam, isMain);
 		runningServers.add(spigotServer);
+		
+		
 		return spigotServer.getId();
 	}
 	

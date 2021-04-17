@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.stream.Stream;
 
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.infrastructure.MinecraftVersion;
@@ -24,8 +23,6 @@ public class ServerGenerator {
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
-		writeFile(new File(path + "/eula.txt"), "eula=" + spigotServer.doesAcceptEula());
-		writeServerproperties(minecraftVersion, spigotServer.getServerName(), spigotServer.getPort());
 		if (!spigotServer.isStatic()) {
 			File templateFolder = new File("backend/templates/" + spigotServer.getServerGroup());
 			if (templateFolder.exists()) {
@@ -38,6 +35,8 @@ public class ServerGenerator {
 			copy(new File("backend/downloads/" + minecraftVersion.getVersion() + ".jar").toPath(),
 					new File(path + "/" + minecraftVersion.getVersion() + ".jar").toPath());
 		}
+		writeServerproperties(minecraftVersion, spigotServer.getServerName(), spigotServer.getPort());
+		
 
 		File pluginFolder = new File(path + "/plugins");
 		if (!pluginFolder.exists()) {
@@ -178,9 +177,12 @@ public class ServerGenerator {
 	}
 
 	public void copyFolder(Path src, Path dest) throws IOException {
-		try (Stream<Path> stream = Files.walk(src)) {
-			stream.forEach(source -> copy(source, dest.resolve(src.relativize(source))));
-		}
+		Files.walk(src).forEach(sourcePath -> {
+			try {
+				Files.copy(sourcePath, dest.resolve(src.relativize(sourcePath)), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException ex) {
+			}
+		});
 	}
 
 	private void copy(Path source, Path dest) {

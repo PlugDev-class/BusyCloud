@@ -1,18 +1,26 @@
 package de.plugdev.cloud.console;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.print.DocFlavor.INPUT_STREAM;
+
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.ServerGroup;
 import de.plugdev.cloud.console.commands.CommandBackup;
+import de.plugdev.cloud.console.commands.CommandClearConsole;
 import de.plugdev.cloud.console.commands.CommandCloud;
 import de.plugdev.cloud.console.commands.CommandGroup;
-import de.plugdev.cloud.console.commands.CommandGroupStartServer;
+import de.plugdev.cloud.console.commands.CommandInput;
+import de.plugdev.cloud.console.commands.CommandInstallSoftware;
 import de.plugdev.cloud.console.commands.CommandLicense;
 import de.plugdev.cloud.console.commands.CommandPingserver;
 import de.plugdev.cloud.console.commands.CommandRconServer;
@@ -21,15 +29,21 @@ import de.plugdev.cloud.console.commands.CommandShutdown;
 import de.plugdev.cloud.console.commands.CommandStopServer;
 import de.plugdev.cloud.infrastructure.MinecraftVersion;
 
-public class ConsoleInput {
+public class ConsoleInstance {
 
-	private static Map<String, ConsoleCommand> commandMap = new HashMap<>();
+	private Map<String, ConsoleCommand> commandMap = new HashMap<>();
 
-	public ConsoleInput() {
+	private OutputStream backendStream = null;
+	private OutputStream currentStream = null;
 
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~ Loadup ended ~==========*");
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
+	private InputStream inputStream = null;
+
+	public ConsoleInstance() {
+
+		backendStream = System.out;
+		currentStream = backendStream;
+
+		ApplicationInterface.getAPI().setConsole(this);
 
 		commandMap.put("/backup", new CommandBackup());
 		commandMap.put("/cloud", new CommandCloud());
@@ -39,10 +53,18 @@ public class ConsoleInput {
 		commandMap.put("/license", new CommandLicense());
 		commandMap.put("/version", new CommandLicense());
 		commandMap.put("/serverinfo", new CommandServerInfo());
-		commandMap.put("/groupstart", new CommandGroupStartServer());
 		commandMap.put("/stopserver", new CommandStopServer());
 		commandMap.put("/group", new CommandGroup());
+		commandMap.put("/cls", new CommandClearConsole());
+		commandMap.put("/clearconsole", new CommandClearConsole());
+		commandMap.put("/clear", new CommandClearConsole());
+		commandMap.put("/input", new CommandInput());
+		commandMap.put("/install", new CommandInstallSoftware());
 		new CommandLicense().runCommand(null, null);
+
+		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
+		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~ Loadup ended ~==========*");
+		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
 
 		ConsoleColors.write(ConsoleColors.YELLOW, "[CONSOLE] Now you have access to the console!");
 		ConsoleColors.write(ConsoleColors.YELLOW, "[CONSOLE] Do you need help? Type '/cloud'.");
@@ -92,7 +114,39 @@ public class ConsoleInput {
 		scanner.close();
 	}
 
-	public static Map<String, ConsoleCommand> getCommandMap() {
+	public void setCurrentStream(OutputStream currentStream) {
+		this.currentStream = currentStream;
+	}
+
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+		if(inputStream == null) {
+			return;
+		}
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(inputStream));
+		String line = null;
+		try {
+			while (((line = stdInput.readLine()) != null) && inputStream != null) {
+				System.out.println(line);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	public OutputStream getCurrentStream() {
+		return currentStream;
+	}
+
+	public OutputStream getBackendStream() {
+		return backendStream;
+	}
+
+	public Map<String, ConsoleCommand> getCommandMap() {
 		return commandMap;
 	}
 

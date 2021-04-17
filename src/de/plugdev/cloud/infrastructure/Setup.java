@@ -14,7 +14,7 @@ import org.json.simple.parser.JSONParser;
 
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.ServerGroup;
-import de.plugdev.cloud.console.ConsoleInput;
+import de.plugdev.cloud.console.ConsoleInstance;
 
 public class Setup {
 
@@ -72,23 +72,21 @@ public class Setup {
 		builder.append("#################################################\n");
 		builder.append("# T h a n k  y o u  f o r  u s i n g  BusyCloud #\n");
 		builder.append("#################################################\n");
-		builder.append("#  Please use /groupadd, /groupdel, /groupedit  #\n");
+		builder.append("#        Please use the command \"/group\"        #\n");
 		builder.append("#         (Instead of editing this file)        #\n");
 		builder.append("#################################################\n");
-		builder.append("Lobby | 20000 | 512 | 33000 | 3 | 50 | spigot-1.8.8 | yes\n");
+		builder.append("Lobby | 20000 | 512 | 33000 | 3 | 50 | " + spigotServerVersion.getVersion() + " | yes\n");
 		writeFile(groupsSettingsFile, builder.toString());
+
+		download("https://github.com/PlugDev-class/BusyCloud_BungeeBridgeCloud/releases/download/1.00/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
+		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.00/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
 		
-		download(bungeeCordType.getDownloadURL(), "backend/downloads/" + bungeeCordType.getVersion() + ".jar");
-		download(spigotServerVersion.getDownloadURL(),
-				"backend/downloads/" + spigotServerVersion.getVersion() + ".jar");
-		if (useViaversion) {
-			download("https://github.com/ViaVersion/ViaVersion/releases/download/3.2.1/ViaVersion-3.2.1.jar",
-					"backend/downloads/ViaVersion-3.2.1.jar");
-		}
+		bungeeCordType.install();
+		spigotServerVersion.install();
 		
 		ApplicationInterface.getAPI().getCloud().getInfrastructure().checkVersions();
 		
-		new ConsoleInput();
+		new ConsoleInstance();
 		ApplicationInterface.getAPI().getCloud().getInfrastructure().useViaVersion = useViaversion;
 		ApplicationInterface.getAPI().getCloud().ressourceScanner.close();
 		
@@ -115,7 +113,7 @@ public class Setup {
 			exception.printStackTrace();
 		}
 		
-		new ConsoleInput();
+		new ConsoleInstance();
 		if (ApplicationInterface.getAPI().getCloud().ressourceScanner != null) {
 			ApplicationInterface.getAPI().getCloud().ressourceScanner.close();
 		}

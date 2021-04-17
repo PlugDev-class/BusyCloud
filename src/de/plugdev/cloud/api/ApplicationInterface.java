@@ -1,6 +1,11 @@
 package de.plugdev.cloud.api;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import de.plugdev.cloud.Cloud;
+import de.plugdev.cloud.api.plugins.Application;
+import de.plugdev.cloud.console.ConsoleInstance;
 import de.plugdev.cloud.infrastructure.Infrastructure;
 import de.plugdev.cloud.network.Networking;
 
@@ -9,6 +14,9 @@ public class ApplicationInterface {
 	private static ApplicationInterface applicationInterface;
 	private Cloud cloud;
 	private Networking networking;
+	private ConsoleInstance console;
+	
+	private List<Application> plugins = new LinkedList<>();
 	
 	public void initializeInterface(Cloud cloud) {
 		applicationInterface = this;
@@ -31,6 +39,18 @@ public class ApplicationInterface {
 	
 	public Networking getNetworking() {
 		return networking;
+	}
+	
+	public List<Application> getPlugins() {
+		return plugins;
+	}
+	
+	public ConsoleInstance getConsole() {
+		return console;
+	}
+	
+	public void setConsole(ConsoleInstance console) {
+		this.console = console;
 	}
 	
 }

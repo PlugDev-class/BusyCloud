@@ -35,7 +35,7 @@ public class DecodeProxy implements DecodeListener {
 				ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().add(new PlayerInfo(playername, playeruuid, conectedServer, address));
 
 				ConsoleColors.write(ConsoleColors.YELLOW,
-						"[CORE] Player " + playername + " connected to PROXY_" + proxyKey + ".");
+						"[CORE] Player " + playername + " connected to " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 			}
 				break;
 			case "playerdisconnect": {
@@ -54,10 +54,7 @@ public class DecodeProxy implements DecodeListener {
 				if (info != null) {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().remove(info);
 					ConsoleColors.write(ConsoleColors.YELLOW,
-							"[CORE] Player " + info.getPlayername() + " disconnected from PROXY_" + info.getConnectedServer() + ".");
-				} else {
-					ConsoleColors.write(ConsoleColors.YELLOW,
-							"[CORE] Player " + null + " disconnected from PROXY_" + null + ".");
+							"[CORE] Player " + info.getPlayername() + " disconnected from " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 				}
 			}
 				break;
@@ -80,10 +77,7 @@ public class DecodeProxy implements DecodeListener {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().remove(info);
 					info.setConnectedServer(to);
 					ConsoleColors.write(ConsoleColors.YELLOW, "[CORE] Player " + info.getPlayername()
-							+ " switched from " + from + " to " + to + " on PROXY_" + proxyKey + ".");
-				} else {
-					ConsoleColors.write(ConsoleColors.YELLOW, "[CORE] Player " + null + " switched from " + from
-							+ " to " + to + " on PROXY_" + proxyKey + ".");
+							+ " switched from " + from + " to " + to + " on " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 				}
 			}
 				break;
