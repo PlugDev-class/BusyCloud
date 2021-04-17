@@ -29,6 +29,10 @@ public class ServerGroup {
 	public ServerGroup(MinecraftVersion version, int startport, String groupName, int groupID, Proxy proxy,
 			int maxRamEachServer, int defaultActiveServers, int percentage, boolean isMain) {
 
+		if (!ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().contains(this)) {
+			ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(this);
+		}
+
 		if (proxy == null) {
 			if (ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size() == 0) {
 				MinecraftVersion version2 = null;
