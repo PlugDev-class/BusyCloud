@@ -82,10 +82,15 @@ public class Infrastructure {
 		
 		checkVersions();
 		
+		
+		
 		services.add(Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors()*2 ));
 	}
 	
 	public void checkVersions() {
+		
+		delete(new File("server/temp"));
+		
 		File backendDownloads = new File("backend/downloads/");
 		if(backendDownloads == null) {
 			return;
@@ -223,6 +228,17 @@ public class Infrastructure {
 		}
 		
 		System.exit(0);
+	}
+	
+	private void delete(File root) {
+		if (root.listFiles() != null) {
+			for (File file : root.listFiles()) {
+				if (file.isDirectory()) {
+					delete(file);
+				}
+				file.delete();
+			}
+		}
 	}
 	
 	public List<Proxy> getRunningProxies() {
