@@ -8,7 +8,7 @@ to simplify the woirk with a Minecraft server network. Also the program has a gr
 It should be a solution to the most creative ideas that brighten our Minecraft world. <br>
 From minigame networks, CityBuild servers to private servers with BusyCloud is the work low.<br>
 <br>
-CloudNet is the next generation of Minecraft Java cloud systems. <br>
+BusyCloud is the next generation of Minecraft Java cloud systems. <br>
 The software is currently unstable. You can use it for a productive and/or comercial network.<br>
 Please report every error (exception)</p>
 <br>
