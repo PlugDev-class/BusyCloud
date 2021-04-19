@@ -4,7 +4,7 @@
 
 <h2>What is BusyCloud?</h2>
 <p>BusyCloud is an program, that can dynamically deploy Spigotserver oriented software. The main goal is<br>
-to simplify the woirk with a Minecraft server network. Also the program has a great optional, but extensive API.<br>
+to simplify the work with a Minecraft server network. Also the program has a great optional, but extensive API.<br>
 It should be a solution to the most creative ideas that brighten our Minecraft world. <br>
 From minigame networks, CityBuild servers to private servers with BusyCloud is the work low.<br>
 <br>
