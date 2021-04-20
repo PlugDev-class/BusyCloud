@@ -106,6 +106,9 @@ public class Setup {
 			groupsSettingsFile.createNewFile();
 		}
 		
+		new File("backend/downloads/BungeeCloudBridge.jar").delete();
+		new File("backend/downloads/SpigotCloudBridge.jar").delete();
+		
 		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
 		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
 
