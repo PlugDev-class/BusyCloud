@@ -78,9 +78,6 @@ public class Setup {
 		builder.append("Lobby | 20000 | 512 | 33000 | 3 | 50 | " + spigotServerVersion.getVersion() + " | yes\n");
 		writeFile(groupsSettingsFile, builder.toString());
 
-		download("https://github.com/PlugDev-class/BusyCloud_BungeeBridgeCloud/releases/download/1.00/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
-		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.00/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
-		
 		bungeeCordType.install();
 		spigotServerVersion.install();
 		

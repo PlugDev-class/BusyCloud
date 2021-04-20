@@ -1,6 +1,10 @@
 package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -82,7 +86,8 @@ public class Infrastructure {
 		
 		checkVersions();
 		
-		
+		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
+		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
 		
 		services.add(Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors()*2 ));
 	}
@@ -251,6 +256,17 @@ public class Infrastructure {
 	
 	public List<ServerGroup> getRunningGroups() {
 		return runningGroups;
+	}
+	
+	public void download(String url, String path) {
+		System.out.print("[SETUP] Download \"" + url + "\" started");
+		try {
+			Files.copy(new URL(url).openStream(), Paths.get(path));
+			System.out.print("   .. | ..   done");
+		} catch (IOException e) {
+			System.out.print("   .. | ..   failed");
+		}
+		System.out.println(" ");
 	}
 	
 }
