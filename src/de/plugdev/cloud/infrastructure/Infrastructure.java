@@ -86,9 +86,6 @@ public class Infrastructure {
 		
 		checkVersions();
 		
-		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
-		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
-		
 		services.add(Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors()*2 ));
 	}
 	

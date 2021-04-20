@@ -83,12 +83,16 @@ public class Setup {
 		
 		ApplicationInterface.getAPI().getCloud().getInfrastructure().checkVersions();
 		
+		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
+		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
+		
 		new ConsoleInstance();
 		ApplicationInterface.getAPI().getCloud().getInfrastructure().useViaVersion = useViaversion;
 		ApplicationInterface.getAPI().getCloud().ressourceScanner.close();
 		
 		ServerGroup lobbyGroup = new ServerGroup(ApplicationInterface.getAPI().getInfrastructure().getVersionById("spigot-1.8.8"), 33000, "Lobby", 20000, null, 512, 3, 50, true);
 		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(lobbyGroup);
+		
 	}
 
 	public Setup() throws IOException {
@@ -101,6 +105,9 @@ public class Setup {
 		if (!groupsSettingsFile.exists()) {
 			groupsSettingsFile.createNewFile();
 		}
+		
+		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
+		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
 
 		JSONParser parser = new JSONParser();
 		try {
