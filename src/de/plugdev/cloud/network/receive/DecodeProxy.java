@@ -36,6 +36,10 @@ public class DecodeProxy implements DecodeListener {
 
 				ConsoleColors.write(ConsoleColors.YELLOW,
 						"[CORE] Player " + playername + " connected to " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
+				
+				if(ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).isMaintenance()) {
+					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).sendRCON("kick " + playername + " §cThe server is currently in maintenance-mode.");
+				}
 			}
 				break;
 			case "playerdisconnect": {

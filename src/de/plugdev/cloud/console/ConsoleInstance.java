@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.print.DocFlavor.INPUT_STREAM;
-
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.ServerGroup;
 import de.plugdev.cloud.console.commands.CommandBackup;
@@ -23,6 +21,7 @@ import de.plugdev.cloud.console.commands.CommandInput;
 import de.plugdev.cloud.console.commands.CommandInstallSoftware;
 import de.plugdev.cloud.console.commands.CommandLicense;
 import de.plugdev.cloud.console.commands.CommandPingserver;
+import de.plugdev.cloud.console.commands.CommandProxy;
 import de.plugdev.cloud.console.commands.CommandRconServer;
 import de.plugdev.cloud.console.commands.CommandServerInfo;
 import de.plugdev.cloud.console.commands.CommandShutdown;
@@ -60,6 +59,7 @@ public class ConsoleInstance {
 		commandMap.put("/clear", new CommandClearConsole());
 		commandMap.put("/input", new CommandInput());
 		commandMap.put("/install", new CommandInstallSoftware());
+		commandMap.put("/proxy", new CommandProxy());
 		new CommandLicense().runCommand(null, null);
 
 		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");

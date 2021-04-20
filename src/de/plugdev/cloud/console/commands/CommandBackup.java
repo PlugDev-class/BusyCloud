@@ -20,7 +20,6 @@ public class CommandBackup extends ConsoleCommand {
 	
 	@Override
 	public void runCommand(String command, String[] args) {
-		
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("create")) {
 				ConsoleColors.write(ConsoleColors.RED,
@@ -34,27 +33,7 @@ public class CommandBackup extends ConsoleCommand {
 				}
 			}
 		}
-		
-		
-
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public void delete(File root) {
 		ConsoleColors.write(ConsoleColors.RED, "[BACKUP] Deleting old backup: " + root.getPath());

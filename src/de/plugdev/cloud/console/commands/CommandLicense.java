@@ -18,9 +18,10 @@ public class CommandLicense extends ConsoleCommand {
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE]                  |___/                           ");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] This project is developed by PlugDev and SumoKadaver.");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] This project is registered under the \"Apache v2.0 GPL GPL\"");
+		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] This project is registered under \"Apache v2.0 GPL\" License");
+		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Free to use, but by Forking -> Add some credits..");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Version: v0.1 ~ ClosedAlpha by PlugDev | Contributor: PlugDev");
+		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Version: v1.01 ~ UnstableDev by PlugDev | Contributor: PlugDev");
 		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ======================================================================");
 	}
 

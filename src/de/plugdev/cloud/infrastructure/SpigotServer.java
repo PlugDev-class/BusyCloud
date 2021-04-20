@@ -17,7 +17,7 @@ import de.terrarier.netlistening.api.DataContainer;
 
 public class SpigotServer {
 
-	Process instance;
+	private Process instance;
 
 	private int id;
 	private String serverName;
@@ -242,6 +242,7 @@ public class SpigotServer {
 		}
 		try {
 			copyFolder(serverFolder.toPath(), backendTemplates.toPath());
+			ConsoleColors.write(ConsoleColors.GREEN, "[PLUGIN] Template created.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

@@ -2,11 +2,16 @@ package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import de.plugdev.cloud.api.PlayerInfo;
 import de.plugdev.cloud.console.ConsoleColors;
@@ -16,18 +21,21 @@ import de.terrarier.netlistening.api.DataContainer;
 
 public class Proxy {
 
-	Process instance;
+	private Process instance;
 
 	private String proxyName = "";
 	private int proxyid = 0;
 	private MinecraftVersion mcversion;
-	int port;
+	private int port;
+	
+	private boolean maintenance = false;
+	private List<UUID> whitelistedPlayers = new LinkedList<>();
 
 	private Connection connection;
 	private String registerKey;
 
-	private List<SpigotServer> registeredServer = new ArrayList<>();
-	private List<PlayerInfo> registeredPlayer = new ArrayList<>();
+	private List<SpigotServer> registeredServer = new LinkedList<>();
+	private List<PlayerInfo> registeredPlayer = new LinkedList<>();
 
 	public void startProxy(MinecraftVersion version) {
 		setRegisterKey("KEY_" + new Random().nextInt(Integer.MAX_VALUE));
@@ -159,12 +167,56 @@ public class Proxy {
 	public int getPort() {
 		return port;
 	}
+	
+	public void doTemplate() {
+
+		File serverFolder = new File("server/temp/" + getProxyName());
+		File backendTemplates = new File("backend/templates/proxy");
+		if(!backendTemplates.exists()) {
+			backendTemplates.mkdirs();
+		} else if(backendTemplates.listFiles().length != 0) {
+			delete(backendTemplates);
+		}
+		try {
+			copyFolder(serverFolder.toPath(), backendTemplates.toPath());
+			ConsoleColors.write(ConsoleColors.GREEN, "[PLUGIN] Template created.");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		
+	}
+	
+	public void copyFolder(Path src, Path dest) throws IOException {
+		try (Stream<Path> stream = Files.walk(src)) {
+			stream.forEach(source -> copy(source, dest.resolve(src.relativize(source))));
+		}
+	}
+
+	private void copy(Path source, Path dest) {
+		try {
+			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
 
 	public void removeSpigotServer(SpigotServer spigotServer) {
 		DataContainer container = new DataContainer();
 		container.add("unregisterserver");
 		container.add(spigotServer.getServerName());
 		connection.sendData(container);
+	}
+	
+	public boolean isMaintenance() {
+		return maintenance;
+	}
+	
+	public void setMaintenance(boolean maintenance) {
+		this.maintenance = maintenance;
+	}
+	
+	public List<UUID> getWhitelistedPlayers() {
+		return whitelistedPlayers;
 	}
 
 }
