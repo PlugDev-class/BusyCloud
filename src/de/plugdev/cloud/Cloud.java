@@ -11,7 +11,7 @@ public class Cloud {
 
 	private Infrastructure infrastructure;
 	
-	public static int currentSubversion = 1;
+	public static int currentSubversion = 2;
 
 	public static void main(String[] args) {
 		System.out.println("[CORE] Starting BusyCloud... Please wait a second.");
