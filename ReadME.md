@@ -1,4 +1,4 @@
-<h1>BusyCloud v0.1</h1>
+<h1>BusyCloud v1.02</h1>
 <h5>This cloud isn't completed or stable. It has some bugs we have to fix.</h5>
 <p>This project is being developed by PlugDev, SumoKadaver and the community via GutHub.</p>
 
