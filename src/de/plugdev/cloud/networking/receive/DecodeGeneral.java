@@ -1,6 +1,6 @@
-package de.plugdev.cloud.network.receive;
+package de.plugdev.cloud.networking.receive;
 
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 
@@ -13,7 +13,7 @@ public class DecodeGeneral implements DecodeListener {
 			long start = event.getData().read();
 			long end = event.getData().read();
 			
-			ConsoleColors.write(ConsoleColors.YELLOW, "[NETWORKING] Ping answer: " + (end-start) + "ms.");
+			ConsoleOutput.write(ConsoleOutput.YELLOW, "[NETWORKING] Ping answer: " + (end-start) + "ms.");
 		}
 	}
 	

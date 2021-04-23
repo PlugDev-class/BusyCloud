@@ -1,7 +1,7 @@
 package de.plugdev.cloud.console.commands;
 
 import de.plugdev.cloud.api.ApplicationInterface;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.console.ConsoleCommand;
 import de.plugdev.cloud.infrastructure.Proxy;
 import de.plugdev.cloud.infrastructure.SpigotServer;
@@ -21,8 +21,8 @@ public class CommandRconServer extends ConsoleCommand {
 					stringBuilder.append(args[i] + " ");
 				}
 				proxy.sendRCON(stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1));
-				ConsoleColors.write(ConsoleColors.CYAN,
-						"[CORE] Send rcon \""
+				ConsoleOutput.write(ConsoleOutput.CYAN,
+						"[CORE] Sent rcon \""
 								+ stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1)
 								+ "\" to Proxy " + proxy.getProxyName());
 
@@ -34,12 +34,12 @@ public class CommandRconServer extends ConsoleCommand {
 					stringBuilder.append(args[i] + " ");
 				}
 				spigotServer.sendRCON(stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1));
-				ConsoleColors.write(ConsoleColors.CYAN,
-						"[CORE] Send rcon \""
+				ConsoleOutput.write(ConsoleOutput.CYAN,
+						"[CORE] Sent rcon \""
 								+ stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1)
 								+ "\" to Spigot " + spigotServer.getServerName());
 			} else {
-				ConsoleColors.write(ConsoleColors.CYAN, "[CORE] No Server with ID \"" + serverId + "\" found.");
+				ConsoleOutput.write(ConsoleOutput.CYAN, "[CORE] No Server with ID \"" + serverId + "\" found.");
 			}
 		}
 	}

@@ -2,20 +2,17 @@ package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 import de.plugdev.cloud.api.PlayerInfo;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.infrastructure.generate.ServerGenerator;
+import de.plugdev.cloud.utils.FileUtils;
 import de.terrarier.netlistening.Connection;
 import de.terrarier.netlistening.api.DataContainer;
 
@@ -70,45 +67,15 @@ public class Proxy {
 				getConnection().disconnect();
 			}
 		}
-		ConsoleColors.write(ConsoleColors.GREEN_BOLD, "[CORE] Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
+		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD, "[CORE] Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
 		if (instance.isAlive()) {
 			instance.destroyForcibly();
 		}
 		
-		delete(new File("server/" + ("temp") + "/" + this.getProxyName()));
+		FileUtils.deleteFolderRecursivly("server/" + ("temp") + "/" + this.getProxyName());
 		new File("server/" + ("temp") + "/" + this.getProxyName()).delete();
 	}
-
-	public void delete(File root) {
-		if (root.listFiles() != null) {
-			for (File file : root.listFiles()) {
-				if (file.isDirectory()) {
-					delete(file);
-				}
-				file.delete();
-			}
-		}
-	}
-
-	public void sendRCON(String command) {
-		DataContainer container = new DataContainer();
-		container.add("rcon");
-		container.add(command);
-		connection.sendData(container);
-	}
 	
-	public void setVersion(MinecraftVersion version) {
-		this.mcversion = version;
-	}
-	
-	public MinecraftVersion getVersion() {
-		return mcversion;
-	}
-
-	private void setRegisterKey(String registerKey) {
-		this.registerKey = registerKey;
-	}
-
 	public void addSpigotServer(SpigotServer spigotServer, boolean isMain) {
 		
 		registeredServer.add(spigotServer);
@@ -130,6 +97,25 @@ public class Proxy {
 			}
 		}, 1000, 1000);
 
+	}
+
+	public void sendRCON(String command) {
+		DataContainer container = new DataContainer();
+		container.add("rcon");
+		container.add(command);
+		connection.sendData(container);
+	}
+	
+	public void setVersion(MinecraftVersion version) {
+		this.mcversion = version;
+	}
+	
+	public MinecraftVersion getVersion() {
+		return mcversion;
+	}
+
+	private void setRegisterKey(String registerKey) {
+		this.registerKey = registerKey;
 	}
 
 	public void setProxyName(String proxyName) {
@@ -175,29 +161,15 @@ public class Proxy {
 		if(!backendTemplates.exists()) {
 			backendTemplates.mkdirs();
 		} else if(backendTemplates.listFiles().length != 0) {
-			delete(backendTemplates);
+			FileUtils.deleteFolderRecursivly(backendTemplates.getPath());
 		}
 		try {
-			copyFolder(serverFolder.toPath(), backendTemplates.toPath());
-			ConsoleColors.write(ConsoleColors.GREEN, "[PLUGIN] Template created.");
+			FileUtils.copyFolder(serverFolder.toPath(), backendTemplates.toPath());
+			ConsoleOutput.write(ConsoleOutput.GREEN, "[PLUGIN] Template created.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 		
-	}
-	
-	public void copyFolder(Path src, Path dest) throws IOException {
-		try (Stream<Path> stream = Files.walk(src)) {
-			stream.forEach(source -> copy(source, dest.resolve(src.relativize(source))));
-		}
-	}
-
-	private void copy(Path source, Path dest) {
-		try {
-			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
 	}
 
 	public void removeSpigotServer(SpigotServer spigotServer) {

@@ -1,7 +1,7 @@
-package de.plugdev.cloud.network.receive;
+package de.plugdev.cloud.networking.receive;
 
 import de.plugdev.cloud.api.ApplicationInterface;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.infrastructure.SpigotServer;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
@@ -20,7 +20,7 @@ public class DecodeSpigotServer implements DecodeListener {
 						.getRunningServers()) {
 					if (spigotServer.getRegisterKey().equals(key)) {
 						spigotServer.setConnection(event.getConnection());
-						ConsoleColors.write(ConsoleColors.GREEN,
+						ConsoleOutput.write(ConsoleOutput.GREEN,
 								"[NETWORKING] SpigotChannel \"" + spigotServer.getId() + "\" connected!");
 						break;
 					}
@@ -34,7 +34,7 @@ public class DecodeSpigotServer implements DecodeListener {
 					if (spigotServer.getRegisterKey().equals(key)) {
 						spigotServer.setConnection(null);
 						spigotServer.stopServer();
-						ConsoleColors.write(ConsoleColors.GREEN,
+						ConsoleOutput.write(ConsoleOutput.GREEN,
 								"[NETWORKING] Channel \"" + spigotServer.getId() + "\" disconnected!");
 						break;
 					}
@@ -43,7 +43,7 @@ public class DecodeSpigotServer implements DecodeListener {
 			}
 			case "adminmessage": {
 				final String message = event.getData().read();
-				ConsoleColors.write(ConsoleColors.RED, "[INGAME] " + message);
+				ConsoleOutput.write(ConsoleOutput.RED, "[INGAME] " + message);
 			}
 			default:
 				break;

@@ -1,7 +1,7 @@
 package de.plugdev.cloud.console.commands;
 
 import de.plugdev.cloud.api.ApplicationInterface;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.console.ConsoleCommand;
 import de.plugdev.cloud.infrastructure.Proxy;
 import de.plugdev.cloud.infrastructure.SpigotServer;
@@ -23,7 +23,7 @@ public class CommandStopServer extends ConsoleCommand {
 				server.stopServer();
 
 			} else {
-				ConsoleColors.write(ConsoleColors.CYAN, "[CORE] No Server with ID \"" + serverId + "\" found.");
+				ConsoleOutput.write(ConsoleOutput.CYAN, "[CORE] No Server with ID \"" + serverId + "\" found.");
 			}
 		}
 	}

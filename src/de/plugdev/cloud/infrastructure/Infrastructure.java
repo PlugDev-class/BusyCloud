@@ -1,34 +1,27 @@
 package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.plugdev.cloud.api.ServerGroup;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
+import de.plugdev.cloud.utils.FileUtils;
 
 @SuppressWarnings("unused")
 public class Infrastructure {
 	
-	private List<Proxy> runningProxies = new ArrayList<>();
-	private List<SpigotServer> runningServers = new ArrayList<>();
-	
-	private List<MinecraftVersion> allowedMinecraftservices = new ArrayList<>();
-	private List<MinecraftVersion> loadedMinecraftservices = new ArrayList<>();
-	
-	private List<ServerGroup> runningGroups = new ArrayList<>();
-	
-	private List<MinecraftVersion> downloads = new ArrayList<>();
-	
+	private List<Proxy> runningProxies = new LinkedList<>();
+	private List<SpigotServer> runningServers = new LinkedList<>();
+	private List<MinecraftVersion> allowedMinecraftservices = new LinkedList<>();
+	private List<MinecraftVersion> loadedMinecraftservices = new LinkedList<>();
+	private List<ServerGroup> runningGroups = new LinkedList<>();
+	private List<MinecraftVersion> downloads = new LinkedList<>();
+
 	public boolean useViaVersion = false;
-	
-	private List<ExecutorService> services = new ArrayList<>();
+	private List<ExecutorService> services = new LinkedList<>();
 	
 	public Infrastructure() {
 		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.7.10", "https://cdn.getbukkit.org/spigot/spigot-1.7.10-SNAPSHOT-b1657.jar", false));
@@ -80,6 +73,7 @@ public class Infrastructure {
 		allowedMinecraftservices.add(new MinecraftVersion("paper-1.13.2", "https://papermc.io/api/v2/projects/paper/versions/1.13.2/builds/655/downloads/paper-1.13.2-655.jar", false));
 		allowedMinecraftservices.add(new MinecraftVersion("paper-1.14.4", "https://papermc.io/api/v2/projects/paper/versions/1.14.4/builds/243/downloads/paper-1.14.4-243.jar", false));
 		allowedMinecraftservices.add(new MinecraftVersion("paper-1.15.2", "https://papermc.io/api/v2/projects/paper/versions/1.15.2/builds/391/downloads/paper-1.15.2-391.jar", false));
+		allowedMinecraftservices.add(new MinecraftVersion("paper-1.16.5", "https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/621/downloads/paper-1.16.5-621.jar", false));
 
 		allowedMinecraftservices.add(new MinecraftVersion("BungeeCord", "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar", true));
 		allowedMinecraftservices.add(new MinecraftVersion("Waterfall", "https://papermc.io/api/v2/projects/waterfall/versions/1.16/builds/405/downloads/waterfall-1.16-405.jar", true));
@@ -91,7 +85,7 @@ public class Infrastructure {
 	
 	public void checkVersions() {
 		
-		delete(new File("server/temp"));
+		FileUtils.deleteFolderRecursivly("server/temp");
 		
 		File backendDownloads = new File("backend/downloads/");
 		if(backendDownloads == null) {
@@ -103,13 +97,9 @@ public class Infrastructure {
 		if(backendDownloads.listFiles().length != 0) {
 			for(File file : backendDownloads.listFiles()) {
 				final String name = file.getName().replaceAll(".jar", "");
-				
-				ConsoleColors.write(ConsoleColors.YELLOW, "[CHECKUP] Check file: " + name + ".");
-				
 				for(MinecraftVersion version : allowedMinecraftservices) {
 					if(version.getVersion().equalsIgnoreCase(name)) {
 						version.setAvailable(true);
-						ConsoleColors.write(ConsoleColors.YELLOW, "[CHECKUP] File assigned to " + version.getVersion());
 					}
 				}
 			}
@@ -117,7 +107,7 @@ public class Infrastructure {
 	}
 
 	public int startProxyServer(String serverName, MinecraftVersion minecraftVersion) {
-		ConsoleColors.write(ConsoleColors.GREEN_BOLD, "[CORE] Starting Proxy(\"" + serverName + "\",\"" + minecraftVersion.getVersion() + "\")");
+		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD, "[CORE] Starting Proxy(\"" + serverName + "\",\"" + minecraftVersion.getVersion() + "\")");
 		Proxy proxy = new Proxy();
 		proxy.startProxy(minecraftVersion);
 		runningProxies.add(proxy);
@@ -125,15 +115,13 @@ public class Infrastructure {
 	}
 	
 	public int startSpigotServer(String serverGroup, MinecraftVersion minecraftVersion, int proxyId, boolean isStatic, int maxRam, boolean acceptEula, int port, boolean isMain) {
-		ConsoleColors.write(ConsoleColors.GREEN_BOLD, "[CORE] Starting SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
+		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD, "[CORE] Starting SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
 		SpigotServer spigotServer = new SpigotServer();
 		spigotServer.setMaxRam(maxRam);
 		spigotServer.setPort(port);
 		spigotServer.setStatic(isStatic);
 		spigotServer.startServer(serverGroup, minecraftVersion, acceptEula, maxRam, isMain);
 		runningServers.add(spigotServer);
-		
-		
 		return spigotServer.getId();
 	}
 	
@@ -186,10 +174,6 @@ public class Infrastructure {
 		return null;
 	}
 	
-	public boolean isValidVersion(String input) {
-		return getVersionById(input) != null;
-	}
-	
 	public MinecraftVersion getVersionById(String input) {
 		MinecraftVersion version = null;
 		for(MinecraftVersion minecraftVersion : allowedMinecraftservices) {
@@ -232,17 +216,6 @@ public class Infrastructure {
 		System.exit(0);
 	}
 	
-	private void delete(File root) {
-		if (root.listFiles() != null) {
-			for (File file : root.listFiles()) {
-				if (file.isDirectory()) {
-					delete(file);
-				}
-				file.delete();
-			}
-		}
-	}
-	
 	public List<Proxy> getRunningProxies() {
 		return runningProxies;
 	}
@@ -255,15 +228,12 @@ public class Infrastructure {
 		return runningGroups;
 	}
 	
-	public void download(String url, String path) {
-		System.out.print("[SETUP] Download \"" + url + "\" started");
-		try {
-			Files.copy(new URL(url).openStream(), Paths.get(path));
-			System.out.print("   .. | ..   done");
-		} catch (IOException e) {
-			System.out.print("   .. | ..   failed");
-		}
-		System.out.println(" ");
+	public boolean isValidVersion(String input) {
+		return getVersionById(input) != null;
+	}
+	
+	public List<ExecutorService> getServices() {
+		return services;
 	}
 	
 }

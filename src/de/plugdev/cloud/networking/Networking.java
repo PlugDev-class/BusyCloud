@@ -1,9 +1,9 @@
-package de.plugdev.cloud.network;
+package de.plugdev.cloud.networking;
 
-import de.plugdev.cloud.console.ConsoleColors;
-import de.plugdev.cloud.network.receive.DecodeGeneral;
-import de.plugdev.cloud.network.receive.DecodeProxy;
-import de.plugdev.cloud.network.receive.DecodeSpigotServer;
+import de.plugdev.cloud.console.ConsoleOutput;
+import de.plugdev.cloud.networking.receive.DecodeGeneral;
+import de.plugdev.cloud.networking.receive.DecodeProxy;
+import de.plugdev.cloud.networking.receive.DecodeSpigotServer;
 import de.terrarier.netlistening.Server;
 import de.terrarier.netlistening.api.event.ExceptionThrowListener;
 import de.terrarier.netlistening.api.event.ExceptionTrowEvent;
@@ -20,7 +20,7 @@ public class Networking {
 			@Override
 			public void trigger(ExceptionTrowEvent event) {
 				event.setPrint(false);
-				ConsoleColors.write(ConsoleColors.CYAN, "An exception/event happened: " + event.getException().getMessage());
+				ConsoleOutput.write(ConsoleOutput.CYAN, "An exception/event happened: " + event.getException().getMessage());
 			}
 		});
 		

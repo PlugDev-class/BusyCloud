@@ -7,7 +7,7 @@ import de.plugdev.cloud.Cloud;
 import de.plugdev.cloud.api.plugins.Application;
 import de.plugdev.cloud.console.ConsoleInstance;
 import de.plugdev.cloud.infrastructure.Infrastructure;
-import de.plugdev.cloud.network.Networking;
+import de.plugdev.cloud.networking.Networking;
 
 public class ApplicationInterface {
 	
@@ -24,6 +24,12 @@ public class ApplicationInterface {
 		this.networking = new Networking();
 		this.networking.initNetworking();
  	}
+	
+//	public void callEvent(Event event) {
+//		for(Application application : getPlugins()) {
+			//TODO: Calling some events..
+//		}
+//	}
 	
 	public static ApplicationInterface getAPI() {
 		return applicationInterface;

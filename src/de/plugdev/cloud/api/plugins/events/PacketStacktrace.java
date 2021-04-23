@@ -1,6 +1,8 @@
 package de.plugdev.cloud.api.plugins.events;
 
-public abstract class PacketStacktrace {
+import de.plugdev.cloud.api.plugins.Event;
+
+public abstract class PacketStacktrace implements Event {
 	
 	boolean sendMessage = true;
 	public void throwEvent(Exception exception) {

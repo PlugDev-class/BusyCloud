@@ -3,7 +3,7 @@ package de.plugdev.cloud.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.infrastructure.MinecraftVersion;
 import de.plugdev.cloud.infrastructure.Proxy;
 import de.plugdev.cloud.infrastructure.SpigotServer;
@@ -37,7 +37,7 @@ public class ServerGroup {
 				} else if (ApplicationInterface.getAPI().getInfrastructure().isValidVersion("Waterfall")) {
 					version2 = ApplicationInterface.getAPI().getInfrastructure().getVersionById("Waterfall");
 				} else {
-					ConsoleColors.write(ConsoleColors.BLUE,
+					ConsoleOutput.write(ConsoleOutput.BLUE,
 							"No Proxy available. Maybe custom? Please provide to rename the custom jar to \"BungeeCord.jar\".");
 					return;
 				}

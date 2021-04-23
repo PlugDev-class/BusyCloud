@@ -2,16 +2,13 @@ package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.ServerGroup;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.infrastructure.generate.ServerGenerator;
+import de.plugdev.cloud.utils.FileUtils;
 import de.terrarier.netlistening.Connection;
 import de.terrarier.netlistening.api.DataContainer;
 
@@ -84,11 +81,6 @@ public class SpigotServer {
 	}
 
 	public void stopServer() {
-//		if (getConnection() != null) {
-//			if (getConnection().isConnected()) {
-//				getConnection().disconnect();
-//			}
-//		}
 
 		ServerGroup prefferedGroup = null;
 		for (ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
@@ -101,7 +93,7 @@ public class SpigotServer {
 			prefferedGroup.getGroupList().remove(this);
 		}
 
-		ConsoleColors.write(ConsoleColors.GREEN_BOLD,
+		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD,
 				"[CORE] Stopping SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
 		
 		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().remove(this);
@@ -118,20 +110,9 @@ public class SpigotServer {
 			return;
 		}
 		
-		delete(new File("server/" + ("temp") + "/" + this.getServerName()));
-		new File("server/" + ("temp") + "/" + this.getServerName()).delete();
+		FileUtils.deleteFolderRecursivly(new File("server/" + ("temp") + "/" + this.getServerName()).getPath());
+		FileUtils.deleteFile("server/" + ("temp") + "/" + this.getServerName());
 
-	}
-
-	public void delete(File root) {
-		if (root.listFiles() != null) {
-			for (File file : root.listFiles()) {
-				if (file.isDirectory()) {
-					delete(file);
-				}
-				file.delete();
-			}
-		}
 	}
 
 	public void sendRCON(String command) {
@@ -144,7 +125,7 @@ public class SpigotServer {
 				return;
 			}
 		}
-		ConsoleColors.write(ConsoleColors.RED, "[CORE] The server isn't linked to any proxy.");
+		ConsoleOutput.write(ConsoleOutput.RED, "[CORE] The server isn't linked to any proxy.");
 	}
 
 	public boolean doesAcceptEula() {
@@ -238,31 +219,15 @@ public class SpigotServer {
 		if(!backendTemplates.exists()) {
 			backendTemplates.mkdirs();
 		} else if(backendTemplates.listFiles().length != 0) {
-			delete(backendTemplates);
+			FileUtils.deleteFolderRecursivly(backendTemplates.getPath());
 		}
 		try {
-			copyFolder(serverFolder.toPath(), backendTemplates.toPath());
-			ConsoleColors.write(ConsoleColors.GREEN, "[PLUGIN] Template created.");
+			FileUtils.copyFolder(serverFolder.toPath(), backendTemplates.toPath());
+			ConsoleOutput.write(ConsoleOutput.GREEN, "[PLUGIN] Template created.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
 		
-		
-		
 	}
 	
-	public void copyFolder(Path src, Path dest) throws IOException {
-		try (Stream<Path> stream = Files.walk(src)) {
-			stream.forEach(source -> copy(source, dest.resolve(src.relativize(source))));
-		}
-	}
-
-	private void copy(Path source, Path dest) {
-		try {
-			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
-
 }

@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Stream;
 
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.console.ConsoleCommand;
 
 public class CommandBackup extends ConsoleCommand {
@@ -22,7 +22,7 @@ public class CommandBackup extends ConsoleCommand {
 	public void runCommand(String command, String[] args) {
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("create")) {
-				ConsoleColors.write(ConsoleColors.RED,
+				ConsoleOutput.write(ConsoleOutput.RED,
 						"[BACKUP] Backupping current serverfiles to backend/backups/" + format.format(new Date()));
 				try {
 					copyFolder(new File("server").toPath(), new File("backend/backups/" + format.format(new Date())).toPath());
@@ -36,10 +36,10 @@ public class CommandBackup extends ConsoleCommand {
 	}
 	
 	public void delete(File root) {
-		ConsoleColors.write(ConsoleColors.RED, "[BACKUP] Deleting old backup: " + root.getPath());
+		ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Deleting old backup: " + root.getPath());
 		for(File file : root.listFiles()) {
 			if(file.isDirectory()) {
-				ConsoleColors.write(ConsoleColors.RED, "[BACKUP] Deleting file: " + file.getName());
+				ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Deleting file: " + file.getName());
 				delete(file);
 			}
 			file.delete();
@@ -58,7 +58,7 @@ public class CommandBackup extends ConsoleCommand {
 	private void copy(Path source, Path dest) {
 		try {
 			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
-			ConsoleColors.write(ConsoleColors.RED, "[BACKUP] Backupping current file: " + source.toFile().getName());
+			ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Backupping current file: " + source.toFile().getName());
 		} catch (DirectoryNotEmptyException e) {
 			delete(new File("backend/backups/" + format.format(new Date())));
 		} catch (Exception e) {

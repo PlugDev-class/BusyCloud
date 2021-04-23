@@ -1,9 +1,7 @@
 package de.plugdev.cloud.console;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -17,9 +15,9 @@ import de.plugdev.cloud.console.commands.CommandBackup;
 import de.plugdev.cloud.console.commands.CommandClearConsole;
 import de.plugdev.cloud.console.commands.CommandCloud;
 import de.plugdev.cloud.console.commands.CommandGroup;
-import de.plugdev.cloud.console.commands.CommandInput;
 import de.plugdev.cloud.console.commands.CommandInstallSoftware;
 import de.plugdev.cloud.console.commands.CommandLicense;
+import de.plugdev.cloud.console.commands.CommandLicenseupdate;
 import de.plugdev.cloud.console.commands.CommandPingserver;
 import de.plugdev.cloud.console.commands.CommandProxy;
 import de.plugdev.cloud.console.commands.CommandRconServer;
@@ -57,17 +55,17 @@ public class ConsoleInstance {
 		commandMap.put("/cls", new CommandClearConsole());
 		commandMap.put("/clearconsole", new CommandClearConsole());
 		commandMap.put("/clear", new CommandClearConsole());
-		commandMap.put("/input", new CommandInput());
 		commandMap.put("/install", new CommandInstallSoftware());
 		commandMap.put("/proxy", new CommandProxy());
+		commandMap.put("/licenseupdate", new CommandLicenseupdate());
 		new CommandLicense().runCommand(null, null);
 
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~ Loadup ended ~==========*");
-		ConsoleColors.write(ConsoleColors.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
+		ConsoleOutput.write(ConsoleOutput.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
+		ConsoleOutput.write(ConsoleOutput.PURPLE, "[CONSOLE] *==========~ Loadup ended ~==========*");
+		ConsoleOutput.write(ConsoleOutput.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
 
-		ConsoleColors.write(ConsoleColors.YELLOW, "[CONSOLE] Now you have access to the console!");
-		ConsoleColors.write(ConsoleColors.YELLOW, "[CONSOLE] Do you need help? Type '/cloud'.");
+		ConsoleOutput.write(ConsoleOutput.YELLOW, "[CONSOLE] Now you have access to the console!");
+		ConsoleOutput.write(ConsoleOutput.YELLOW, "[CONSOLE] Do you need help? Type '/cloud'.");
 
 		List<String> lines;
 		try {
@@ -94,7 +92,7 @@ public class ConsoleInstance {
 				}
 			}
 		} catch (Exception exception) {
-			ConsoleColors.write(ConsoleColors.RED_BOLD, "[PLUGIN] AN EXCEPTION WAS THROWN! " + exception.getMessage());
+			ConsoleOutput.write(ConsoleOutput.RED_BOLD, "[PLUGIN] AN EXCEPTION WAS THROWN! " + exception.getMessage());
 			exception.printStackTrace();
 		}
 
@@ -109,31 +107,11 @@ public class ConsoleInstance {
 					exception.printStackTrace();
 				}
 			} else {
-				ConsoleColors.write(ConsoleColors.RED, "[CONSOLE] Command not found! Type '/cloud' for help.");
+				ConsoleOutput.write(ConsoleOutput.RED, "[CONSOLE] Command not found! Type '/cloud' for help.");
 			}
 		}
 
 		scanner.close();
-	}
-
-	public void setCurrentStream(OutputStream currentStream) {
-		this.currentStream = currentStream;
-	}
-
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
-		if (inputStream == null) {
-			return;
-		}
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(inputStream));
-		String line = null;
-		try {
-			while (((line = stdInput.readLine()) != null) && inputStream != null) {
-				System.out.println(line);
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
 	}
 
 	public InputStream getInputStream() {

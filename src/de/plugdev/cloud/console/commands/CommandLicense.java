@@ -1,28 +1,31 @@
 package de.plugdev.cloud.console.commands;
 
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.console.ConsoleCommand;
 
 public class CommandLicense extends ConsoleCommand {
 
 	@Override
 	public void runCommand(String command, String[] args) {
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ======================================================================");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ______                 _____ _                 _ ");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] | ___ \\               /  __ \\ |               | |");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] | |_/ /_   _ ___ _   _| /  \\/ | ___  _   _  __| |");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] | ___ \\ | | / __| | | | |   | |/ _ \\| | | |/ _` |");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] | |_/ / |_| \\__ \\ |_| | \\__/\\ | (_) | |_| | (_| |");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] \\____/ \\__,_|___/\\__, |\\____/_|\\___/ \\__,_|\\__,_|");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE]                   __/ |                          ");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE]                  |___/                           ");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] This project is developed by PlugDev and SumoKadaver.");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] This project is registered under \"Apache v2.0 GPL\" License");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Free to use, but by Forking -> Add some credits..");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] Version: v1.01 ~ UnstableDev by PlugDev | Contributor: PlugDev");
-		ConsoleColors.write(ConsoleColors.GREEN, "[CORE] ======================================================================");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ======================================================================");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ______                 _____ _                 _ ");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] | ___ \\               /  __ \\ |               | |");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] | |_/ /_   _ ___ _   _| /  \\/ | ___  _   _  __| |");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] | ___ \\ | | / __| | | | |   | |/ _ \\| | | |/ _` |");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] | |_/ / |_| \\__ \\ |_| | \\__/\\ | (_) | |_| | (_| |");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] \\____/ \\__,_|___/\\__, |\\____/_|\\___/ \\__,_|\\__,_|");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE]                   __/ |                          ");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE]                  |___/                           ");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] This project is developed by PlugDev and SumoKadaver.");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] This project is licensed to the following \"Apache v2.0 GPL\" License");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] IMPORTANT! This project will be licensed to the following ");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] \"The Open Software License 3.0 (OSL-3.0)\" License at 30.04.2021, 6pm CET | Changing License.");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] More informations? Questions? What will be changed? | /licenseupdate");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Free to use, but by Forking -> Add some credits..");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Version: v1.02 ~ Dev by PlugDev | Contributor: PlugDev");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ======================================================================");
 	}
 
 }

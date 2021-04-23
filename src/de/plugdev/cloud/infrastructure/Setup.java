@@ -1,158 +1,278 @@
 package de.plugdev.cloud.infrastructure;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import java.util.Scanner;
 
 import de.plugdev.cloud.api.ApplicationInterface;
-import de.plugdev.cloud.api.ServerGroup;
-import de.plugdev.cloud.console.ConsoleInstance;
+import de.plugdev.cloud.console.ConsoleOutput;
 
 public class Setup {
+	
+	boolean agreeLicensement;
+	boolean agreeStatistics;
+	String servername;
+	int ramUsageInMbyte;
 
-	@SuppressWarnings("unchecked")
-	public Setup(boolean agreeLicensement, boolean agreeStatistics, String servername, int ramUsageInMbyte,
-			String optimizationType, MinecraftVersion bungeeCordType, String spigotType,
-			MinecraftVersion spigotServerVersion, boolean useViaversion) throws IOException {
+	String optimizationType;
+	MinecraftVersion bungeeCordType;
+	String spigotType;
+	MinecraftVersion spigotServerVersion;
+	boolean useViaversion;
+	boolean agreeSettings = false;
+	String feedback = null;
+	
 
-		File backendFolder = new File("backend");
-		File backendBackupsFolder = new File("backend/backups");
-		File backendDownloadsFolder = new File("backend/downloads");
-		File backendTemplatesFolder = new File("backend/templates");
+	public Scanner ressourceScanner = new Scanner(System.in);
+	
+	public Setup() {
+		int step = 100;
+		String answer = "";
 
-		File localFolder = new File("local");
-		File localPermissionsFolder = new File("local/permissions");
+		printStep(step, feedback);
 
-		File serverFolder = new File("server");
-		File serverLobbyFolder = new File("server/lobby");
-		File serverStaticFolder = new File("server/static");
-		File serverTempFolder = new File("server/temp");
-		
-		checkFolder(backendFolder);
-		checkFolder(backendBackupsFolder);
-		checkFolder(backendDownloadsFolder);
-		checkFolder(backendTemplatesFolder);
-		checkFolder(localFolder);
-		checkFolder(localPermissionsFolder);
-		checkFolder(serverFolder);
-		checkFolder(serverLobbyFolder);
-		checkFolder(serverStaticFolder);
-		checkFolder(serverTempFolder);
+		while ((answer = ressourceScanner.nextLine()) != null || (ressourceScanner != null)) {
+			switch (step) {
+			case 100:
+				if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("no")) {
+					ConsoleOutput.useColors = answer.equalsIgnoreCase("yes");
+					step = 0;
+				} else {
+					feedback = "== Error >> I think I didn't understand your answer.. << Error ==";
+				}
+				break;
+			case 0:
+				if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("no")) {
+					agreeLicensement = answer.equalsIgnoreCase("yes");
+					if (answer.equalsIgnoreCase("no")) {
+						ConsoleOutput.write(ConsoleOutput.RED, "[CORE] You are not allowed to use this software!");
+						System.exit(0);
+					}
+					step++;
+				}
+				break;
+			case 1:
+				if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("no")) {
+					agreeStatistics = answer.equalsIgnoreCase("yes");
+					step++;
+				}
+				break;
+			case 2:
+				if (answer.length() != 0) {
+					servername = answer;
+					step++;
+				}
+				break;
+			case 3:
+				if (answer.length() != 0) {
+					int tempInt = Integer.parseInt(answer);
+					if (tempInt <= (Runtime.getRuntime().totalMemory() * 0.000001)) {
+						if (tempInt >= (Runtime.getRuntime().freeMemory() * 0.000001)) {
+							feedback = "== Warning >> You inserted RAM is greater than the current free Memory | Continuing program << Warning ==";
+						}
+						ramUsageInMbyte = tempInt;
+						step++;
+					} else {
+						feedback = "== Error >> You don't have this much RAM in MByte << Error ==";
+					}
+				}
+				break;
+			case 4:
+				if (answer.equalsIgnoreCase("minigames") || answer.equalsIgnoreCase("citybuild")
+						|| answer.equalsIgnoreCase("both")) {
+					optimizationType = answer;
+					step++;
+				} else {
+					feedback = "== Error >> Optimizationtype not found. Maybe Deprecated? << Error ==";
+				}
+				break;
+			case 5:
+				if (answer.equalsIgnoreCase("BungeeCord") || answer.equalsIgnoreCase("Waterfall")) {
+					if (ApplicationInterface.getAPI().getInfrastructure().isValidVersion(answer)) {
+						bungeeCordType = ApplicationInterface.getAPI().getInfrastructure().getVersionById(answer);
+						step++;
+					} else {
+						feedback = ("== Error >> Version not found! Please check the nature of your fork. << Error ==");
+					}
+				}
+				break;
+			case 6:
+				if (answer.equalsIgnoreCase("Spigot") || answer.equalsIgnoreCase("Paper")
+						|| answer.equalsIgnoreCase("Taco")) {
+					spigotType = answer;
+					step++;
+				}
+				break;
+			case 7:
+				if (ApplicationInterface.getAPI().getInfrastructure().isValidVersion(spigotType.toLowerCase() + "-" + answer)) {
+					spigotServerVersion = ApplicationInterface.getAPI().getInfrastructure().getVersionById(spigotType.toLowerCase() + "-" + answer);
+					step++;
+				} else {
+					feedback = ("== Error >> Version not found! Please check the nature of your fork. << Error ==");
+				}
+				break;
+			case 8:
+				if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("no")) {
+					useViaversion = answer.equalsIgnoreCase("yes");
+					step++;
+				}
+				break;
+			case 9:
+				if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("no")) {
+					agreeSettings = answer.equalsIgnoreCase("yes");
+				}
 
-		File localSettingsFile = new File("local/settings.json");
-		if (!localSettingsFile.exists()) {
-			localSettingsFile.createNewFile();
+				if (!agreeSettings) {
+					ConsoleOutput.write(ConsoleOutput.BLUE_BACKGROUND_BRIGHT, "[CORE] Please restart the program.");
+					System.exit(0);
+				}
+
+				try {
+					new Boot(agreeLicensement, agreeStatistics, servername, ramUsageInMbyte, optimizationType,
+							bungeeCordType, spigotType, spigotServerVersion, useViaversion, ressourceScanner);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			default:
+				break;
+			}
+
+			printStep(step, feedback);
 		}
-		
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("servername", servername);
-		jsonObject.put("ramUsage", ramUsageInMbyte);
-		jsonObject.put("optimizationType", optimizationType);
-		jsonObject.put("bungeeCoreType", bungeeCordType.getVersion());
-		jsonObject.put("spigotType", spigotType);
-		jsonObject.put("spigotVersion", spigotServerVersion.getVersion());
-		jsonObject.put("useViaVersion", useViaversion);
-
-		writeFile(localSettingsFile, jsonObject.toJSONString());
-		
-		File groupsSettingsFile = new File("local/groups.pdv");
-		if (!groupsSettingsFile.exists()) {
-			groupsSettingsFile.createNewFile();
-		}
-
-		StringBuilder builder = new StringBuilder();
-		builder.append("#################################################\n");
-		builder.append("# T h a n k  y o u  f o r  u s i n g  BusyCloud #\n");
-		builder.append("#################################################\n");
-		builder.append("#        Please use the command \"/group\"        #\n");
-		builder.append("#         (Instead of editing this file)        #\n");
-		builder.append("#################################################\n");
-		builder.append("Lobby | 20000 | 512 | 33000 | 3 | 50 | " + spigotServerVersion.getVersion() + " | yes\n");
-		writeFile(groupsSettingsFile, builder.toString());
-
-		bungeeCordType.install();
-		spigotServerVersion.install();
-		
-		ApplicationInterface.getAPI().getCloud().getInfrastructure().checkVersions();
-		
-		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
-		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
-		
-		new ConsoleInstance();
-		ApplicationInterface.getAPI().getCloud().getInfrastructure().useViaVersion = useViaversion;
-		ApplicationInterface.getAPI().getCloud().ressourceScanner.close();
-		
-		ServerGroup lobbyGroup = new ServerGroup(ApplicationInterface.getAPI().getInfrastructure().getVersionById("spigot-1.8.8"), 33000, "Lobby", 20000, null, 512, 3, 50, true);
-		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(lobbyGroup);
-		
 	}
+	
+	private void printStep(int step, String string) {
+		for (int i = 0; i <= 250; i++) {
+			ConsoleOutput.write(ConsoleOutput.CYAN, " ");
+		}
 
-	public Setup() throws IOException {
-		File localSettingsFile = new File("local/settings.json");
-		if (!localSettingsFile.exists()) {
-			localSettingsFile.createNewFile();
+		ConsoleOutput.write(ConsoleOutput.CYAN,
+				"[SETUP] ====================================================================");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP]  _____      _               ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] /  ___|    | |              ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] \\ `--.  ___| |_ _   _ _ __  ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP]  `--. \\/ _ \\ __| | | | '_ \\ ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] /\\__/ /  __/ |_| |_| | |_) |");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] \\____/ \\___|\\__|\\__,_| .__/ ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP]                      | |    ");
+		ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP]                      |_|    ");
+		ConsoleOutput.write(ConsoleOutput.CYAN,
+				"[SETUP] Software by PlugDev and licensed under Apache License v2.0 GPL.");
+		if (string != null) {
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP]  ");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] " + string);
+			feedback = null;
 		}
-		
-		File groupsSettingsFile = new File("local/groups.pdv");
-		if (!groupsSettingsFile.exists()) {
-			groupsSettingsFile.createNewFile();
-		}
-		
-		new File("backend/downloads/BungeeCloudBridge.jar").delete();
-		new File("backend/downloads/SpigotCloudBridge.jar").delete();
-		
-		download("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.01/BungeeCloudBridge.jar", "backend/downloads/BungeeCloudBridge.jar");
-		download("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.01/SpigotCloudBridge.jar", "backend/downloads/SpigotCloudBridge.jar");
+		ConsoleOutput.write(ConsoleOutput.CYAN,
+				"[SETUP] ====================================================================");
 
-		JSONParser parser = new JSONParser();
-		try {
-			JSONObject jsonObject = (JSONObject) parser.parse(new FileReader("local/settings.json"));
-			ApplicationInterface.getAPI().getCloud().getInfrastructure().useViaVersion = (Boolean) jsonObject.get("useViaVersion");
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		switch (step) {
+		case 100:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Hey! Thank you for downloading my software.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] The first question of the day..");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Do you want to use colors in the console?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] In Windows it's buggy and glitchy.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] And in Linux it works fine.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
+			break;
+		case 0:
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] First of all! Thank you for using our cloud and appreciating the work behind it!");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] To let the program runs third-party software, you are agreeing the third-party license.");
+			ConsoleOutput.write(ConsoleOutput.RED_BOLD_BRIGHT,
+					"[SETUP] Even though you accept the latest EULA-Minecraft!");
+			ConsoleOutput.write(ConsoleOutput.RED_BOLD_BRIGHT,
+					"[SETUP] Every violate against the EULA does go to the end user and not to PlugDev!");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] If you do not, you can easily type 'no' and deleting the program.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
+			break;
+		case 1:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Now we have another yes/no question.");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Do you want to help the Developers to share some statistics.");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] This statistics would include this: Activeplayers, Clouderrors, Pluginerrors.");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] This statistics would not include this: Passwords, Whole Plugins, whole Files.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] This would be send anyway: Servername, ServerID.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
+			break;
+		case 2:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Next we need a name, to identify your hard work!");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] If you don't have a servername, you shouldn't use a cloud publicly.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] You're free to use any No-NSFW names.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <*>");
+			break;
+		case 3:
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Now we need a value how much RAM in MByte do you want to use.");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Total-Memory: " + (Runtime.getRuntime().totalMemory() * 0.000001) + " MByte");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Available-Memory: " + (Runtime.getRuntime().freeMemory() * 0.000001) + " MByte");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <Integervalue> (in MByte)");
+			break;
+		case 4:
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Do you want to optimize for 'Minigames', 'Citybuild' or 'Both'?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'MiniGames', 'CityBuild', 'Both'>");
+			break;
+		case 5:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Now we setup your Proxy.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Which type/fork of bungeecord do you want to use?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'BungeeCord', 'Waterfall'>");
+			break;
+		case 6:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Now we setup your Spigotserver.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Which type/fork of spigot do you want to use?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'Spigot', 'Paper', 'Taco'>");
+			break;
+		case 7:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Which default minecraft-version do you prefer?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Possible answerchoices:");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.7.10'>");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] <'1.8', '1.8.3', '1.8.4', '1.8.5', '1.8.6', '1.8.7', '1.8.8'*$>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.9', '1.9.2'$, '1.9.4'*$>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.10', '1.10.2'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.11', '1.11.1', '1.11.2'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.12', '1.12.1', '1.12.2'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.13', '1.13.1', '1.13.2'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.14', '1.14.1', '1.14.2', '1.14.3', '1.14.4'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.15', '1.15.1', '1.15.2'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] <'1.16.1', '1.16.2', '1.16.3', '1.16.4', '1.16.5'*>");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] * means that paper is available too.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] $ means that taco is available too.");
+			break;
+		case 8:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Do you want to use the thirdparty-plugin ViaVersion?");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] This plugin will allows your player to join outdated server.");
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Important it only goes downwards! Server 1.8.1 << Client 1.9.1");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
+			break;
+		case 9:
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Do you want to continue with the following settings?");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Agree Licensement: " + agreeLicensement);
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Agree Statistics: " + agreeStatistics);
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Servername: " + servername);
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Percentage of RAM-use: " + ramUsageInMbyte);
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Server-Optimization: " + optimizationType);
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] BungeeCordFork: " + bungeeCordType.getVersion());
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Preffered Spigotversion: " + spigotServerVersion.getVersion());
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Thirdparty ViaVersion: " + useViaversion);
+			ConsoleOutput.write(ConsoleOutput.CYAN,
+					"[SETUP] Some settings may aren't changeable after this confirmation!");
+			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Answerchoices: <'yes'/'no'>");
+			break;
+		default:
+			break;
 		}
-		
-		new ConsoleInstance();
-		if (ApplicationInterface.getAPI().getCloud().ressourceScanner != null) {
-			ApplicationInterface.getAPI().getCloud().ressourceScanner.close();
-		}
-		
-		
 	}
-
-	public void writeFile(File file, String string) {
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			writer.write(string);
-			writer.close();
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
-	}
-
-	public void checkFolder(File file) {
-		if (!file.exists()) {
-			file.mkdir();
-		}
-	}
-
-	public void download(String url, String path) {
-		System.out.print("[SETUP] Download \"" + url + "\" started");
-		try {
-			Files.copy(new URL(url).openStream(), Paths.get(path));
-			System.out.print("   .. | ..   done");
-		} catch (IOException e) {
-			System.out.print("   .. | ..   failed");
-		}
-		System.out.println(" ");
-	}
-
+	
 }

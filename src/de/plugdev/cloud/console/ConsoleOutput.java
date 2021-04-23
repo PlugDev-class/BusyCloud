@@ -1,6 +1,6 @@
 package de.plugdev.cloud.console;
 
-public class ConsoleColors {
+public class ConsoleOutput {
 	
 	public static boolean useColors = false;
 	

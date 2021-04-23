@@ -1,10 +1,10 @@
-package de.plugdev.cloud.network.receive;
+package de.plugdev.cloud.networking.receive;
 
 import java.util.UUID;
 
 import de.plugdev.cloud.api.ApplicationInterface;
 import de.plugdev.cloud.api.PlayerInfo;
-import de.plugdev.cloud.console.ConsoleColors;
+import de.plugdev.cloud.console.ConsoleOutput;
 import de.plugdev.cloud.infrastructure.Proxy;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
@@ -22,7 +22,7 @@ public class DecodeProxy implements DecodeListener {
 					final String key = event.getData().read();
 					Proxy proxy;
 					(proxy = ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(key)).setConnection(event.getConnection());
-					ConsoleColors.write(ConsoleColors.GREEN, "[NETWORKING] ProxyChannel \"" + proxy.getProxyid() + "\" connected!");
+					ConsoleOutput.write(ConsoleOutput.GREEN, "[NETWORKING] ProxyChannel \"" + proxy.getProxyid() + "\" connected!");
 				}
 			break;
 			case "playerconnect": {
@@ -34,7 +34,7 @@ public class DecodeProxy implements DecodeListener {
 
 				ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().add(new PlayerInfo(playername, playeruuid, conectedServer, address));
 
-				ConsoleColors.write(ConsoleColors.YELLOW,
+				ConsoleOutput.write(ConsoleOutput.YELLOW,
 						"[CORE] Player " + playername + " connected to " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 				
 				if(ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).isMaintenance()) {
@@ -57,7 +57,7 @@ public class DecodeProxy implements DecodeListener {
 
 				if (info != null) {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().remove(info);
-					ConsoleColors.write(ConsoleColors.YELLOW,
+					ConsoleOutput.write(ConsoleOutput.YELLOW,
 							"[CORE] Player " + info.getPlayername() + " disconnected from " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 				}
 			}
@@ -80,7 +80,7 @@ public class DecodeProxy implements DecodeListener {
 				if (info != null) {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().remove(info);
 					info.setConnectedServer(to);
-					ConsoleColors.write(ConsoleColors.YELLOW, "[CORE] Player " + info.getPlayername()
+					ConsoleOutput.write(ConsoleOutput.YELLOW, "[CORE] Player " + info.getPlayername()
 							+ " switched from " + from + " to " + to + " on " + ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
 				}
 			}
