@@ -65,7 +65,12 @@ public class FileUtils {
 	 */
 	
 	public static void deleteFolderRecursivly(String path) {
-		
+		for(File files : new File(path).listFiles()) {
+			if(files.isDirectory()) {
+				deleteFolderRecursivly(path);
+			}
+			files.delete();
+		}
 	}
 	
 	/*
