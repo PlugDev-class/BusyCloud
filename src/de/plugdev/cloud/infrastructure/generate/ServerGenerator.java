@@ -32,7 +32,6 @@ public class ServerGenerator {
 					new File(path + "/" + minecraftVersion.getVersion() + ".jar").toPath());
 		}
 		writeServerproperties(minecraftVersion, spigotServer.getServerName(), spigotServer.getPort());
-		
 
 		File pluginFolder = new File(path + "/plugins");
 		if (!pluginFolder.exists()) {
@@ -43,13 +42,9 @@ public class ServerGenerator {
 			if(!new File("backend/downloads/ViaVersion-3.2.1.jar").exists()) {
 				FileUtils.download("https://github.com/ViaVersion/ViaVersion/releases/download/3.2.1/ViaVersion-3.2.1.jar", "backend/downloads/ViaVersion-3.2.1.jar");
 			}
-			FileUtils.copyFile(new File("backend/downloads/ViaVersion-3.2.1.jar").toPath(),
-					new File(path + "/plugins/ViaVersion-3.2.1.jar").toPath());
+			FileUtils.copyFile(new File("backend/downloads/ViaVersion-3.2.1.jar").toPath(), new File(path + "/plugins/ViaVersion-3.2.1.jar").toPath());
 		}
-
-		FileUtils.copyFile(new File("backend/downloads/SpigotCloudBridge.jar").toPath(),
-				new File(path + "/plugins/SpigotCloudBridge.jar").toPath());
-
+		FileUtils.copyFile(new File("backend/downloads/SpigotCloudBridge.jar").toPath(), new File(path + "/plugins/SpigotCloudBridge.jar").toPath());
 		FileUtils.writeFile(new File(path + "/" + spigotServer.getRegisterKey()), spigotServer.getRegisterKey());
 	}
 

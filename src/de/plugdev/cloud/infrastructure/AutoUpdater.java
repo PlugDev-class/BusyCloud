@@ -9,6 +9,11 @@ import de.plugdev.cloud.utils.FileUtils;
 
 public class AutoUpdater {
 
+	/*
+	 * This method checks if a new version is available.
+	 * @since 1.02
+	 * @throws IOException
+	 */
 	public void doCloud() {
 		try {
 			int subversion = 0;
@@ -36,6 +41,12 @@ public class AutoUpdater {
 		}
 	}
 
+	/*
+	 * This method autodownloads the 
+	 * spigotcloudbridge and the bungeecloudbridge.
+	 * @since 1.02
+	 * @throws IOException
+	 */
 	public void doBridges() {
 		URL spigotBridge = null;
 		URL bungeeBridge = null;

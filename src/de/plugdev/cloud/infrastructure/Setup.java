@@ -11,7 +11,6 @@ public class Setup {
 	boolean agreeLicensement;
 	boolean agreeStatistics;
 	String servername;
-	int ramUsageInMbyte;
 
 	String optimizationType;
 	MinecraftVersion bungeeCordType;
@@ -59,21 +58,7 @@ public class Setup {
 			case 2:
 				if (answer.length() != 0) {
 					servername = answer;
-					step++;
-				}
-				break;
-			case 3:
-				if (answer.length() != 0) {
-					int tempInt = Integer.parseInt(answer);
-					if (tempInt <= (Runtime.getRuntime().totalMemory() * 0.000001)) {
-						if (tempInt >= (Runtime.getRuntime().freeMemory() * 0.000001)) {
-							feedback = "== Warning >> You inserted RAM is greater than the current free Memory | Continuing program << Warning ==";
-						}
-						ramUsageInMbyte = tempInt;
-						step++;
-					} else {
-						feedback = "== Error >> You don't have this much RAM in MByte << Error ==";
-					}
+					step+=2;
 				}
 				break;
 			case 4:
@@ -127,7 +112,7 @@ public class Setup {
 				}
 
 				try {
-					new Boot(agreeLicensement, agreeStatistics, servername, ramUsageInMbyte, optimizationType,
+					new Boot(agreeLicensement, agreeStatistics, servername, optimizationType,
 							bungeeCordType, spigotType, spigotServerVersion, useViaversion, ressourceScanner);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -260,7 +245,6 @@ public class Setup {
 			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Agree Licensement: " + agreeLicensement);
 			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Agree Statistics: " + agreeStatistics);
 			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Servername: " + servername);
-			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Percentage of RAM-use: " + ramUsageInMbyte);
 			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] Server-Optimization: " + optimizationType);
 			ConsoleOutput.write(ConsoleOutput.CYAN, "[SETUP] BungeeCordFork: " + bungeeCordType.getVersion());
 			ConsoleOutput.write(ConsoleOutput.CYAN,

@@ -10,10 +10,28 @@ import de.terrarier.netlistening.api.event.ExceptionTrowEvent;
 
 public class Networking {
 
+	/*
+	 * The sourceclass of networking.
+	 * Anyway if it's decoding or encoding.
+	 * 
+	 * Used API in this project -> 
+	 * • Netty by netty
+	 * • NetListening by terrarier2111
+	 * 
+	 * @since 0.1
+	 * @author PlugDev, terrarier2111
+	 */
+	
+	/*
+	 * Initiating servernetworking.
+	 * Registering some Listeners.
+	 * 
+	 * @since 0.1
+	 * @author PlugDev, terrarier2111
+	 */
 	public void initNetworking() {
 		final Server server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
 				.nibbleCompression(true).varIntCompression(true).build().build();
-
 		
 		server.registerListener(new ExceptionThrowListener() {
 			

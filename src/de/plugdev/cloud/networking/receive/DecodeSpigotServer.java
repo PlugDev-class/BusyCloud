@@ -8,6 +8,10 @@ import de.terrarier.netlistening.api.event.DecodeListener;
 
 public class DecodeSpigotServer implements DecodeListener {
 
+	/*
+	 * @since 0.1
+	 * @author PlugDev
+	 */
 	@Override
 	public void trigger(DecodeEvent event) {
 		final String receiver = event.getData().read();

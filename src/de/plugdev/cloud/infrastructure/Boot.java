@@ -15,9 +15,25 @@ import de.plugdev.cloud.utils.FileUtils;
 
 public class Boot {
 
+	/*
+	 * The start and initiating of some elements. (Firstboot)
+	 * @since 1.02
+	 * @author PlugDev
+	 * @throws IOException
+	 * @param agreeLicensement Agree BusyCloud-Licensement.
+	 * @param agreeStatistics Agree some unused statistics.
+	 * @param serverName Used servername for purpose.
+	 * @param optimizationType Maybe later used optimizationType. Reserved for furtureuse.
+	 * @param bungeeCordType BungeeCord version to easily download the version.
+	 * @param spigotFork Used Spigotfork for futureuse.
+	 * @param spigotServerVersion Used Spigotversion by MinecraftVersion-Instance.
+	 * @param useViaVersion If the server want to use ViaVersion.
+	 * @param ressourceScanner Used Scanner to close quitly without cancelling the task.
+	 */
+	
 	@SuppressWarnings("unchecked")
-	public Boot(boolean agreeLicensement, boolean agreeStatistics, String servername, int ramUsageInMbyte,
-			String optimizationType, MinecraftVersion bungeeCordType, String spigotType,
+	public Boot(boolean agreeLicensement, boolean agreeStatistics, String servername,
+			String optimizationType, MinecraftVersion bungeeCordType, String spigotfork,
 			MinecraftVersion spigotServerVersion, boolean useViaversion, Scanner ressourceScanner) throws IOException {
 
 		File backendFolder = new File("backend");
@@ -51,10 +67,9 @@ public class Boot {
 		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("servername", servername);
-		jsonObject.put("ramUsage", ramUsageInMbyte);
 		jsonObject.put("optimizationType", optimizationType);
 		jsonObject.put("bungeeCoreType", bungeeCordType.getVersion());
-		jsonObject.put("spigotType", spigotType);
+		jsonObject.put("spigotFork", spigotfork);
 		jsonObject.put("spigotVersion", spigotServerVersion.getVersion());
 		jsonObject.put("useViaVersion", useViaversion);
 
@@ -92,10 +107,16 @@ public class Boot {
 		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(lobbyGroup);
 		
 	}
-
+	
+	/*
+	 * The start and initiating of some elements.
+	 * @since 1.02
+	 * @author PlugDev
+	 * @throws IOException
+	 */
 	public Boot() {
 		FileUtils.deleteFolderRecursivly("server/temp");
-		FileUtils.mkdirs("serve/temp");
+		FileUtils.mkdirs("server/temp");
 		
 		AutoUpdater updater = new AutoUpdater();
 		updater.doCloud();
