@@ -22,7 +22,7 @@ public class Cloud {
 	 */
 	
 	private Infrastructure infrastructure;
-	public static int currentSubversion = 2;
+	public static int currentSubversion = 3;
 	
 	
 	/*

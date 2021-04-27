@@ -31,12 +31,13 @@ public class ServerGenerator {
 			FileUtils.copyFile(new File("backend/downloads/" + minecraftVersion.getVersion() + ".jar").toPath(),
 					new File(path + "/" + minecraftVersion.getVersion() + ".jar").toPath());
 		}
+		
+		
+		
 		writeServerproperties(minecraftVersion, spigotServer.getServerName(), spigotServer.getPort());
 
 		File pluginFolder = new File(path + "/plugins");
-		if (!pluginFolder.exists()) {
-			pluginFolder.mkdir();
-		}
+		FileUtils.checkFolder(pluginFolder);
 
 		if (ApplicationInterface.getAPI().getCloud().getInfrastructure().useViaVersion) {
 			if(!new File("backend/downloads/ViaVersion-3.2.1.jar").exists()) {

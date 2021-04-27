@@ -31,7 +31,7 @@ public class AutoUpdater {
 						ConsoleOutput.write(ConsoleOutput.YELLOW, "[UPDATER] New Version: 1.0" + subversion-- + " | Current version: 1.0" + Cloud.currentSubversion);
 						ConsoleOutput.write(ConsoleOutput.YELLOW, "[UPDATER] Download: https://github.com/PlugDev-class/BusyCloud/releases/download/1.0" + subversion +"/Cloud.jar");
 					} else {
-						ConsoleOutput.write(ConsoleOutput.GREEN, "[UPDATER] You're up-to-date!");
+						ConsoleOutput.write(ConsoleOutput.GREEN, "[UPDATER] You're up-to-date!"  + (Cloud.currentSubversion > subversion ? " (Maybe higher. - Unstablewarning)" :""));
 					}
 					continueState = false;
 				}
@@ -98,6 +98,8 @@ public class AutoUpdater {
 			exception.printStackTrace();
 		}
 
+		FileUtils.deleteFile("backend/downloads/SpigotCloudBridge.jar");
+		FileUtils.deleteFile("backend/downloads/BungeeCloudBridge.jar");
 		FileUtils.download(spigotBridge.getProtocol() + "://" + spigotBridge.getHost() + spigotBridge.getPath(), "backend/downloads/SpigotCloudBridge.jar");
 		FileUtils.download(bungeeBridge.getProtocol() + "://" + bungeeBridge.getHost() + bungeeBridge.getPath(), "backend/downloads/BungeeCloudBridge.jar");
 	}

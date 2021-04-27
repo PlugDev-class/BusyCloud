@@ -2,6 +2,8 @@ package de.plugdev.cloud.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Random;
 
 import de.plugdev.cloud.api.ApplicationInterface;
@@ -53,11 +55,11 @@ public class SpigotServer {
 						+ ".jar");
 		try {
 			this.instance = Runtime.getRuntime().exec(commandBuilder.toString().split(" "), null,
-					new File("server/" + (this.isStatic() ? "static" : "temp") + "/" + this.getServerName()));
+					new File("server/" + ("temp") + "/" + this.getServerName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		Proxy prefferedProxy = null;
 		for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
 			if (prefferedProxy == null
@@ -80,6 +82,76 @@ public class SpigotServer {
 		prefferedProxy.addSpigotServer(this, isMain);
 	}
 
+	public void startStaticServer(String serverName, MinecraftVersion version, boolean eula, int maxRam) {
+		registerKey = "KEY_" + new Random().nextInt(Integer.MAX_VALUE);
+		setMinecraftVersion(version);
+		setServerGroup("Static");
+		this.id = new Random().nextInt(20000);
+		this.eula = eula;
+		setServerName(serverName);
+		setStatic(true);
+		
+		if (!new File("server/static/" + getServerName()).exists()) {
+			new ServerGenerator(version, this);
+		} else {
+			FileUtils.writeFile(new File("server/static/" + getServerName() + "/" + getRegisterKey()), getRegisterKey());
+			FileUtils.copyFile(new File("backend/downloads/SpigotCloudBridge.jar").toPath(), new File("server/static/" + getServerName() + "/plugins/SpigotCloudBridge.jar").toPath());
+		}
+		
+		try {
+			List<String> strings = Files.readAllLines(new File("server/static/" + getServerName() + "/server.properties").toPath());
+			for(String string : strings) {
+				if(string.startsWith("server-port=")) {
+					port = Integer.parseInt(string.replaceAll("server-port=", ""));
+					strings.clear();
+					break;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
+		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD, "[CORE] Starting SpigotServer(\"" + getServerName() + " - localhost:" + getPort() + "\")");
+
+		StringBuilder commandBuilder = new StringBuilder();
+		commandBuilder.append("java ");
+		commandBuilder.append(
+				"-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:MaxPermSize=256M -XX:-UseAdaptiveSizePolicy -XX:CompileThreshold=100 "
+						+ "-Dcom.mojang.eula.agree=true -Dio.netty.recycler.maxCapacity=0 "
+						+ "-Dio.netty.recycler.maxCapacity.default=0 "
+						+ "-Djline.terminal=jline.UnsupportedTerminal -jar " + version.getVersion() + ".jar");
+		try {
+			this.instance = Runtime.getRuntime().exec(commandBuilder.toString().split(" "), null,
+					new File("server/" + ("static") + "/" + this.getServerName()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+
+		Proxy prefferedProxy = null;
+		for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
+			if (prefferedProxy == null
+					|| prefferedProxy.getRegisteredServer().size() > proxy.getRegisteredServer().size()) {
+				prefferedProxy = proxy;
+			}
+		}
+
+		if (prefferedProxy == null) {
+
+			MinecraftVersion minecraftVersion = ApplicationInterface.getAPI().getInfrastructure()
+					.getVersionById("BungeeCord").isAvailable()
+							? ApplicationInterface.getAPI().getInfrastructure().getVersionById("BungeeCord")
+							: ApplicationInterface.getAPI().getInfrastructure().getVersionById("Waterfall");
+
+			int id = ApplicationInterface.getAPI().getInfrastructure().startProxyServer("Proxy-1", minecraftVersion);
+			prefferedProxy = ApplicationInterface.getAPI().getInfrastructure().getProxyById(id);
+		}
+
+		prefferedProxy.addSpigotServer(this, false);
+	}
+
 	public void stopServer() {
 
 		ServerGroup prefferedGroup = null;
@@ -95,29 +167,29 @@ public class SpigotServer {
 
 		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD,
 				"[CORE] Stopping SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
-		
+
 		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().remove(this);
-		
+
 		if (instance.isAlive()) {
 			instance.destroyForcibly();
 		}
-		
+
 		if (prefferedProxy != null) {
 			prefferedProxy.removeSpigotServer(this);
 		}
-		
-		if(!isStatic) {
+
+		if (isStatic) {
 			return;
 		}
-		
+
 		FileUtils.deleteFolderRecursivly(new File("server/" + ("temp") + "/" + this.getServerName()).getPath());
 		FileUtils.deleteFile("server/" + ("temp") + "/" + this.getServerName());
 
 	}
 
 	public void sendRCON(String command) {
-		if(getConnection() != null) {
-			if(getConnection().isConnected()) {
+		if (getConnection() != null) {
+			if (getConnection().isConnected()) {
 				DataContainer container = new DataContainer();
 				container.add("rcon");
 				container.add(command);
@@ -131,7 +203,7 @@ public class SpigotServer {
 	public boolean doesAcceptEula() {
 		return eula;
 	}
-	
+
 	public Process getInstance() {
 		return instance;
 	}
@@ -179,7 +251,7 @@ public class SpigotServer {
 	public String getRegisterKey() {
 		return registerKey;
 	}
-	
+
 	public boolean isMain() {
 		return isMain;
 	}
@@ -209,16 +281,16 @@ public class SpigotServer {
 	}
 
 	public void doTemplate(String servergroup) {
-		
-		if(isStatic) {
+
+		if (isStatic) {
 			return;
 		}
 
 		File serverFolder = new File("server/temp/" + getServerName());
 		File backendTemplates = new File("backend/templates/" + servergroup);
-		if(!backendTemplates.exists()) {
+		if (!backendTemplates.exists()) {
 			backendTemplates.mkdirs();
-		} else if(backendTemplates.listFiles().length != 0) {
+		} else if (backendTemplates.listFiles().length != 0) {
 			FileUtils.deleteFolderRecursivly(backendTemplates.getPath());
 		}
 		try {
@@ -227,7 +299,7 @@ public class SpigotServer {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		
+
 	}
-	
+
 }

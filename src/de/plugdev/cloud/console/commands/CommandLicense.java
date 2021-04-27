@@ -18,13 +18,11 @@ public class CommandLicense extends ConsoleCommand {
 		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE]                  |___/                           ");
 		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] This project is developed by PlugDev and SumoKadaver.");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] This project is licensed to the following \"Apache v2.0 GPL\" License");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] IMPORTANT! This project will be licensed to the following ");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] \"The Open Software License 3.0 (OSL-3.0)\" License at 30.04.2021, 6pm CET | Changing License.");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] More informations? Questions? What will be changed? | /licenseupdate");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Free to use, but by Forking -> Add some credits..");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Developer: PlugDev (Dennis B.)");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Content: SumoKadaver (Tristan J.)");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] This project is licensed to the following License \"Apache v2.0 GPL\"");
 		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Version: v1.02 ~ Dev by PlugDev | Contributor: PlugDev");
+		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] Version: v1.03 ~ Dev");
 		ConsoleOutput.write(ConsoleOutput.GREEN, "[CORE] ======================================================================");
 	}
 

@@ -84,9 +84,6 @@ public class Infrastructure {
 	}
 	
 	public void checkVersions() {
-		
-		FileUtils.deleteFolderRecursivly("server/temp");
-		
 		File backendDownloads = new File("backend/downloads/");
 		if(backendDownloads == null) {
 			return;
@@ -165,6 +162,17 @@ public class Infrastructure {
 		return null;
 	}
 	
+	public SpigotServer getSpigotServerByName(String name) {
+		for(SpigotServer spigotServer : runningServers) {
+			if(spigotServer.isStatic()) {
+				if(spigotServer.getServerName().equalsIgnoreCase(name)) {
+					return spigotServer;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public Proxy getProxyByKey(String id) {
 		for(Proxy proxy : runningProxies) {
 			if(proxy.getKey().toLowerCase().equalsIgnoreCase(id.toLowerCase())) {
@@ -175,14 +183,21 @@ public class Infrastructure {
 	}
 	
 	public MinecraftVersion getVersionById(String input) {
-		MinecraftVersion version = null;
 		for(MinecraftVersion minecraftVersion : allowedMinecraftservices) {
 			if(minecraftVersion.getVersion().toLowerCase().equals(input.toLowerCase())) {
-				version = minecraftVersion;
-				break;
+				return minecraftVersion;
 			}
 		}
-		return version;
+		return null;
+	}
+	
+	public SpigotServer getSpigotServerByKey(String key) {
+		for(SpigotServer server : runningServers) {
+			if(server.getRegisterKey().equals(key)) {
+				return server;
+			}
+		}
+		return null;
 	}
 	
 	public void addTask(Runnable runnable) {

@@ -45,7 +45,6 @@ public class Boot {
 		File localPermissionsFolder = new File("local/permissions");
 
 		File serverFolder = new File("server");
-		File serverLobbyFolder = new File("server/lobby");
 		File serverStaticFolder = new File("server/static");
 		File serverTempFolder = new File("server/temp");
 		
@@ -56,7 +55,6 @@ public class Boot {
 		FileUtils.checkFolder(localFolder);
 		FileUtils.checkFolder(localPermissionsFolder);
 		FileUtils.checkFolder(serverFolder);
-		FileUtils.checkFolder(serverLobbyFolder);
 		FileUtils.checkFolder(serverStaticFolder);
 		FileUtils.checkFolder(serverTempFolder);
 
@@ -64,7 +62,7 @@ public class Boot {
 		if (!localSettingsFile.exists()) {
 			localSettingsFile.createNewFile();
 		}
-		
+
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("servername", servername);
 		jsonObject.put("optimizationType", optimizationType);
@@ -90,6 +88,37 @@ public class Boot {
 		builder.append("Lobby | 20000 | 512 | 25579 | 3 | 50 | " + spigotServerVersion.getVersion() + " | yes\n");
 		FileUtils.writeFile(groupsSettingsFile, builder.toString());
 
+		File localPermissionsGroupsFile = new File("local/permissions/groups.pdv");
+		File localPermissionsUsersFile = new File("local/permissions/users.pdv");
+		if(!localPermissionsGroupsFile.exists()) {
+			localPermissionsGroupsFile.createNewFile();
+		}
+		if(!localPermissionsUsersFile.exists()) {
+			localPermissionsUsersFile.createNewFile();
+		}
+		
+		builder = new StringBuilder();
+		builder.append("#################################################\n");
+		builder.append("# T h a n k  y o u  f o r  u s i n g  BusyCloud #\n");
+		builder.append("#################################################\n");
+		builder.append("#        Please use the command \"/perms\"        #\n");
+		builder.append("#         (Instead of editing this file)        #\n");
+		builder.append("#################################################\n");
+		builder.append("01 | admin | §cAdmin - | §cTeam | *,debug.* | rffu | rffu | rffu | rffu | rffu\n");
+		builder.append("02 | default | §7Player - | §7Player | lobby.use,lobby.interact | rffu | rffu | rffu | rffu | rffu\n");
+		FileUtils.writeFile(localPermissionsGroupsFile, builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("#################################################\n");
+		builder.append("# T h a n k  y o u  f o r  u s i n g  BusyCloud #\n");
+		builder.append("#################################################\n");
+		builder.append("#        Please use the command \"/perms\"        #\n");
+		builder.append("#         (Instead of editing this file)        #\n");
+		builder.append("#################################################\n");
+		builder.append("0f30fb39bdef403e991440e25aa4a8b0 | 01\n");
+		FileUtils.writeFile(localPermissionsUsersFile, builder.toString());
+		
+		
 		bungeeCordType.install();
 		spigotServerVersion.install();
 		
@@ -105,7 +134,6 @@ public class Boot {
 		
 		ServerGroup lobbyGroup = new ServerGroup(ApplicationInterface.getAPI().getInfrastructure().getVersionById(spigotServerVersion.getVersion()), 33000, "Lobby", 20000, null, 512, 3, 50, true);
 		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(lobbyGroup);
-		
 	}
 	
 	/*

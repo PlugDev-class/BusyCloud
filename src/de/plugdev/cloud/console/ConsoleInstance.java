@@ -23,8 +23,10 @@ import de.plugdev.cloud.console.commands.CommandProxy;
 import de.plugdev.cloud.console.commands.CommandRconServer;
 import de.plugdev.cloud.console.commands.CommandServerInfo;
 import de.plugdev.cloud.console.commands.CommandShutdown;
+import de.plugdev.cloud.console.commands.CommandStaticserver;
 import de.plugdev.cloud.console.commands.CommandStopServer;
 import de.plugdev.cloud.infrastructure.MinecraftVersion;
+import de.plugdev.cloud.infrastructure.SpigotServer;
 
 public class ConsoleInstance {
 
@@ -58,6 +60,7 @@ public class ConsoleInstance {
 		commandMap.put("/install", new CommandInstallSoftware());
 		commandMap.put("/proxy", new CommandProxy());
 		commandMap.put("/licenseupdate", new CommandLicenseupdate());
+		commandMap.put("/staticserver", new CommandStaticserver());
 		new CommandLicense().runCommand(null, null);
 
 		ConsoleOutput.write(ConsoleOutput.PURPLE, "[CONSOLE] *==========~~~~~~~~~~~~~~~~==========*");
@@ -94,6 +97,21 @@ public class ConsoleInstance {
 		} catch (Exception exception) {
 			ConsoleOutput.write(ConsoleOutput.RED_BOLD, "[PLUGIN] AN EXCEPTION WAS THROWN! " + exception.getMessage());
 			exception.printStackTrace();
+		}
+		
+		if(new File("server/static").listFiles().length != 0) {
+			for(File root : new File("server/static").listFiles()) {
+				String version = "";
+				for(File subroot : new File(root.getAbsolutePath()).listFiles()) {
+					if(subroot.getName().endsWith(".jar")) {
+						version = subroot.getName().replaceAll(".jar", "");
+					}
+				}
+				SpigotServer server;
+				server = new SpigotServer();
+				ApplicationInterface.getAPI().getInfrastructure().getRunningServers().add(server);
+				server.startStaticServer(root.getName(), ApplicationInterface.getAPI().getInfrastructure().getVersionById(version), true, 512);
+			}
 		}
 
 		Scanner scanner = new Scanner(System.in);

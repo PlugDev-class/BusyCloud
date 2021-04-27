@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.plugdev.cloud.Cloud;
+import de.plugdev.cloud.api.permissions.PermissionsSystem;
 import de.plugdev.cloud.api.plugins.Application;
 import de.plugdev.cloud.console.ConsoleInstance;
 import de.plugdev.cloud.infrastructure.Infrastructure;
@@ -15,6 +16,7 @@ public class ApplicationInterface {
 	private Cloud cloud;
 	private Networking networking;
 	private ConsoleInstance console;
+	private PermissionsSystem permissionsSystem;
 	
 	private List<Application> plugins = new LinkedList<>();
 	
@@ -23,6 +25,8 @@ public class ApplicationInterface {
 		this.cloud = cloud;
 		this.networking = new Networking();
 		this.networking.initNetworking();
+		this.permissionsSystem = new PermissionsSystem();
+		this.permissionsSystem.init("local/permissions/groups.pdv");
  	}
 	
 //	public void callEvent(Event event) {
@@ -37,6 +41,10 @@ public class ApplicationInterface {
 	
 	public Cloud getCloud() {
 		return cloud;
+	}
+	
+	public PermissionsSystem getPermissionsSystem() {
+		return permissionsSystem;
 	}
 	
 	public Infrastructure getInfrastructure() {

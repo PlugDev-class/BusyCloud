@@ -29,8 +29,9 @@ public class Networking {
 	 * @since 0.1
 	 * @author PlugDev, terrarier2111
 	 */
+	Server server;
 	public void initNetworking() {
-		final Server server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
+		server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
 				.nibbleCompression(true).varIntCompression(true).build().build();
 		
 		server.registerListener(new ExceptionThrowListener() {
@@ -45,6 +46,10 @@ public class Networking {
 		server.registerListener(new DecodeProxy());
 		server.registerListener(new DecodeSpigotServer());
 		server.registerListener(new DecodeGeneral());
+	}
+	
+	public Server getServer() {
+		return server;
 	}
 
 }
