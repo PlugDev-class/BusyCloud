@@ -1,6 +1,11 @@
+<h3>Important to know</h3>
+<p>The current files on github are maybe unsuccessful/Developerbuild. The working jar is linked<br>
+on GitHub, or directlink to https://github.com/PlugDev-class/BusyCloud/releases<p>
+<p>Regardless if it's working or not, I'm very appreciating you're reading this <3</p>
+
 <h1>BusyCloud v1.02</h1>
-<h5>This cloud isn't completed or stable. It has some bugs we have to fix.</h5>
-<p>This project is being developed by PlugDev, SumoKadaver and the community via GutHub.</p>
+<h5>This cloud isn't completed or stable > Update: It's stable enough to use it, but it has some bugs we have to fix.</h5>
+<p>This project is being developed by "(Developer) Dennis | PlugDev", "(Content) SumoKadaver | Tristan" and the community via GutHub.</p>
 
 <h2>What is BusyCloud?</h2>
 <p>BusyCloud is an program, that can dynamically deploy Spigotserver oriented software. The main goal is<br>
