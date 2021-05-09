@@ -81,6 +81,10 @@ public class SpigotServer {
 
 		prefferedProxy.addSpigotServer(this, isMain);
 	}
+	
+	public File getLatestLog() {
+		return new File("server/" + ("temp") + "/" + this.getServerName() + "/logs/latest.log");
+	}
 
 	public void startStaticServer(String serverName, MinecraftVersion version, boolean eula, int maxRam) {
 		registerKey = "KEY_" + new Random().nextInt(Integer.MAX_VALUE);

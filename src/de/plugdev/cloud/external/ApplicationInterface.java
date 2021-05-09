@@ -76,5 +76,5 @@ public class ApplicationInterface {
 	public void setConsole(ConsoleInstance console) {
 		this.console = console;
 	}
-
+	
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -61,6 +62,8 @@ public class GuiInterface {
 	public void initGUI() {
 
 		frame = new JFrame();
+		frame.setIconImage(new ImageIcon(
+				getClass().getResource("/de/plugdev/cloud/internal/guiinterface/extfiles/cloud96.png")).getImage());
 		frame.setBounds(100, 100, 913, 600);
 		frame.setVisible(true);
 		frame.setTitle("BusyCloud-GUI | v1.0" + CloudInstance.currentSubversion + " - GUI-(A)Interface");

@@ -13,8 +13,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
 import de.plugdev.cloud.external.ApplicationInterface;
-import de.plugdev.cloud.internal.guiinterface.panels.mouse.GUISubPanel_MouseAdapter;
-import de.plugdev.cloud.internal.guiinterface.panels.mouse.GUISubPanel_MouseAdapter.SubPanel;
+import de.plugdev.cloud.internal.guiinterface.panels.mouse.GUISubPanel_MenuMouseAdapter;
+import de.plugdev.cloud.internal.guiinterface.panels.mouse.GUISubPanel_MenuMouseAdapter.SubPanel;
 import de.plugdev.cloud.lang.ApiStatus.Experimental;
 import de.plugdev.cloud.lang.ApiStatus.Internal;
 
@@ -66,7 +66,7 @@ public class GUIPanel_Main extends JPanel {
 		lblDashboard.setOpaque(true);
 		lblDashboard.setFont(new Font("SansSerif", Font.BOLD, 16));
 		lblDashboard.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDashboard.addMouseListener(new GUISubPanel_MouseAdapter(this, SubPanel.DASHBOARD));
+		lblDashboard.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.DASHBOARD));
 		lblDashboard.setBounds(0, 1, 139, 34);
 		menuPanel.add(lblDashboard);
 		
@@ -74,7 +74,7 @@ public class GUIPanel_Main extends JPanel {
 		lblProxies.setOpaque(true);
 		lblProxies.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProxies.setFont(new Font("SansSerif", Font.BOLD, 16));
-		lblProxies.addMouseListener(new GUISubPanel_MouseAdapter(this, SubPanel.PROXIES));
+		lblProxies.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.PROXIES));
 		lblProxies.setBounds(138, 1, 102, 34);
 		menuPanel.add(lblProxies);
 		
@@ -83,7 +83,7 @@ public class GUIPanel_Main extends JPanel {
 		lblGroups.setHorizontalAlignment(SwingConstants.CENTER);
 		lblGroups.setFont(new Font("SansSerif", Font.BOLD, 16));
 		lblGroups.setBounds(239, 1, 104, 34);
-		lblGroups.addMouseListener(new GUISubPanel_MouseAdapter(this, SubPanel.GROUPS));
+		lblGroups.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.GROUPS));
 		menuPanel.add(lblGroups);
 		
 		lblServers = new JLabel("Servers");
@@ -91,7 +91,7 @@ public class GUIPanel_Main extends JPanel {
 		lblServers.setHorizontalAlignment(SwingConstants.CENTER);
 		lblServers.setFont(new Font("SansSerif", Font.BOLD, 16));
 		lblServers.setBounds(342, 1, 121, 34);
-		lblServers.addMouseListener(new GUISubPanel_MouseAdapter(this, SubPanel.SERVERS));
+		lblServers.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.SERVERS));
 		menuPanel.add(lblServers);
 		
 		lblModules = new JLabel("Modules");
@@ -99,7 +99,7 @@ public class GUIPanel_Main extends JPanel {
 		lblModules.setHorizontalAlignment(SwingConstants.CENTER);
 		lblModules.setFont(new Font("SansSerif", Font.BOLD, 16));
 		lblModules.setBounds(462, 1, 115, 34);
-		lblModules.addMouseListener(new GUISubPanel_MouseAdapter(this, SubPanel.MODULES));
+		lblModules.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.MODULES));
 		menuPanel.add(lblModules);
 		
 		subPanel = new JPanel();

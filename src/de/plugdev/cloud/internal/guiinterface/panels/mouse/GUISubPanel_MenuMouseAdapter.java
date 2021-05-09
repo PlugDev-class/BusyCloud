@@ -11,12 +11,12 @@ import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Modules;
 import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Proxies;
 import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Servers;
 
-public class GUISubPanel_MouseAdapter extends MouseAdapter {
+public class GUISubPanel_MenuMouseAdapter extends MouseAdapter {
 
 	private SubPanel panel;
 	private GUIPanel_Main mainPanel;
 
-	public GUISubPanel_MouseAdapter(GUIPanel_Main mainPanel, SubPanel subPanel) {
+	public GUISubPanel_MenuMouseAdapter(GUIPanel_Main mainPanel, SubPanel subPanel) {
 		this.panel = subPanel;
 		this.mainPanel = mainPanel;
 	}

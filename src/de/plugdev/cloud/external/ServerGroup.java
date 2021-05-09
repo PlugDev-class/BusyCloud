@@ -23,6 +23,8 @@ public class ServerGroup {
 
 	private int defaultActiveServers;
 	private int percentage;
+	
+	private int onlinePlayers;
 
 	private int startPort;
 
@@ -70,6 +72,10 @@ public class ServerGroup {
 				maxRamEachServer, acceptEula, port, isMain);
 		SpigotServer server = ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverID);
 		groupList.add(server);
+	}
+	
+	public int getOnlinePlayers() {
+		return onlinePlayers;
 	}
 
 	public void stopServer(int serverID) {
