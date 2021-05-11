@@ -15,7 +15,6 @@ import de.plugdev.cloud.external.permissions.utils.PermissionsUser;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.Proxy;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
-import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 
@@ -40,11 +39,8 @@ public class DecodeProxy implements DecodeListener {
 				ConsoleOutput.write(ConsoleOutput.GREEN,
 						"[NETWORKING] ProxyChannel \"" + proxy.getProxyid() + "\" connected!");
 
-				DataContainer container = new DataContainer();
-				container.add("changebungeeinfo");
-				container.add("change#motd");
-				container.add("§9BusyCloud §c| §dCloud is loading...");
-				event.getConnection().sendData(container);
+				event.getConnection().sendData("changebungeeinfo", "change#motd",
+						"§9BusyCloud §c| §dCloud is loading...");
 			}
 				break;
 			case "playerconnect": {
@@ -104,18 +100,19 @@ public class DecodeProxy implements DecodeListener {
 						ApplicationInterface.getAPI().getPermissionsSystem().getUsers().add(permissionsUser);
 					}
 
-
-					DataContainer container = new DataContainer();
-					container.add("adduser");
-					container.add(permissionsUser.getCurrentGroup().getGroupId());
-					container.add(permissionsUser.getUuid());
-					container.add(permissionsUser.getPlayerName());
-					container.add(permissionsUser.getUserHeigt());
-					for(SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-						server.getConnection().sendData(container);
+					for (SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
+						server.getConnection().sendData("adduser", 
+								permissionsUser.getCurrentGroup().getGroupId(),
+								permissionsUser.getUuid(),
+								permissionsUser.getPlayerName(),
+								permissionsUser.getUserHeigt());
 					}
-					for(Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
-						proxy.getConnection().sendData(container);
+					for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
+						proxy.getConnection().sendData("adduser", 
+								permissionsUser.getCurrentGroup().getGroupId(),
+								permissionsUser.getUuid(),
+								permissionsUser.getPlayerName(),
+								permissionsUser.getUserHeigt());
 					}
 				} catch (IOException exception) {
 					exception.printStackTrace();
@@ -142,21 +139,15 @@ public class DecodeProxy implements DecodeListener {
 				}
 
 				if (info != null) {
-					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer()
-							.remove(info);
+					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer().remove(info);
 					ConsoleOutput.write(ConsoleOutput.YELLOW, "[CORE] Player " + info.getPlayername()
 							+ " disconnected from "
 							+ ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
-
-					DataContainer container = new DataContainer();
-					container.add("remuser");
-					container.add(ApplicationInterface.getAPI().getPermissionsSystem().getUserByUUID(info.getUniqueID()));
-					event.getConnection().sendData(container);
-					for(SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-						server.getConnection().sendData(container);
+					for (SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
+						server.getConnection().sendData("remuser", ApplicationInterface.getAPI().getPermissionsSystem().getUserByUUID(info.getUniqueID()));
 					}
-					for(Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
-						proxy.getConnection().sendData(container);
+					for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
+						proxy.getConnection().sendData("remuser", ApplicationInterface.getAPI().getPermissionsSystem().getUserByUUID(info.getUniqueID()));
 					}
 				}
 				break;

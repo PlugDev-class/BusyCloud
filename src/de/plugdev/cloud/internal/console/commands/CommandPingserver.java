@@ -15,11 +15,8 @@ public class CommandPingserver extends ConsoleCommand {
 			if (ApplicationInterface.getAPI().getInfrastructure().getProxyById(serverId) != null) {
 
 				if (ApplicationInterface.getAPI().getInfrastructure().getProxyById(serverId).getConnection() != null) {
-					DataContainer container = new DataContainer();
-					container.add("ping");
-					container.add(System.currentTimeMillis());
 					ApplicationInterface.getAPI().getInfrastructure().getProxyById(serverId).getConnection()
-							.sendData(container);
+							.sendData("ping", System.currentTimeMillis());
 					ConsoleOutput.write(ConsoleOutput.CYAN, "[PLUGIN] Sent pingrequest to Proxyserver \""
 							+ ApplicationInterface.getAPI().getInfrastructure().getProxyById(serverId).getProxyName());
 				} else {
@@ -30,10 +27,7 @@ public class CommandPingserver extends ConsoleCommand {
 						.getSpigotServerById(serverId);
 
 				if (spigotServer.getConnection() != null) {
-					DataContainer container = new DataContainer();
-					container.add("ping");
-					container.add(System.currentTimeMillis());
-					spigotServer.getConnection().sendData(container);
+					spigotServer.getConnection().sendData("ping", System.currentTimeMillis());
 					ConsoleOutput.write(ConsoleOutput.CYAN,
 							"[PLUGIN] Sent pingrequest to Spigotserver \"" + spigotServer.getServerName());
 				} else {

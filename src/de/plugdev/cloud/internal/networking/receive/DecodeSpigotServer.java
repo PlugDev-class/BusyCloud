@@ -3,7 +3,6 @@ package de.plugdev.cloud.internal.networking.receive;
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
-import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 
@@ -27,11 +26,8 @@ public class DecodeSpigotServer implements DecodeListener {
 						spigotServer.setConnection(event.getConnection());
 						ConsoleOutput.write(ConsoleOutput.GREEN,
 								"[NETWORKING] SpigotChannel \"" + spigotServer.getId() + "\" connected!");
-						DataContainer container = new DataContainer();
-						container.add("changebungeeinfo");
-						container.add("change#motd");
-						container.add("§9BusyCloud §c| §aCloud loaded successfully.");
-						ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().get(0).getConnection().sendData(container);
+						ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().get(0).getConnection().sendData("changebungeeinfo",
+								"change#motd", "§9BusyCloud §c| §aCloud loaded successfully.");
 						break;
 					}
 				}

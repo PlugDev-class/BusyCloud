@@ -86,12 +86,7 @@ public class Proxy {
 			@Override
 			public void run() {
 				if (connection != null) {
-					DataContainer container = new DataContainer();
-					container.add("registerserver");
-					container.add(spigotServer.getServerName());
-					container.add(spigotServer.getPort());
-					container.add(isMain);
-					connection.sendData(container);
+					connection.sendData("registerserver", spigotServer.getServerName(), spigotServer.getPort(), isMain);
 					timer.cancel();
  				}
 			}
@@ -100,10 +95,7 @@ public class Proxy {
 	}
 
 	public void sendRCON(String command) {
-		DataContainer container = new DataContainer();
-		container.add("rcon");
-		container.add(command);
-		connection.sendData(container);
+		connection.sendData("rcon", command);
 	}
 	
 	public void setVersion(MinecraftVersion version) {

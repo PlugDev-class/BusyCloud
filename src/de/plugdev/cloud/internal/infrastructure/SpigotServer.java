@@ -194,10 +194,7 @@ public class SpigotServer {
 	public void sendRCON(String command) {
 		if (getConnection() != null) {
 			if (getConnection().isConnected()) {
-				DataContainer container = new DataContainer();
-				container.add("rcon");
-				container.add(command);
-				connection.sendData(container);
+				connection.sendData("rcon", command);
 				return;
 			}
 		}
