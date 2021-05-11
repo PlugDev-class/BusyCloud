@@ -1,13 +1,10 @@
 package de.plugdev.cloud.internal.guiinterface.panels;
 
 import java.awt.Color;
+
 import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -17,16 +14,18 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.external.ServerGroup;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
+import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
+@Experimental
+@Internal
 public class GUIFrame_ServerGroup extends JFrame {
 	
 	/**
@@ -36,6 +35,7 @@ public class GUIFrame_ServerGroup extends JFrame {
 
 	public GUIFrame_ServerGroup(ServerGroup serverGroup) {
 		setTitle("BusyCloud | Groupcontrol: " + serverGroup.getGroupName());
+		setResizable(false);
 		setIconImage(new ImageIcon(
 				getClass().getResource("/de/plugdev/cloud/internal/guiinterface/extfiles/cloud96.png")).getImage());
 		setVisible(true);

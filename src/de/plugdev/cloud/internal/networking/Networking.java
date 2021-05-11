@@ -1,6 +1,5 @@
 package de.plugdev.cloud.internal.networking;
 
-import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.networking.receive.DecodeGeneral;
 import de.plugdev.cloud.internal.networking.receive.DecodeProxy;
 import de.plugdev.cloud.internal.networking.receive.DecodeSpigotServer;
@@ -38,8 +37,7 @@ public class Networking {
 			
 			@Override
 			public void trigger(ExceptionTrowEvent event) {
-				event.setPrint(false);
-				ConsoleOutput.write(ConsoleOutput.CYAN, "An exception/event happened: " + event.getException().getMessage());
+				event.setPrint(true);
 			}
 		});
 		

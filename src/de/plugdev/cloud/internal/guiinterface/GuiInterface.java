@@ -13,8 +13,10 @@ import de.plugdev.cloud.internal.guiinterface.interfaces.Messageable;
 import de.plugdev.cloud.internal.guiinterface.panels.GUIPanel_Loading;
 import de.plugdev.cloud.internal.guiinterface.panels.GUIPanel_Main;
 import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
 @Experimental
+@Internal
 public class GuiInterface {
 
 	private JFrame frame;
@@ -84,6 +86,7 @@ public class GuiInterface {
 			frame.getContentPane().remove(jPanel);
 		}
 		this.jPanel = newJPanel;
+		frame.setResizable(false);
 		frame.getContentPane().add(newJPanel);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();

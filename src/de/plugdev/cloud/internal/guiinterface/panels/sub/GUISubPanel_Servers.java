@@ -3,8 +3,10 @@ package de.plugdev.cloud.internal.guiinterface.panels.sub;
 import javax.swing.JPanel;
 
 import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
 @Experimental
+@Internal
 public class GUISubPanel_Servers extends JPanel {
 	
 	/**

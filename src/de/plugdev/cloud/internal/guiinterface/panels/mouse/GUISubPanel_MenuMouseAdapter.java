@@ -10,7 +10,11 @@ import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Groups;
 import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Modules;
 import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Proxies;
 import de.plugdev.cloud.internal.guiinterface.panels.sub.GUISubPanel_Servers;
+import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
+@Experimental
+@Internal
 public class GUISubPanel_MenuMouseAdapter extends MouseAdapter {
 
 	private SubPanel panel;
@@ -40,7 +44,7 @@ public class GUISubPanel_MenuMouseAdapter extends MouseAdapter {
 		switch (this.panel) {
 		case DASHBOARD:
 			mainPanel.lblDashboard.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
-			mainPanel.subPanel = new GUISubPanel_Dashboard();
+			mainPanel.subPanel = new GUISubPanel_Dashboard(50, ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
 			break;
 		case PROXIES:
 			mainPanel.lblProxies.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
@@ -48,7 +52,7 @@ public class GUISubPanel_MenuMouseAdapter extends MouseAdapter {
 			break;
 		case GROUPS:
 			mainPanel.lblGroups.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
-			mainPanel.subPanel = new GUISubPanel_Groups();
+			mainPanel.subPanel = new GUISubPanel_Groups(50, ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
 			break;
 		case SERVERS:
 			mainPanel.lblServers.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
@@ -56,7 +60,7 @@ public class GUISubPanel_MenuMouseAdapter extends MouseAdapter {
 			break;
 		case MODULES:
 			mainPanel.lblModules.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
-			mainPanel.subPanel = new GUISubPanel_Modules();
+			mainPanel.subPanel = new GUISubPanel_Modules(50, ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
 		default:
 			break;
 		}

@@ -17,42 +17,43 @@ import de.plugdev.cloud.CloudInstance;
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.external.ServerGroup;
 import de.plugdev.cloud.internal.guiinterface.panels.GUIFrame_ServerGroup;
+import de.plugdev.cloud.internal.guiinterface.panels.RoundedPanel;
 import de.plugdev.cloud.internal.guiinterface.panels.mouse.GUISubPanel_PanelDashboardMouseAdapter;
 import de.plugdev.cloud.internal.infrastructure.Proxy;
 import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
 @Experimental
-public class GUISubPanel_Dashboard extends JPanel {
+@Internal
+public class GUISubPanel_Dashboard extends RoundedPanel {
 	
-	private static final long serialVersionUID = -6594173744287309229L;
-	
-	public JPanel panel;
-	public JLabel lblArrow;
-	
-	public GUISubPanel_Dashboard() {
+	public GUISubPanel_Dashboard(int radius, Color color) {
+		super(30);
 		setLayout(null);
 		setBounds(0, 0, 722, 470);
 		
-		panel = new JPanel();
-		panel.setBounds(224, 5, 1, 1);
+		panel = new RoundedPanel(20, ApplicationInterface.getAPI().getGuiInterface().getColorById(5));
 		panel.setBorder(new LineBorder(ApplicationInterface.getAPI().getGuiInterface().getColorById(8), 2));
 		panel.setBounds(10, 11, 702, 418);
-		panel.setBackground(ApplicationInterface.getAPI().getGuiInterface().getColorById(5));
 		panel.setLayout(null);
 		add(panel);
-		
-		addMouseListener(new GUISubPanel_PanelDashboardMouseAdapter(this));
 		
 		JLabel lblNewLabel = new JLabel("BusyCloud | v1.0" + CloudInstance.currentSubversion + " | *click to open*");
 		lblNewLabel.setFont(new Font("Segoe UI Black", Font.PLAIN, 12));
 		lblNewLabel.setBounds(10, 2, 646, 26);
 		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.addMouseListener(new GUISubPanel_PanelDashboardMouseAdapter(this));
 		panel.add(lblNewLabel);
 		
 		pushGeneralInformations();
 		pushProxy();
 		pushServergroup();
 	}
+
+	private static final long serialVersionUID = -6594173744287309229L;
+	
+	public JPanel panel;
+	public JLabel lblArrow;
 	
 	public void pushGeneralInformations() {
 		JLabel lblTitle1 = new JLabel("General informations");

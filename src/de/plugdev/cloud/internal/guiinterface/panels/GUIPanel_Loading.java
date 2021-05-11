@@ -12,8 +12,10 @@ import de.plugdev.cloud.CloudInstance;
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.guiinterface.interfaces.Messageable;
 import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
 @Experimental
+@Internal
 public class GUIPanel_Loading extends JPanel implements Messageable {
 	
 	/**

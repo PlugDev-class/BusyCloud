@@ -23,7 +23,11 @@ import javax.swing.border.LineBorder;
 
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
+import de.plugdev.cloud.lang.ApiStatus.Experimental;
+import de.plugdev.cloud.lang.ApiStatus.Internal;
 
+@Experimental
+@Internal
 public class GUIFrame_Server extends JFrame {
 	/**
 	 * 
@@ -33,6 +37,7 @@ public class GUIFrame_Server extends JFrame {
 
 	public GUIFrame_Server(SpigotServer spigotServer) {
 		setTitle("BusyCloud | Servercontrol: " + spigotServer.getServerName());
+		setResizable(false);
 		setIconImage(new ImageIcon(
 				getClass().getResource("/de/plugdev/cloud/internal/guiinterface/extfiles/cloud96.png")).getImage());
 		setVisible(true);

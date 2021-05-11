@@ -19,6 +19,7 @@ import de.plugdev.cloud.lang.ApiStatus.Experimental;
 import de.plugdev.cloud.lang.ApiStatus.Internal;
 
 @Experimental
+@Internal
 public class GUIPanel_Main extends JPanel {
 	
 	/**
@@ -40,7 +41,6 @@ public class GUIPanel_Main extends JPanel {
 		setBackground(ApplicationInterface.getAPI().getGuiInterface().getColorById(8));
 		setLayout(null);
 		labelPanel.setBounds(0, 0, 900, 92);
-		
 		
 		JPanel menuPanel = new JPanel();
 		menuPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -102,13 +102,12 @@ public class GUIPanel_Main extends JPanel {
 		lblModules.addMouseListener(new GUISubPanel_MenuMouseAdapter(this, SubPanel.MODULES));
 		menuPanel.add(lblModules);
 		
-		subPanel = new JPanel();
+		subPanel = new RoundedPanel(null, 200);
 		subPanel.setBounds(87, 128, 722, 470);
 		subPanel.setBorder(null);
 		subPanel.setBackground(ApplicationInterface.getAPI().getGuiInterface().getColorById(5));
 		subPanel.setLayout(null);
 		add(subPanel);
-		
 
 		lblDashboard.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(9));
 		lblProxies.setForeground(ApplicationInterface.getAPI().getGuiInterface().getColorById(8));
