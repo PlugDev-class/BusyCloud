@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import de.plugdev.cloud.lang.ApiStatus.Between;
+
+@Between
 public class FileUtils {
 
 	/*

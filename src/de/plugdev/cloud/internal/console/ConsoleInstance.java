@@ -46,7 +46,7 @@ public class ConsoleInstance {
 
 		ApplicationInterface.getAPI().setConsole(this);
 
-		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Loading consolehandler");
+//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Loading consolehandler");
 		
 		commandMap.put("/backup", new CommandBackup());
 		commandMap.put("/cloud", new CommandCloud());

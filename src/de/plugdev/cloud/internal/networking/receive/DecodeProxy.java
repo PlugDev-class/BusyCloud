@@ -1,20 +1,11 @@
 package de.plugdev.cloud.internal.networking.receive;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.UUID;
 
 import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.external.PlayerInfo;
-import de.plugdev.cloud.external.permissions.utils.PermissionsGroup;
-import de.plugdev.cloud.external.permissions.utils.PermissionsUser;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.Proxy;
-import de.plugdev.cloud.internal.infrastructure.SpigotServer;
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 
@@ -57,67 +48,6 @@ public class DecodeProxy implements DecodeListener {
 						+ ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName()
 						+ " - " + conectedServer);
 
-				try {
-					PermissionsUser permissionsUser = null;
-					List<String> lines = Files.readAllLines(new File("local/permissions/users.pdv").toPath());
-					for (String line : lines) {
-						if (!line.startsWith("#")) {
-							String[] array = line.split(" \\| ");
-							if (playeruuid.toString().equalsIgnoreCase(array[0])) {
-								permissionsUser = new PermissionsUser();
-								permissionsUser.setPlayerName(playername);
-								permissionsUser.setUuid(playeruuid);
-								permissionsUser.setUserHeigt(0);
-								permissionsUser.setCurrentGroup(ApplicationInterface.getAPI().getPermissionsSystem()
-										.getGroupByID(Integer.parseInt(array[1])));
-								ApplicationInterface.getAPI().getPermissionsSystem().getUsers().add(permissionsUser);
-								break;
-							}
-						}
-					}
-
-					if (permissionsUser == null) {
-						BufferedWriter writer = new BufferedWriter(new FileWriter("local/permissions/users.pdv", true));
-						writer.append(playeruuid.toString() + "\n");
-						writer.close();
-
-						PermissionsGroup prefferedGroup = null;
-						for (PermissionsGroup group : ApplicationInterface.getAPI().getPermissionsSystem()
-								.getGroups()) {
-							if (prefferedGroup == null) {
-								prefferedGroup = group;
-							}
-							if (prefferedGroup.getGroupHeight() > group.getGroupHeight()) {
-								prefferedGroup = group;
-							}
-						}
-
-						permissionsUser = new PermissionsUser();
-						permissionsUser.setPlayerName(playername);
-						permissionsUser.setUuid(playeruuid);
-						permissionsUser.setUserHeigt(0);
-						permissionsUser.setCurrentGroup(prefferedGroup);
-						ApplicationInterface.getAPI().getPermissionsSystem().getUsers().add(permissionsUser);
-					}
-
-					for (SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-						server.getConnection().sendData("adduser", 
-								permissionsUser.getCurrentGroup().getGroupId(),
-								permissionsUser.getUuid(),
-								permissionsUser.getPlayerName(),
-								permissionsUser.getUserHeigt());
-					}
-					for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
-						proxy.getConnection().sendData("adduser", 
-								permissionsUser.getCurrentGroup().getGroupId(),
-								permissionsUser.getUuid(),
-								permissionsUser.getPlayerName(),
-								permissionsUser.getUserHeigt());
-					}
-				} catch (IOException exception) {
-					exception.printStackTrace();
-				}
-
 				if (ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).isMaintenance()) {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey)
 							.sendRCON("kick " + playername + " §cThe server is currently in maintenance-mode.");
@@ -143,12 +73,6 @@ public class DecodeProxy implements DecodeListener {
 					ConsoleOutput.write(ConsoleOutput.YELLOW, "[CORE] Player " + info.getPlayername()
 							+ " disconnected from "
 							+ ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
-					for (SpigotServer server : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-						server.getConnection().sendData("remuser", ApplicationInterface.getAPI().getPermissionsSystem().getUserByUUID(info.getUniqueID()));
-					}
-					for (Proxy proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
-						proxy.getConnection().sendData("remuser", ApplicationInterface.getAPI().getPermissionsSystem().getUserByUUID(info.getUniqueID()));
-					}
 				}
 				break;
 			}

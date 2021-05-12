@@ -23,7 +23,6 @@ public class CloudInstance {
 	
 	public static int currentSubversion = 3;
 	
-	
 	/*
 	 * @since 0.1
 	 * @param args Some arguments which pushs the JVM.
@@ -35,7 +34,7 @@ public class CloudInstance {
 		System.out.println("[CORE] Starting BusyCloud... Please wait a second.");
 		ApplicationInterface applicationInterface = new ApplicationInterface();
 		CloudInstance cloud = new CloudInstance();
-		applicationInterface.initializeInterface(cloud);
+		applicationInterface.initializeInterface(cloud, args.toString().contains("-gui"));
 		cloud.boot();
 	}
 	

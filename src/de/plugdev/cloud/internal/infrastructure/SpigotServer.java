@@ -12,7 +12,6 @@ import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.generate.ServerGenerator;
 import de.plugdev.cloud.internal.utils.FileUtils;
 import de.terrarier.netlistening.Connection;
-import de.terrarier.netlistening.api.DataContainer;
 
 public class SpigotServer {
 
@@ -103,6 +102,7 @@ public class SpigotServer {
 		}
 		
 		try {
+			
 			List<String> strings = Files.readAllLines(new File("server/static/" + getServerName() + "/server.properties").toPath());
 			for(String string : strings) {
 				if(string.startsWith("server-port=")) {

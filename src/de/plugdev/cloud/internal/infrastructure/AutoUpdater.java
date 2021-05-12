@@ -16,7 +16,6 @@ public class AutoUpdater {
 	 * @throws IOException
 	 */
 	public void doCloud() {
-		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Starting Cloudupdater");
 		try {
 			int subversion = 0;
 			boolean continueState = true;
@@ -32,10 +31,10 @@ public class AutoUpdater {
 						ConsoleOutput.write(ConsoleOutput.YELLOW, "[UPDATER] A new update is available! Update it to be on the safe side!");
 						ConsoleOutput.write(ConsoleOutput.YELLOW, "[UPDATER] New Version: 1.0" + subversion-- + " | Current version: 1.0" + CloudInstance.currentSubversion);
 						ConsoleOutput.write(ConsoleOutput.YELLOW, "[UPDATER] Download: https://github.com/PlugDev-class/BusyCloud/releases/download/1.0" + subversion +"/Cloud.jar");
-						ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] New Cloudupdate found.");
+//						ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] New Cloudupdate found.");
 					} else {
 						ConsoleOutput.write(ConsoleOutput.GREEN, "[UPDATER] You're up-to-date!"  + (CloudInstance.currentSubversion > subversion ? " (Maybe higher. - Unstablewarning)" :""));
-						ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] No Cloudupdate found. You're up-to-date!");
+//						ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] No Cloudupdate found. You're up-to-date!");
 					}
 					continueState = false;
 				}
@@ -52,7 +51,7 @@ public class AutoUpdater {
 	 * @throws IOException
 	 */
 	public void doBridges() {
-		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Starting Bridgeupdater");
+//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Starting Bridgeupdater");
 		URL spigotBridge = null;
 		URL bungeeBridge = null;
 		try {
@@ -106,9 +105,9 @@ public class AutoUpdater {
 		FileUtils.deleteFile("backend/downloads/SpigotCloudBridge.jar");
 		FileUtils.deleteFile("backend/downloads/BungeeCloudBridge.jar");
 		FileUtils.download(spigotBridge.getProtocol() + "://" + spigotBridge.getHost() + spigotBridge.getPath(), "backend/downloads/SpigotCloudBridge.jar");
-		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading SpigotCloudBridge.jar");
+//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading SpigotCloudBridge.jar");
 		FileUtils.download(bungeeBridge.getProtocol() + "://" + bungeeBridge.getHost() + bungeeBridge.getPath(), "backend/downloads/BungeeCloudBridge.jar");
-		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading BungeeCloudBridge.jar");
+//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading BungeeCloudBridge.jar");
 	}
 
 }

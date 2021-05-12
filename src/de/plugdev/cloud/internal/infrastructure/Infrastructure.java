@@ -23,10 +23,8 @@ public class Infrastructure {
 	private List<ExecutorService> services = new LinkedList<>();
 
 	public Infrastructure() {
-		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.7.10",
-				"https://cdn.getbukkit.org/spigot/spigot-1.7.10-SNAPSHOT-b1657.jar", false));
-		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.8",
-				"https://cdn.getbukkit.org/spigot/spigot-1.8-R0.1-SNAPSHOT-latest.jar", false));
+		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.7.10", "https://cdn.getbukkit.org/spigot/spigot-1.7.10-SNAPSHOT-b1657.jar", false));
+		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.8", "https://cdn.getbukkit.org/spigot/spigot-1.8-R0.1-SNAPSHOT-latest.jar", false));
 		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.8.3",
 				"https://cdn.getbukkit.org/spigot/spigot-1.8.3-R0.1-SNAPSHOT-latest.jar", false));
 		allowedMinecraftservices.add(new MinecraftVersion("spigot-1.8.4",
