@@ -4,7 +4,6 @@ import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.console.ConsoleCommand;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
-import de.terrarier.netlistening.api.DataContainer;
 
 public class CommandPingserver extends ConsoleCommand {
 

@@ -4,7 +4,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import de.plugdev.cloud.CloudInstance;
-import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.utils.FileUtils;
 
