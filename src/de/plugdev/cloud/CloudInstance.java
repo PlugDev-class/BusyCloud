@@ -21,7 +21,7 @@ public class CloudInstance {
 	 * 
 	 */
 	
-	public static int currentSubversion = 3;
+	public static int currentSubversion = 4;
 	
 	/*
 	 * @since 0.1

@@ -1,5 +1,7 @@
 package de.plugdev.cloud.internal.infrastructure;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -54,49 +56,14 @@ public class AutoUpdater {
 		URL spigotBridge = null;
 		URL bungeeBridge = null;
 		try {
-			int spigotSubversion = 0;
-			spigotBridge = new URL("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.0"
-					+ spigotSubversion + "/SpigotCloudBridge.jar");
-
-			boolean continueState = true;
-			while (continueState) {
-				URL url = new URL("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/1.0"
-						+ spigotSubversion++ + "/SpigotCloudBridge.jar");
-				HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-				huc.setRequestMethod("HEAD");
-				huc.connect();
-				int responseCode = huc.getResponseCode();
-				huc.disconnect();
-				if (responseCode == HttpURLConnection.HTTP_OK) {
-					spigotBridge = url;
-				} else {
-					continueState = false;
-					break;
-				}
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		try {
-			int bungeeSubversion = 0;
-			bungeeBridge = new URL("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.0"
-					+ bungeeSubversion + "/BungeeCloudBridge.jar");
-			boolean continueState = true;
-			while (continueState) {
-				URL url = new URL("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/1.0"
-						+ bungeeSubversion++ + "/BungeeCloudBridge.jar");
-				HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-				huc.setRequestMethod("HEAD");
-				huc.connect();
-				int responseCode = huc.getResponseCode();
-				huc.disconnect();
-				if (responseCode == HttpURLConnection.HTTP_OK) {
-					bungeeBridge = url;
-				} else {
-					continueState = false;
-					break;
-				}
-			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/PlugDev-class/BusyCloud_Info/master/src/de/plugdev/busycloud/version.txt").openStream()));
+			String version1 = reader.readLine();
+			String version2 = reader.readLine();
+			reader.close();
+			spigotBridge = new URL("https://github.com/PlugDev-class/BusyCloud_SpigotCloudBridge/releases/download/"
+					+ version1 + ".jar");
+			bungeeBridge = new URL("https://github.com/PlugDev-class/BusyCloud_BungeeCloudBridge/releases/download/"
+					+ version2 + ".jar");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -104,9 +71,7 @@ public class AutoUpdater {
 		FileUtils.deleteFile("backend/downloads/SpigotCloudBridge.jar");
 		FileUtils.deleteFile("backend/downloads/BungeeCloudBridge.jar");
 		FileUtils.download(spigotBridge.getProtocol() + "://" + spigotBridge.getHost() + spigotBridge.getPath(), "backend/downloads/SpigotCloudBridge.jar");
-//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading SpigotCloudBridge.jar");
 		FileUtils.download(bungeeBridge.getProtocol() + "://" + bungeeBridge.getHost() + bungeeBridge.getPath(), "backend/downloads/BungeeCloudBridge.jar");
-//		ApplicationInterface.getAPI().getGuiInterface().pushStatusMessage("[CORE] Downloading BungeeCloudBridge.jar");
 	}
 
 }

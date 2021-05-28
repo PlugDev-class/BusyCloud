@@ -4,8 +4,6 @@ import de.plugdev.cloud.internal.networking.receive.DecodeGeneral;
 import de.plugdev.cloud.internal.networking.receive.DecodeProxy;
 import de.plugdev.cloud.internal.networking.receive.DecodeSpigotServer;
 import de.terrarier.netlistening.Server;
-import de.terrarier.netlistening.api.event.ExceptionThrowListener;
-import de.terrarier.netlistening.api.event.ExceptionTrowEvent;
 
 public class Networking {
 
@@ -32,14 +30,6 @@ public class Networking {
 	public void initNetworking() {
 		server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
 				.nibbleCompression(true).varIntCompression(true).build().build();
-		
-		server.registerListener(new ExceptionThrowListener() {
-			
-			@Override
-			public void trigger(ExceptionTrowEvent event) {
-				event.setPrint(true);
-			}
-		});
 		
 		server.registerListener(new DecodeProxy());
 		server.registerListener(new DecodeSpigotServer());
