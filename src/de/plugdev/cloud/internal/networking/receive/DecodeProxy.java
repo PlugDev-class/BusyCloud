@@ -37,7 +37,7 @@ public class DecodeProxy implements DecodeListener {
 			case "playerconnect": {
 				String proxyKey = event.getData().read();
 				String playername = event.getData().read();
-				UUID playeruuid = event.getData().read();
+				UUID playeruuid = UUID.fromString(event.getData().read());
 				String conectedServer = event.getData().read();
 				String address = event.getData().read();
 
@@ -56,7 +56,7 @@ public class DecodeProxy implements DecodeListener {
 				break;
 			case "playerdisconnect": {
 				String proxyKey = event.getData().read();
-				UUID playerUUID = event.getData().read();
+				UUID playerUUID = UUID.fromString(event.getData().read());
 
 				PlayerInfo info = null;
 
@@ -78,7 +78,7 @@ public class DecodeProxy implements DecodeListener {
 			}
 			case "playerswitchserver": {
 				String proxyKey = event.getData().read();
-				UUID playerUUID = event.getData().read();
+				UUID playerUUID = UUID.fromString(event.getData().read());
 				String from = event.getData().read();
 				String to = event.getData().read();
 

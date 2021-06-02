@@ -45,7 +45,7 @@ public class ServerGroup {
 				}
 
 				int proxyID = ApplicationInterface.getAPI().getInfrastructure().startProxyServer(
-						"Proxy-" + ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size() + 1,
+						"Proxy-" + (ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size() + 1),
 						version2);
 				proxy = ApplicationInterface.getAPI().getInfrastructure().getProxyById(proxyID);
 			}
