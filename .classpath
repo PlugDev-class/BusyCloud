@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="Cloud/src"/>
+	<classpathentry kind="src" path="Spigot/src"/>
+	<classpathentry kind="src" path="BungeeCord/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="E:/API/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="E:/API/netty-all-4.1.63.Final.jar"/>
-	<classpathentry kind="lib" path="E:/API/NetListening (3).jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/NetListening.jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/netty-all-4.1.65.Final.jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/gson-2.8.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/json-20190722.jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar"/>
+	<classpathentry kind="lib" path="C:/Users/PlugDev/OneDrive/Programmierung/API/bungeecord-1.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

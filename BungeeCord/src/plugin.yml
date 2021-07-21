@@ -1,0 +1,5 @@
+name: BusyCloudAPI
+version: 1.0
+main: eu.busycloud.service.ProxyPluginInstance
+author: PlugDev
+commands:
