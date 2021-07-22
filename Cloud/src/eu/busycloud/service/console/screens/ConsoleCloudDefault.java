@@ -17,24 +17,24 @@ import eu.busycloud.service.console.commands.CommandIntroduction;
 import eu.busycloud.service.console.commands.CommandProxy;
 import eu.busycloud.service.console.commands.CommandShutdown;
 import eu.busycloud.service.console.commands.CommandStaticServer;
+import eu.busycloud.service.console.commands.CommandTempServer;
 
 public class ConsoleCloudDefault implements ConsoleScreen {
 
 	private Map<String, ConsoleCommand> commandMap = new HashMap<>();
 
 	public ConsoleCloudDefault() {
-
 		ApplicationInterface.getAPI().getConsole().setConsoleDefault(this);
-
 		commandMap.put("/introduction", new CommandIntroduction("This command provides informations for beginners."));
 		commandMap.put("/backup", new CommandBackup("Make a backup of the whole filesystem."));
 		commandMap.put("/help", new CommandHelp("Shows the relevant BusyCloud-Commands"));
 		commandMap.put("/shutdown", new CommandShutdown("Shutdowns the network"));
-		commandMap.put("/group", new CommandGroup("Complex group-command for setups/pings/commands/rcons etc."));
 		commandMap.put("/clear", new CommandClearConsole("Clears the console-log"));
 		commandMap.put("/install", new CommandInstallSoftware("Install serversoftware like Spigotdistributions, proxies etc."));
 		commandMap.put("/proxy", new CommandProxy("Complex proxy-command for setups/pings/commands/rcons etc."));
 		commandMap.put("/staticserver", new CommandStaticServer("Complex staticserver-command for setups/pings/commands/rcons etc."));
+		commandMap.put("/tempserver", new CommandTempServer("Complex tempserver-command for setups/pings/commands/rcons etc."));
+		commandMap.put("/servergroup", new CommandGroup("Complex servergroup-command for setups/pings/commands/rcons etc."));
 		commandMap.put("/deletecloud", new CommandDeleteCloud("The last command you touch! It will delete the whole cloud!"));
 	}
 

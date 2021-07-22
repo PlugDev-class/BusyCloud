@@ -3,15 +3,12 @@ package eu.busycloud.service.console.commands;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleCommand;
-import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticCreate;
-import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticDelete;
-import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticEdit;
 import eu.busycloud.service.infrastructure.SpigotServer;
 import eu.busycloud.service.utils.TextUtils;
 
-public class CommandStaticServer extends ConsoleCommand {
+public class CommandTempServer extends ConsoleCommand {
 
-	public CommandStaticServer(String help) {
+	public CommandTempServer(String help) {
 		super(help);
 	}
 
@@ -19,14 +16,10 @@ public class CommandStaticServer extends ConsoleCommand {
 	public void runCommand(String command, String[] args) {
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("list")) {
-				boolean did = false;
 				for(SpigotServer spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers())
-					if(spigotServer.isStatic()) {
-						did = true;
 						CloudInstance.LOGGER.info(spigotServer.getServerName() + " [" + spigotServer.getId() + "]");
-					}
-				if(!did)
-					CloudInstance.LOGGER.info("No staticserver is running. Do you need help with cloudsetup? /introduction");
+				if(ApplicationInterface.getAPI().getInfrastructure().getRunningServers().size() == 0)
+					CloudInstance.LOGGER.info("No server is running. Do you need help with cloudsetup? /introduction");
 				return;
 			}
 		}
@@ -47,12 +40,12 @@ public class CommandStaticServer extends ConsoleCommand {
 		case "control":
 
 			if (ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]) == null) {
-				CloudInstance.LOGGER.warning("Staticserver not found!");
+				CloudInstance.LOGGER.warning("Server not found!");
 				printHelp();
 				return;
 			}
-			if (ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]) == null) {
-				CloudInstance.LOGGER.warning("Staticserver not found!");
+			if(ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]).isStatic()) {
+				CloudInstance.LOGGER.warning("Server is static!");
 				printHelp();
 				return;
 			}
@@ -93,25 +86,6 @@ public class CommandStaticServer extends ConsoleCommand {
 				printHelp();
 				break;
 			}
-
-			break;
-		case "setup":
-			
-			switch (args[2].toLowerCase()) {
-			case "create":
-				new ConsoleAssistantStaticCreate();
-				break;
-			case "delete":
-				new ConsoleAssistantStaticDelete();
-				break;
-			case "edit":
-				new ConsoleAssistantStaticEdit();
-				break;
-			default:
-				break;
-			}
-			
-			
 			break;
 		default:
 			printHelp();
@@ -121,14 +95,11 @@ public class CommandStaticServer extends ConsoleCommand {
 	}
 
 	private void printHelp() {
-		CloudInstance.LOGGER.info("/staticserver list");
-		CloudInstance.LOGGER.info("/staticserver control <servername> rcon <command>");
-		CloudInstance.LOGGER.info("/staticserver control <servername> stop");
-		CloudInstance.LOGGER.info("/staticserver control <servername> ping");
-		CloudInstance.LOGGER.info("/staticserver control <servername> info");
-		CloudInstance.LOGGER.info("/staticserver setup create");
-		CloudInstance.LOGGER.info("/staticserver setup delete");
-		CloudInstance.LOGGER.info("/staticserver setup edit");
+		CloudInstance.LOGGER.info("/tempserver list");
+		CloudInstance.LOGGER.info("/tempserver control <servername> rcon <command>");
+		CloudInstance.LOGGER.info("/tempserver control <servername> stop");
+		CloudInstance.LOGGER.info("/tempserver control <servername> ping");
+		CloudInstance.LOGGER.info("/tempserver control <servername> info");
 	}
 	
 }

@@ -34,7 +34,6 @@ public class ServerGroup {
 				serverGroupContainer.getGroupName(), 
 				serverGroupContainer.getServerSoftware(), 
 				1, 
-				false,
 				serverGroupContainer.getMaxRamEachServer(), 
 				true,
 				groupList.size() + serverGroupContainer.getStartPort(), 

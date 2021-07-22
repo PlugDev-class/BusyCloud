@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
+import eu.busycloud.service.api.plugins.Application;
+import eu.busycloud.service.api.plugins.Event;
 import eu.busycloud.service.infrastructure.ServerSoftware.ServerSoftwareType;
 import eu.busycloud.service.utils.ServerGroupContainer;
 
@@ -24,6 +27,8 @@ public class Infrastructure {
 	private List<ProxyServer> runningProxies = new LinkedList<>();
 	private List<SpigotServer> runningServers = new LinkedList<>();
 	private List<ServerGroup> runningGroups = new LinkedList<>();
+	
+	private List<Application> applications = new ArrayList<Application>();
 
 	public ServerSoftware[] serverSoftwares = {
 
@@ -266,6 +271,7 @@ public class Infrastructure {
 
 	public boolean useViaVersion = false;
 	public String serverName = "Unknown";
+	public int maxRam = 1024;
 	ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
 	public Infrastructure() {
@@ -287,6 +293,14 @@ public class Infrastructure {
 					serverSoftware.setAvailable(true);
 		}
 	}
+	
+	
+	public void callEvents(Event event) {
+		for(Application application : applications)
+			for(Event event2 : application.getEventList())
+				if(event2 instanceof Event)
+					event2.onEvent();
+	}
 
 	public int startProxyServer(String serverName, ServerSoftware serverSoftware) {
 		CloudInstance.LOGGER.info("Starting Proxy(\"" + serverName + "\",\"" + serverSoftware.getVersionName() + "\")");
@@ -296,14 +310,22 @@ public class Infrastructure {
 		return proxy.getProxyid();
 	}
 
-	public int startSpigotServer(String serverGroup, ServerSoftware serverSoftware, int proxyId, boolean isStatic,
-			int maxRam, boolean acceptEula, int port, boolean isMain) {
+	public int startSpigotServer(String serverGroup, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port, boolean isMain) {
 		CloudInstance.LOGGER.info("Starting SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
 		SpigotServer spigotServer = new SpigotServer();
 		spigotServer.setMaxRam(maxRam);
 		spigotServer.setPort(port);
-		spigotServer.setStatic(isStatic);
 		spigotServer.startServer(serverGroup, serverSoftware, acceptEula, maxRam, isMain);
+		runningServers.add(spigotServer);
+		return spigotServer.getId();
+	}
+	
+	public int startStaticSpigotServer(String serverName, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port) {
+		CloudInstance.LOGGER.info("Starting SpigotServer*(\"" + serverName + " - localhost:" + port + "\")");
+		SpigotServer spigotServer = new SpigotServer();
+		spigotServer.setMaxRam(maxRam);
+		spigotServer.setPort(port);
+		spigotServer.startStaticServer(serverName, serverSoftware, acceptEula, maxRam);
 		runningServers.add(spigotServer);
 		return spigotServer.getId();
 	}
@@ -314,16 +336,16 @@ public class Infrastructure {
 
 	public void stopProxyServer(boolean disconnectSpigots, int proxyId) {
 		ProxyServer proxy = getProxyById(proxyId);
-		if (disconnectSpigots) {
-			for (SpigotServer runningServers : proxy.getRegisteredServer()) {
+		if (disconnectSpigots)
+			for (SpigotServer runningServers : proxy.getRegisteredServer())
 				runningServers.stopServer();
-			}
-		}
 		proxy.stopProxy();
+		runningProxies.remove(proxy);
 	}
 
 	public void stopSpigotServer(int serverId) {
 		getSpigotServerById(serverId).stopServer();
+		runningServers.remove(getSpigotServerById(serverId));
 	}
 
 	public void rconSpigotServer(int serverId, String command) {
@@ -335,38 +357,37 @@ public class Infrastructure {
 	}
 
 	public ProxyServer getProxyById(int id) {
-		for (ProxyServer proxy : runningProxies) {
-			if (proxy.getProxyid() == id) {
+		for (ProxyServer proxy : runningProxies)
+			if (proxy.getProxyid() == id)
 				return proxy;
-			}
-		}
+		return null;
+	}
+	
+	public ProxyServer getProxyByName(String proxyName) {
+		for (ProxyServer proxy : runningProxies)
+			if (proxy.getProxyName().equalsIgnoreCase(proxyName))
+				return proxy;
 		return null;
 	}
 
 	public SpigotServer getSpigotServerById(int id) {
-		for (SpigotServer spigotServer : runningServers) {
-			if (spigotServer.getId() == id) {
+		for (SpigotServer spigotServer : runningServers)
+			if (spigotServer.getId() == id)
 				return spigotServer;
-			}
-		}
 		return null;
 	}
 
 	public SpigotServer getSpigotServerByName(String name) {
-		for (SpigotServer spigotServer : runningServers) {
-			if (spigotServer.getServerName().equalsIgnoreCase(name)) {
+		for (SpigotServer spigotServer : runningServers)
+			if (spigotServer.getServerName().equalsIgnoreCase(name))
 				return spigotServer;
-			}
-		}
 		return null;
 	}
 
 	public ProxyServer getProxyByKey(String id) {
-		for (ProxyServer proxy : runningProxies) {
-			if (proxy.getKey().toLowerCase().equalsIgnoreCase(id.toLowerCase())) {
+		for (ProxyServer proxy : runningProxies)
+			if (proxy.getKey().toLowerCase().equalsIgnoreCase(id.toLowerCase()))
 				return proxy;
-			}
-		}
 		return null;
 	}
 

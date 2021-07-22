@@ -2,6 +2,8 @@ package eu.busycloud.service.infrastructure;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,8 +11,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.terrarier.netlistening.Connection;
 import eu.busycloud.service.CloudInstance;
+import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.api.PlayerInfo;
 import eu.busycloud.service.infrastructure.generate.ProxyGenerator;
 import eu.busycloud.service.utils.FileUtils;
@@ -20,6 +27,9 @@ public class ProxyServer {
 	private Process instance;
 
 	private String proxyName = "";
+	
+	private int maxPlayers;
+	private int maxRam;
 	private int proxyid = 0;
 	private ServerSoftware software;
 	private int port;
@@ -36,21 +46,28 @@ public class ProxyServer {
 	public void startProxy(ServerSoftware software) {
 		setRegisterKey("KEY_" + new Random().nextInt(Integer.MAX_VALUE));
 		this.proxyid = new Random().nextInt(20000);
-		this.port = new Random().nextInt(40000) + 20000;
 		setProxyName("Proxy-" + getProxyid());
 		setSoftware(software);
 		new ProxyGenerator(this);
-
-		StringBuilder commandBuilder = new StringBuilder();
-		commandBuilder.append("java ");
-		commandBuilder.append(
-				"-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:MaxPermSize=256M -XX:-UseAdaptiveSizePolicy -XX:CompileThreshold=100 "
-						+ "-Dcom.mojang.eula.agree=true -Dio.netty.recycler.maxCapacity=0 "
-						+ "-Dio.netty.recycler.maxCapacity.default=0 "
-						+ "-Djline.terminal=jline.UnsupportedTerminal -Xmx" + 512 + "M -jar "
-						+ software.getVersionName() + ".jar");
+		
+		JSONObject jsonObject = null;
 		try {
-			this.instance = Runtime.getRuntime().exec(commandBuilder.toString().split(" "), null,
+			jsonObject = new JSONObject(new String(Files.readAllBytes(Paths.get("configurations", "cloudconfig.json")), "UTF-8"));
+		} catch (JSONException | IOException e1) {
+			e1.printStackTrace();
+		}
+		maxRam = jsonObject.getJSONObject("bungeeCord").getInt("maxRam");
+		this.port = jsonObject.getJSONObject("bungeeCord").getInt("startport") + ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size();
+
+		JSONArray jvmParameter = jsonObject.getJSONArray("jvmStartparameter");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("java ");
+		for(Object string : jvmParameter.toList()) {
+			stringBuilder.append(replace((String) string) + " ");
+		}
+		
+		try {
+			this.instance = Runtime.getRuntime().exec(stringBuilder.toString(), null,
 					new File("server/" + ("temp") + "/" + this.getProxyName()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,11 +76,9 @@ public class ProxyServer {
 	}
 
 	public void stopProxy() {
-		if (getConnection() != null) {
-			if (getConnection().isConnected()) {
+		if (getConnection() != null)
+			if (getConnection().isConnected())
 				getConnection().disconnect();
-			}
-		}
 		CloudInstance.LOGGER.info("Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
 		if (instance != null)
 			if (instance.isAlive())
@@ -91,7 +106,28 @@ public class ProxyServer {
 	}
 
 	public void sendRCON(String command) {
-		connection.sendData("rcon", command);
+		if (getConnection() != null)
+			if (getConnection().isConnected()) {
+				connection.sendData("rcon", command);
+				return;
+			}
+		CloudInstance.LOGGER.info("ProxyServer " + getProxyName() + " isn't linked.");
+	}
+	
+	public int getMaxRam() {
+		return maxRam;
+	}
+	
+	public int getMaxPlayers() {
+		return maxPlayers;
+	}
+	
+	public void setMaxPlayers(int maxPlayers) {
+		this.maxPlayers = maxPlayers;
+	}
+	
+	public void setMaxRam(int maxRam) {
+		this.maxRam = maxRam;
 	}
 
 	public void setSoftware(ServerSoftware software) {
@@ -133,6 +169,10 @@ public class ProxyServer {
 	public List<PlayerInfo> getOnlinePlayer() {
 		return registeredPlayer;
 	}
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 	public String getProxyName() {
 		return proxyName;
@@ -173,6 +213,44 @@ public class ProxyServer {
 
 	public List<UUID> getWhitelistedPlayers() {
 		return whitelistedPlayers;
+	}
+	
+	private String replace(String input) {
+		return input.replaceAll("%MAXRAM%", String.valueOf(maxRam)).replaceAll("%VERSION-IN-JAR%", software.getVersionName());
+	}
+
+	public void printInfo() {
+		try {
+			CloudInstance.LOGGER.info("<=====================> " + getProxyName() + " <=====================>");
+			CloudInstance.LOGGER.info("General-Informations: {");
+			CloudInstance.LOGGER.info("\tServergroup: PROXY");
+			CloudInstance.LOGGER.info("\tServername: " + getProxyName());
+			CloudInstance.LOGGER.info("\tServerID: " + getProxyid());
+			CloudInstance.LOGGER.info("\tServerport: " + getPort());
+			CloudInstance.LOGGER.info("\tConnected Servers: " + getRegisteredServer().size());
+			CloudInstance.LOGGER.info("\tConnectKey: " + getKey());
+			CloudInstance.LOGGER.info("}");
+			CloudInstance.LOGGER.info("Intern-Connection: {");
+			CloudInstance.LOGGER.info("\tConnectionstate: " + (getConnection() != null));
+			if (getConnection() != null) {
+				CloudInstance.LOGGER.info("\tConnectionID: " + getConnection().getId());
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hostname: " + getConnection().getRemoteAddress().getHostName());
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hoststring: " + getConnection().getRemoteAddress().getHostString());
+				CloudInstance.LOGGER.info("\tRemoteAddress-Port: " + getConnection().getRemoteAddress().getPort());
+			} else {
+				CloudInstance.LOGGER.info("\tConnectionID: " + null);
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hostname: " + null);
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hoststring: " + null);
+				CloudInstance.LOGGER.info("\tRemoteAddress-Port: " + null);
+			}
+			CloudInstance.LOGGER.info("}");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 
 }

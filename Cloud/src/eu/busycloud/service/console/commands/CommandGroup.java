@@ -121,15 +121,15 @@ public class CommandGroup extends ConsoleCommand {
 	}
 
 	private void printHelp() {
-		CloudInstance.LOGGER.info("/group list");
-		CloudInstance.LOGGER.info("/group control <groupname> rcon <command>");
-		CloudInstance.LOGGER.info("/group control <groupname> startserver");
-		CloudInstance.LOGGER.info("/group control <groupname> stopgroup");
-		CloudInstance.LOGGER.info("/group control <groupname> ping");
-		CloudInstance.LOGGER.info("/group control <groupname> info");
-		CloudInstance.LOGGER.info("/group setup create");
-		CloudInstance.LOGGER.info("/group setup delete");
-		CloudInstance.LOGGER.info("/group setup edit");
+		CloudInstance.LOGGER.info("/servergroup list");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> rcon <command>");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> startserver");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> stopgroup");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> ping");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> info");
+		CloudInstance.LOGGER.info("/servergroup setup create");
+		CloudInstance.LOGGER.info("/servergroup setup delete");
+		CloudInstance.LOGGER.info("/servergroup setup edit");
 	}
 
 }

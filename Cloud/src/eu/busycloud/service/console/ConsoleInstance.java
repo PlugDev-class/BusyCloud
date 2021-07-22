@@ -1,6 +1,7 @@
 package eu.busycloud.service.console;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import eu.busycloud.service.utils.TextUtils;
 
 public class ConsoleInstance {
 
+	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 	private List<ConsoleScreen> consoleScreens = new ArrayList<ConsoleScreen>();
 	private Map<ConsoleScreen, Boolean> queueMap = new HashMap<ConsoleScreen, Boolean>();
 	private ConsoleCloudDefault consoleDefault = null;
@@ -31,6 +33,7 @@ public class ConsoleInstance {
 			TextUtils.sendHeader();
 			consoleScreens.add(new ConsoleCloudDefault());
 		}
+
 		System.out.print("BusyCloud-v2@Input: ");
 		Scanner scanner = new Scanner(System.in);
 		String input = "";

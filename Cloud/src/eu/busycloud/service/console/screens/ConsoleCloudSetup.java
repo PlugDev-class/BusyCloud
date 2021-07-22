@@ -2,6 +2,12 @@ package eu.busycloud.service.console.screens;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.FileHandler;
 
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
@@ -13,18 +19,16 @@ import eu.busycloud.service.utils.CloudSetupContainer.AnswerType;
 
 public class ConsoleCloudSetup implements ConsoleScreen {
 
+	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 	private CloudSetupContainer[] cloudSetupContainers = {
 		
 			(new CloudSetupContainer("Are you accepting our current guidelines?", "Guidlines-Accept", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Are you accepting any other by BusyCloud used guidelines?", "TP-Accept", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Please type in your License-Key:", "License-Key", AnswerType.STRING, true)),
+			(new CloudSetupContainer("How much memory do you want to use for the busycloud in MB", "RAM-in-MB", AnswerType.INTEGER, false)),
 			(new CloudSetupContainer("If you are permitted to, do you want to use the latest ViaVersion?", "ViaVersion", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Please type in your networks-name", "Network-Name", AnswerType.STRING, false)),
-			(new CloudSetupContainer("Expert: Which percentrate of cpu you want to use for cloudplugins?", "CPU/Plugin", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: Which percentrate of cpu you want to use for cloudplayers?", "CPU/Player", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: Which percentrate of ram you want to use for cloudplugins?", "RAM/Plugin", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: Which percentrate of ram you want to use for cloudplayers?", "RAM/Player", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
+			(new CloudSetupContainer(" Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Soon: Do you want to do the servers cross-compatible? (Java <-> Bedrock)", "Java <=> Bedrock", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Did you answer this questions truthfully and you're sure about it?", "Truthful answered", AnswerType.BOOLEAN, false))
 			
@@ -48,8 +52,6 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 				new File("developer"),
 				new File("saves"),
 				new File("configurations/cloudconfig.json"),
-				new File("configurations/expertconfig.json"), 
-				new File("configurations/language.json"),
 				new File("configurations/servergroups.json"), 
 				new File("developer/logs"),
 				new File("developer/-= ..only for experts.. =-"), 
@@ -66,10 +68,27 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("(Re/Force)installing BusyCloud, finished");
 		CloudInstance.LOGGER.info("Please install some software with '/install'");
 
-		new Boot((String) cloudSetupContainers[4].getAnswer(), null, null, (boolean) cloudSetupContainers[3].getAnswer());
+		new Boot((String) cloudSetupContainers[5].getAnswer(), 
+				null, 
+				null, 
+				(boolean) cloudSetupContainers[4].getAnswer(), 
+				(boolean) cloudSetupContainers[10].getAnswer(),
+				(int) cloudSetupContainers[3].getAnswer());
+		
+
+		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+		try {
+			Path p = Paths.get("developer/logs", format.format(new Date(System.currentTimeMillis())) + ".log");
+			if (!Files.exists(p.getParent()))
+	            Files.createDirectory(p.getParent());
+			CloudInstance.LOGGER.addHandler(new FileHandler("developer/logs/" + format.format(new Date(System.currentTimeMillis())) + ".log", true));
+		} catch (SecurityException | IOException e) {
+			e.printStackTrace();
+		}
 		
 		ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 		ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
+		
 	}
 
 	@Override

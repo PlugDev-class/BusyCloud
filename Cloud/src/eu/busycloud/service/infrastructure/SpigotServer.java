@@ -3,8 +3,13 @@ package eu.busycloud.service.infrastructure;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.terrarier.netlistening.Connection;
 import eu.busycloud.service.CloudInstance;
@@ -45,35 +50,42 @@ public class SpigotServer {
 
 		new SpigotGenerator(this);
 
-		StringBuilder commandBuilder = new StringBuilder();
-		commandBuilder.append("java ");
-		commandBuilder.append(
-				"-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:MaxPermSize=256M -XX:-UseAdaptiveSizePolicy -XX:CompileThreshold=100 "
-						+ "-Dcom.mojang.eula.agree=true -Dio.netty.recycler.maxCapacity=0 "
-						+ "-Dio.netty.recycler.maxCapacity.default=0 "
-						+ "-Djline.terminal=jline.UnsupportedTerminal -Xmx" + maxRam + "M -jar "
-						+ this.serverSoftware.getVersionName() + ".jar");
+		JSONObject settingsFile = null;
 		try {
-			this.instance = Runtime.getRuntime().exec(commandBuilder.toString().split(" "), null,
+			settingsFile = new JSONObject(new String(Files.readAllBytes(Paths.get("configurations", "cloudconfig.json"))));
+		} catch (JSONException | IOException e1) {
+			CloudInstance.LOGGER.info("JVM-Startparameter has moved to cloudconfig.json.");
+			CloudInstance.LOGGER.info("Please reinstall the cloud or download the latest cloudconfig.json from GitHub.");
+			return;
+		}
+		
+		JSONArray jvmParameter = settingsFile.getJSONArray("jvmStartparameter");
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("java ");
+		for(Object string : jvmParameter.toList()) {
+			stringBuilder.append(((String) string).replaceAll("%MAX%", maxRam + "")
+					.replaceAll("%VERSION-IN-JAR%", serverSoftware.getVersionName() + "") + " ");
+		}
+		
+		try {
+			this.instance = Runtime.getRuntime().exec(stringBuilder.toString(), null,
 					new File("server/" + ("temp") + "/" + this.getServerName()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		ProxyServer prefferedProxy = null;
-		for (ProxyServer proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
+		for (ProxyServer proxy : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies())
 			if (prefferedProxy == null
-					|| prefferedProxy.getRegisteredServer().size() > proxy.getRegisteredServer().size()) {
+					|| prefferedProxy.getRegisteredServer().size() > proxy.getRegisteredServer().size())
 				prefferedProxy = proxy;
-			}
-		}
 
 		if (prefferedProxy == null) {
 
 			if (ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size() == 0) {
 				boolean did = false;
 				for (ServerSoftware serverSoftware2 : ApplicationInterface.getAPI()
-						.getInfrastructure().serverSoftwares) {
+						.getInfrastructure().serverSoftwares)
 					if (serverSoftware2.isAvailable() && serverSoftware2.getType() == ServerSoftwareType.PROXY) {
 						int proxyID = ApplicationInterface.getAPI().getInfrastructure().startProxyServer("Proxy-"
 								+ (ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size() + 1),
@@ -82,10 +94,9 @@ public class SpigotServer {
 						did = true;
 						break;
 					}
-				}
 				if (!did) {
 					CloudInstance.LOGGER.info(
-							"[Core] BusyCloud aren't able to start a proxy. Please install a proxy-version: /install");
+							"BusyCloud aren't able to start a proxy. Please install a proxy-version: /install");
 				}
 			}
 		}
@@ -130,18 +141,25 @@ public class SpigotServer {
 		}
 
 		CloudInstance.LOGGER
-				.info("[CORE] Starting SpigotServer(\"" + getServerName() + " - localhost:" + getPort() + "\")");
-
-		StringBuilder commandBuilder = new StringBuilder();
-		commandBuilder.append("java ");
-		commandBuilder.append(
-				"-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:MaxPermSize=256M -XX:-UseAdaptiveSizePolicy -XX:CompileThreshold=100 "
-						+ "-Dcom.mojang.eula.agree=true -Dio.netty.recycler.maxCapacity=0 "
-						+ "-Dio.netty.recycler.maxCapacity.default=0 "
-						+ "-Djline.terminal=jline.UnsupportedTerminal -jar " + serverSoftware.getVersionName()
-						+ ".jar");
+				.info("Starting SpigotServer(\"" + getServerName() + " - localhost:" + getPort() + "\")");
+		
+		JSONObject settingsFile = null;
 		try {
-			this.instance = Runtime.getRuntime().exec(commandBuilder.toString().split(" "), null,
+			settingsFile = new JSONObject(new String(Files.readAllBytes(Paths.get("configurations", "cloudconfig.json"))));
+		} catch (JSONException | IOException e1) {
+			CloudInstance.LOGGER.info("JVM-Startparameter has moved to cloudconfig.json.");
+			CloudInstance.LOGGER.info("Please reinstall the cloud or download the latest cloudconfig.json from GitHub.");
+			return;
+		}
+		JSONArray jvmParameter = settingsFile.getJSONArray("jvmStartparameter");
+		StringBuilder stringBuilder = new StringBuilder();
+		for(Object string : jvmParameter.toList()) {
+			stringBuilder.append(((String) string).replaceAll("%MAX%", maxRam + "")
+					.replaceAll("%VERSION-IN-JAR%", serverSoftware.getVersionName() + "") + " ");
+		}
+		
+		try {
+			this.instance = Runtime.getRuntime().exec(stringBuilder.toString().split(" "), null,
 					new File("server/" + ("static") + "/" + this.getServerName()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,7 +189,7 @@ public class SpigotServer {
 				}
 				if (!did) {
 					CloudInstance.LOGGER.info(
-							"[Core] Cloud aren't able to start a proxy. Please install a proxy-version: /install");
+							"BusyCloud aren't able to start a proxy. Please install a proxy-version: /install");
 				}
 			}
 		}
@@ -244,10 +262,10 @@ public class SpigotServer {
 
 	public void ping() {
 		if (this.getConnection() != null) {
+			CloudInstance.LOGGER.info("Send pingrequest to Spigotserver '" + getServerName() + "'");
 			this.getConnection().sendData("ping", System.currentTimeMillis());
-			CloudInstance.LOGGER.info("Sent pingrequest to Spigotserver '" + getServerName() + "'");
 		} else {
-			CloudInstance.LOGGER.info("Spigotserver isn't linked.");
+			CloudInstance.LOGGER.info("Server " + serverName + " isn't linked.");
 		}
 	}
 
@@ -257,7 +275,7 @@ public class SpigotServer {
 				connection.sendData("rcon", command);
 				return;
 			}
-		CloudInstance.LOGGER.info("Server " + serverName + " isn't linked.");
+		CloudInstance.LOGGER.info("SpigotServer " + serverName + " isn't linked.");
 	}
 
 	public boolean doesAcceptEula() {
@@ -355,7 +373,7 @@ public class SpigotServer {
 		}
 		try {
 			FileUtils.copyFolder(serverFolder.toPath(), backendTemplates.toPath());
-			CloudInstance.LOGGER.info("[PLUGIN] Template created.");
+			CloudInstance.LOGGER.info("Template created.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}

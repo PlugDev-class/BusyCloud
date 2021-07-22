@@ -3,14 +3,21 @@ package eu.busycloud.service.infrastructure;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.JsonParser;
 
+import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleInstance;
 import eu.busycloud.service.utils.FileUtils;
@@ -37,7 +44,7 @@ public class Boot {
 	 * task.
 	 */
 
-	public Boot(String servername, ServerSoftware bungeeCord, ServerSoftware spigotServer, boolean useViaversion)
+	public Boot(String servername, ServerSoftware bungeeCord, ServerSoftware spigotServer, boolean useViaversion, boolean nibblecompression, int maxRam)
 			throws IOException {
 
 		File localSettingsFile = new File("configurations/cloudconfig.json");
@@ -46,12 +53,43 @@ public class Boot {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("servername", servername);
-		jsonObject.put("useViaVersion", useViaversion);
-		jsonObject.put("bungeeCord.maxPlayers", 40);
-		jsonObject.put("bungeeCord.motdPlayerInfo", "§5BusyCloud");
-		jsonObject.put("bungeeCord.motdLine1", "§cBusyCloud-Service §32");
-		jsonObject.put("bungeeCord.motdLine2", "§edeveloped by PlugDev");
-		jsonObject.put("bungeeCord.motdProtocol", "§aPublic-Beta v2");
+		jsonObject.put("maxRam", maxRam);
+
+		JSONObject bungeeCordMotdObject = new JSONObject();
+		bungeeCordMotdObject.put("motdPlayerInfo", "§5BusyCloud");
+		bungeeCordMotdObject.put("motdLine1", "§cBusyCloud-Service §32");
+		bungeeCordMotdObject.put("motdLine2", "§edeveloped by PlugDev");
+		bungeeCordMotdObject.put("motdProtocol", "§aPublic-Beta v2");
+		
+		JSONObject bungeeCordObject = new JSONObject();
+		bungeeCordObject.put("maxPlayers", 40);
+		bungeeCordObject.put("startport", 25575);
+		bungeeCordObject.put("maxRam", 512);
+		bungeeCordObject.put("motdSettings", bungeeCordMotdObject);
+		
+		
+		JSONObject featureObject = new JSONObject();
+		featureObject.put("enable-motdModification", true);
+		featureObject.put("enable-bungeePermissions", true);
+		featureObject.put("nibble-compression", nibblecompression);
+		featureObject.put("viaversion", useViaversion);
+
+		JSONArray jvmStartparameter = new JSONArray();
+		jvmStartparameter.put("XX:+UseG1GC");
+		jvmStartparameter.put("XX:MaxGCPauseMillis=50");
+		jvmStartparameter.put("XX:MaxPermSize=256M");
+		jvmStartparameter.put("XX:-UseAdaptiveSizePolicy");
+		jvmStartparameter.put("XX:CompileThreshold=100");
+		jvmStartparameter.put("Dcom.mojang.eula.agree=true");
+		jvmStartparameter.put("Dio.netty.recycler.maxCapacity=0");
+		jvmStartparameter.put("Dio.netty.recycler.maxCapacity.default=0");
+		jvmStartparameter.put("-Xmx%MAX%M");
+		jvmStartparameter.put("-jar %VERSION-IN-JAR%.jar");
+		
+		jsonObject.put("bungeeCord", bungeeCordObject);
+		jsonObject.put("features", featureObject);
+		jsonObject.put("jvmStartparameter", jvmStartparameter);
+		
 		FileUtils.writeFile(localSettingsFile, TextUtils.GSON.toJson(JsonParser.parseString(jsonObject.toString())));
 
 		File groupsSettingsFile = new File("configurations/servergroups.json");
@@ -89,7 +127,8 @@ public class Boot {
 	 * @throws IOException
 	 */
 	
-	
+
+	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 	public Boot(boolean startsWithSetup) {
 		if(startsWithSetup)
 			new ConsoleInstance(startsWithSetup);
@@ -100,8 +139,9 @@ public class Boot {
 		new AutoUpdater(false, false);
 		try {
 			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/cloudconfig.json").toPath()), "UTF-8"));
-			ApplicationInterface.getAPI().getInfrastructure().useViaVersion = jsonObject.getBoolean("useViaVersion");
+			ApplicationInterface.getAPI().getInfrastructure().useViaVersion = jsonObject.getJSONObject("features").getBoolean("viaversion");
 			ApplicationInterface.getAPI().getInfrastructure().serverName = jsonObject.getString("servername");
+			ApplicationInterface.getAPI().getInfrastructure().maxRam = jsonObject.getInt("maxRam");
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
@@ -136,6 +176,15 @@ public class Boot {
 					ApplicationInterface.getAPI().getInfrastructure().getVersionById(version), true, 512);
 		}
 
+		
+		try {
+			Path p = Paths.get("developer/logs", format.format(new Date(System.currentTimeMillis())) + ".log");
+			if (!Files.exists(p.getParent()))
+	            Files.createDirectory(p.getParent());
+			CloudInstance.LOGGER.addHandler(new FileHandler("developer/logs/" + format.format(new Date(System.currentTimeMillis())) + ".log", true));
+		} catch (SecurityException | IOException e) {
+			e.printStackTrace();
+		}
 		new ConsoleInstance(startsWithSetup);
 	}
 
