@@ -1,4 +1,4 @@
-package eu.busycloud.service.networking;
+package eu.busycloud.plugin.networking;
 
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;

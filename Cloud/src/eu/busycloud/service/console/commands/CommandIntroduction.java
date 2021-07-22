@@ -19,6 +19,8 @@ public class CommandIntroduction extends ConsoleCommand {
 		CloudInstance.LOGGER.info(" |___|_||_\\__|_| \\___/\\__,_|\\_,_\\__|\\__|_\\___/_||_|");
 		CloudInstance.LOGGER.info("                                                   ");
 		TextUtils.sendLine();
+		CloudInstance.LOGGER.info("Tip: Install an easier Introduction-Page as website with: /install <Web-Introduction-'version'>");
+		TextUtils.sendLine();
 		CloudInstance.LOGGER.info("First steps:");
 		CloudInstance.LOGGER.info("1. Download some softwares to use in further steps.");
 		CloudInstance.LOGGER.info(" -> /install storelist");
@@ -41,7 +43,7 @@ public class CommandIntroduction extends ConsoleCommand {
 		CloudInstance.LOGGER.info(" \tservergroup will decide to start a new one to prevent lags in any way.");
 		CloudInstance.LOGGER.info("2. Execution");
 		CloudInstance.LOGGER.info(" \tIn general the cloud should've a proxy preinstalled.");
-		CloudInstance.LOGGER.info(" \tEven though a \"Lobby\"-servergroup should been there as well.");
+		CloudInstance.LOGGER.info(" \tEven though a \"Lobby\"-servergroup should be there as well.");
 		CloudInstance.LOGGER.info(" \tBut you're not finished yet, if you want a minigames-server, you've to setup a new group.");
 		CloudInstance.LOGGER.info(" \tThis is very easy with the proper command:");
 		CloudInstance.LOGGER.info(" -> /servergroup setup create");

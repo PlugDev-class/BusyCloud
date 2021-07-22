@@ -1,8 +1,8 @@
-package eu.busycloud.service.listener;
+package eu.busycloud.plugin.listener;
 
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import eu.busycloud.service.ProxyPluginInstance;
+import eu.busycloud.plugin.ProxyPlugin;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -10,8 +10,8 @@ public class ListenerProxyPlayerQuit implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
-		String cloudKey = ProxyPluginInstance.getPluginInstance().getCloudInformations().getCloudKey();
-		ProxyPluginInstance.getPluginInstance().getClient().sendData("Proxy", "playerdisconnect", cloudKey,
+		String cloudKey = ProxyPlugin.getPluginInstance().getCloudInformations().getCloudKey();
+		ProxyPlugin.getPluginInstance().getClient().sendData("Proxy", "playerdisconnect", cloudKey,
 				event.getPlayer().getUniqueId().toString());
 	}
 

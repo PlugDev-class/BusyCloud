@@ -1,11 +1,11 @@
-package eu.busycloud.service.networking;
+package eu.busycloud.plugin.networking;
 
 import org.bukkit.Bukkit;
 
 import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 import de.terrarier.netlistening.internals.AssumeNotNull;
-import eu.busycloud.service.SpigotPluginInstance;
+import eu.busycloud.plugin.SpigotPlugin;
 
 public class DecodeSpigotRcon implements DecodeListener {
 	
@@ -13,7 +13,7 @@ public class DecodeSpigotRcon implements DecodeListener {
 	public void trigger(@AssumeNotNull DecodeEvent event) {
 		final String receiver = event.getData().read();
 		if(receiver.equalsIgnoreCase("rcon")) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPluginInstance.getPluginInstance(), new Runnable() {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotPlugin.getPluginInstance(), new Runnable() {
 				public void run() {
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), event.getData().read());
 				}

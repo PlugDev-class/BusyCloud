@@ -1,5 +1,5 @@
 name: BusyCloudAPI
 version: 1.0
-main: eu.busycloud.service.ProxyPluginInstance
+main: eu.busycloud.plugin.SpigotPlugin
 author: PlugDev
 commands:

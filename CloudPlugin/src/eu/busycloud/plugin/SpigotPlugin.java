@@ -1,19 +1,19 @@
-package eu.busycloud.service;
+package eu.busycloud.plugin;
 
 import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.terrarier.netlistening.Client;
-import eu.busycloud.service.networking.DecodeSpigotCloud;
-import eu.busycloud.service.networking.DecodeSpigotRcon;
-import eu.busycloud.service.networking.ListenerSpigotTimeout;
+import eu.busycloud.plugin.networking.DecodeCloud;
+import eu.busycloud.plugin.networking.DecodeSpigotRcon;
+import eu.busycloud.plugin.networking.ListenerSpigotTimeout;
 
-public class SpigotPluginInstance extends JavaPlugin {
-
+public class SpigotPlugin extends JavaPlugin {
+	
 	private Client client;
 	private String cloudKey;
-	private static SpigotPluginInstance pluginInstance;
+	private static SpigotPlugin pluginInstance;
 
 	@Override
 	public void onEnable() {
@@ -28,7 +28,7 @@ public class SpigotPluginInstance extends JavaPlugin {
 		if(con != null)
 			con.delete();
 
-		client.registerListener(new DecodeSpigotCloud());
+		client.registerListener(new DecodeCloud());
 		client.registerListener(new DecodeSpigotRcon());
 		client.registerListener(new ListenerSpigotTimeout());
 		client.sendData("Spigot", "onEnable()", cloudKey);
@@ -46,8 +46,8 @@ public class SpigotPluginInstance extends JavaPlugin {
 		client.sendData("Spigot", "onLoad()", cloudKey);
 	}
 	
-	public static SpigotPluginInstance getPluginInstance() {
+	public static SpigotPlugin getPluginInstance() {
 		return pluginInstance;
 	}
-
+	
 }

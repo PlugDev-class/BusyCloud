@@ -72,6 +72,7 @@ public class CommandInstallSoftware extends ConsoleCommand {
 			}
 		} else {
 			CloudInstance.LOGGER.info("/install storelist");
+			CloudInstance.LOGGER.info("/install update");
 			CloudInstance.LOGGER.info("/install info <Version>");
 			CloudInstance.LOGGER.info("/install <Version>");
 		}

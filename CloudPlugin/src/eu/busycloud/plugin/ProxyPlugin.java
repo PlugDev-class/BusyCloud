@@ -1,24 +1,26 @@
-package eu.busycloud.service;
+package eu.busycloud.plugin;
 
 import java.io.File;
 
 import de.terrarier.netlistening.Client;
-import eu.busycloud.service.cloud.CloudInformations;
-import eu.busycloud.service.listener.ListenerProxyPlayerJoin;
-import eu.busycloud.service.listener.ListenerProxyPlayerPing;
-import eu.busycloud.service.listener.ListenerProxyPlayerQuit;
-import eu.busycloud.service.listener.ListenerProxyPlayerSwitchServer;
-import eu.busycloud.service.networking.DecodeProxyCloud;
-import eu.busycloud.service.networking.DecodeProxyRcon;
-import eu.busycloud.service.networking.ListenerProxyTimeout;
+import eu.busycloud.plugin.commands.CommandProxyHub;
+import eu.busycloud.plugin.listener.ListenerProxyPlayerJoin;
+import eu.busycloud.plugin.listener.ListenerProxyPlayerPing;
+import eu.busycloud.plugin.listener.ListenerProxyPlayerQuit;
+import eu.busycloud.plugin.listener.ListenerProxyPlayerSwitchServer;
+import eu.busycloud.plugin.networking.DecodeCloud;
+import eu.busycloud.plugin.networking.DecodeProxyCloud;
+import eu.busycloud.plugin.networking.DecodeProxyRcon;
+import eu.busycloud.plugin.networking.ListenerProxyTimeout;
+import eu.busycloud.plugin.utils.ProxyCloudInformations;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class ProxyPluginInstance extends Plugin {
+public class ProxyPlugin extends Plugin {
 
 	private Client client;
-	private CloudInformations cloudInformations = new CloudInformations();
-	private static ProxyPluginInstance pluginInstance;
+	private ProxyCloudInformations cloudInformations = new ProxyCloudInformations();
+	private static ProxyPlugin pluginInstance;
 	
 	@Override
 	public void onEnable() {
@@ -36,9 +38,11 @@ public class ProxyPluginInstance extends Plugin {
 		ProxyServer.getInstance().getPluginManager().registerListener(pluginInstance, new ListenerProxyPlayerPing());
 		ProxyServer.getInstance().getPluginManager().registerListener(pluginInstance, new ListenerProxyPlayerQuit());
 		ProxyServer.getInstance().getPluginManager().registerListener(pluginInstance, new ListenerProxyPlayerSwitchServer());
+		ProxyServer.getInstance().getPluginManager().registerCommand(pluginInstance, new CommandProxyHub("hub"));
 		
 		client.registerListener(new DecodeProxyCloud());
 		client.registerListener(new DecodeProxyRcon());
+		client.registerListener(new DecodeCloud());
 		client.registerListener(new ListenerProxyTimeout());
 		client.sendData("Proxy", "onEnable()", cloudInformations.getCloudKey());
 	}
@@ -53,11 +57,11 @@ public class ProxyPluginInstance extends Plugin {
 	public void onLoad() {
 	}
 	
-	public static ProxyPluginInstance getPluginInstance() {
+	public static ProxyPlugin getPluginInstance() {
 		return pluginInstance;
 	}
 	
-	public CloudInformations getCloudInformations() {
+	public ProxyCloudInformations getCloudInformations() {
 		return cloudInformations;
 	}
 	
