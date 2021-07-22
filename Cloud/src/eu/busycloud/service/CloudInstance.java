@@ -24,8 +24,7 @@ public class CloudInstance {
 
 	public static int currentMajorVersion = 2;
 	public static int currentMinorVersion = 0;
-	public static int currentBuildVersion = 46;
-
+	public static int currentBuildVersion = 72;
 	/*
 	 * @since 0.1
 	 * 

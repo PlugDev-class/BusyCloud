@@ -8,9 +8,10 @@ import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleScreen;
 import eu.busycloud.service.infrastructure.Boot;
 import eu.busycloud.service.utils.CloudSetupContainer;
+import eu.busycloud.service.utils.TextUtils;
 import eu.busycloud.service.utils.CloudSetupContainer.AnswerType;
 
-public class ConsoleSetup implements ConsoleScreen {
+public class ConsoleCloudSetup implements ConsoleScreen {
 
 	private CloudSetupContainer[] cloudSetupContainers = {
 		
@@ -18,30 +19,30 @@ public class ConsoleSetup implements ConsoleScreen {
 			(new CloudSetupContainer("Are you accepting any other by BusyCloud used guidelines?", "TP-Accept", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Please type in your License-Key:", "License-Key", AnswerType.STRING, true)),
 			(new CloudSetupContainer("If you are permitted to, do you want to use the latest ViaVersion?", "ViaVersion", AnswerType.BOOLEAN, false)),
-			(new CloudSetupContainer("How do you want to name your network?", "Network-Name", AnswerType.STRING, false)),
-			(new CloudSetupContainer("Expert: How much percent of cpu you want to use for cloudplugins?", "CPU/Plugin", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: How much percent of ram you want to use for cloudplugins?", "RAM/Plugin", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: How much percent of cpu you want to use for cloudplayers?", "CPU/Player", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: How much percent of ram you want to use for cloudplayers?", "RAM/Player", AnswerType.INTEGER, true)),
-			(new CloudSetupContainer("Expert: Do you want to use nibble-compression-networking?", "Nibble-Networking", AnswerType.BOOLEAN, true)),
+			(new CloudSetupContainer("Please type in your networks-name", "Network-Name", AnswerType.STRING, false)),
+			(new CloudSetupContainer("Expert: Which percentrate of cpu you want to use for cloudplugins?", "CPU/Plugin", AnswerType.INTEGER, true)),
+			(new CloudSetupContainer("Expert: Which percentrate of cpu you want to use for cloudplayers?", "CPU/Player", AnswerType.INTEGER, true)),
+			(new CloudSetupContainer("Expert: Which percentrate of ram you want to use for cloudplugins?", "RAM/Plugin", AnswerType.INTEGER, true)),
+			(new CloudSetupContainer("Expert: Which percentrate of ram you want to use for cloudplayers?", "RAM/Player", AnswerType.INTEGER, true)),
+			(new CloudSetupContainer("Expert: Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Soon: Do you want to do the servers cross-compatible? (Java <-> Bedrock)", "Java <=> Bedrock", AnswerType.BOOLEAN, false)),
-			(new CloudSetupContainer("Last question: did you answer this questions truthfully and you're sure 'bout it?", "Everythings true", AnswerType.BOOLEAN, false))
+			(new CloudSetupContainer("Did you answer this questions truthfully and you're sure about it?", "Truthful answered", AnswerType.BOOLEAN, false))
 			
 	};
 	
 	int position = 0;
 
-	public ConsoleSetup() throws IOException {
-		CloudInstance.LOGGER.info("CloudSetup «~» Skip optional questions with: 'skip'");
+	public ConsoleCloudSetup() throws IOException {
+		CloudInstance.LOGGER.info("You can skip *optional* questions with: 'skip'");
 		CloudSetupContainer container = cloudSetupContainers[0];
 		CloudInstance.LOGGER
-				.info("CloudSetup «~» (" + position + "/" + (cloudSetupContainers.length-1) + ") " + container.question
+				.info("(" + position + "/" + (cloudSetupContainers.length-1) + ") " + container.question
 						+ " [Type: " + container.answerType.toString() + ", Optional: " + container.optional + "]");
 	}
 
 	public void completeInstallation() throws IOException {
-		CloudInstance.LOGGER.warning("CloudSetup «~» (Re/Force)installing Cloud, please wait a moment...");
-		CloudInstance.LOGGER.warning("CloudSetup «~» (Re/Force)installing Cloud: iterating through some files...");
+		CloudInstance.LOGGER.warning("(Re/Force)installing BusyCloud, please wait a moment...");
+		CloudInstance.LOGGER.warning("(Re/Force)installing BusyCloud: iterating through some files...");
 		for (File file : new File[] { 
 				new File("configurations"), 
 				new File("developer"),
@@ -62,29 +63,29 @@ public class ConsoleSetup implements ConsoleScreen {
 				file.mkdir();
 			}
 		}
-		CloudInstance.LOGGER.warning("CloudSetup «~» (Re/Force)installing Cloud, finished");
-		CloudInstance.LOGGER.info("Install software with: /install");
+		CloudInstance.LOGGER.warning("(Re/Force)installing BusyCloud, finished");
+		CloudInstance.LOGGER.info("Please install some software with '/install'");
 
 		new Boot((String) cloudSetupContainers[4].getAnswer(), null, null, (boolean) cloudSetupContainers[3].getAnswer());
 		
 		ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
-		ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleDefault(), true);
+		ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
 	}
 
 	@Override
 	public void scanLine(String input) {
 		CloudSetupContainer question = cloudSetupContainers[position];
 		if (!question.validateAnswer(input)) {
-			CloudInstance.LOGGER.info("CloudSetup «~» We couldn't recognize your input, please check the answertype.");
+			CloudInstance.LOGGER.info("We couldn't recognize your input, please check the answertype.");
 			return;
 		}
 		if (cloudSetupContainers.length == position+1) {
 
-			CloudInstance.LOGGER.info("==========================================");
-			CloudInstance.LOGGER.info("We're going to install BusyCloud with this pre-set:");
+			TextUtils.sendFatLine();
+			CloudInstance.LOGGER.info("We're gonna install BusyCloud with this pre-set:");
 			for(CloudSetupContainer container : cloudSetupContainers)
 				CloudInstance.LOGGER.info(container.shortQuestion + ": " + container.answer);
-			CloudInstance.LOGGER.info("==========================================");
+			TextUtils.sendFatLine();
 			
 			try {
 				completeInstallation();
@@ -95,7 +96,7 @@ public class ConsoleSetup implements ConsoleScreen {
 		}
 		CloudSetupContainer container = cloudSetupContainers[position+=1];
 		CloudInstance.LOGGER
-				.info("CloudSetup «~» (" + position + "/" + (cloudSetupContainers.length-1) + ") " + container.question
+				.info("(" + position + "/" + (cloudSetupContainers.length-1) + ") " + container.question
 						+ " [Type: " + container.answerType.toString() + ", Optional: " + container.optional + "]");
 	}
 	

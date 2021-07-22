@@ -8,28 +8,28 @@ import java.util.Map;
 import java.util.Scanner;
 
 import eu.busycloud.service.api.ApplicationInterface;
-import eu.busycloud.service.console.screens.ConsoleDefault;
-import eu.busycloud.service.console.screens.ConsoleSetup;
+import eu.busycloud.service.console.screens.ConsoleCloudDefault;
+import eu.busycloud.service.console.screens.ConsoleCloudSetup;
 import eu.busycloud.service.utils.TextUtils;
 
 public class ConsoleInstance {
 
 	private List<ConsoleScreen> consoleScreens = new ArrayList<ConsoleScreen>();
 	private Map<ConsoleScreen, Boolean> queueMap = new HashMap<ConsoleScreen, Boolean>();
-	private ConsoleDefault consoleDefault = null;
+	private ConsoleCloudDefault consoleDefault = null;
 
 	public ConsoleInstance(boolean startWithSetup) {
 		ApplicationInterface.getAPI().setConsole(this);
 
 		if (startWithSetup) {
 			try {
-				consoleScreens.add(new ConsoleSetup());
+				consoleScreens.add(new ConsoleCloudSetup());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
 			TextUtils.sendHeader();
-			consoleScreens.add(new ConsoleDefault());
+			consoleScreens.add(new ConsoleCloudDefault());
 		}
 		System.out.print("BusyCloud-v2@Input: ");
 		Scanner scanner = new Scanner(System.in);
@@ -51,11 +51,11 @@ public class ConsoleInstance {
 		scanner.close();
 	}
 
-	public void setConsoleDefault(ConsoleDefault consoleDefault) {
+	public void setConsoleDefault(ConsoleCloudDefault consoleDefault) {
 		this.consoleDefault = consoleDefault;
 	}
 
-	public ConsoleDefault getConsoleDefault() {
+	public ConsoleCloudDefault getConsoleDefault() {
 		return consoleDefault;
 	}
 

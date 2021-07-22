@@ -10,7 +10,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import de.terrarier.netlistening.Connection;
-import de.terrarier.netlistening.api.DataContainer;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.PlayerInfo;
 import eu.busycloud.service.infrastructure.generate.ProxyGenerator;
@@ -65,12 +64,10 @@ public class ProxyServer {
 				getConnection().disconnect();
 			}
 		}
-		CloudInstance.LOGGER.info("[CORE] Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
-		if (instance != null) {
-			if (instance.isAlive()) {
+		CloudInstance.LOGGER.info("Stopping Proxy(\"Proxy-" + getProxyid() + " - localhost:" + port + "\")");
+		if (instance != null)
+			if (instance.isAlive())
 				instance.destroyForcibly();
-			}
-		}
 
 		FileUtils.deleteFolderRecursivly("server/" + ("temp") + "/" + this.getProxyName());
 		new File("server/" + ("temp") + "/" + this.getProxyName()).delete();
@@ -80,14 +77,13 @@ public class ProxyServer {
 
 		registeredServer.add(spigotServer);
 
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
+		new Timer().schedule(new TimerTask() {
 
 			@Override
 			public void run() {
 				if (connection != null) {
 					connection.sendData("registerserver", spigotServer.getServerName(), spigotServer.getPort(), isMain);
-					timer.cancel();
+					cancel();
 				}
 			}
 		}, 1000, 1000);
@@ -157,7 +153,6 @@ public class ProxyServer {
 		}
 		try {
 			FileUtils.copyFolder(serverFolder.toPath(), backendTemplates.toPath());
-			CloudInstance.LOGGER.info("[Plugin] Template created.");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -165,10 +160,7 @@ public class ProxyServer {
 	}
 
 	public void removeSpigotServer(SpigotServer spigotServer) {
-		DataContainer container = new DataContainer();
-		container.add("unregisterserver");
-		container.add(spigotServer.getServerName());
-		connection.sendData(container);
+		connection.sendData("unregisterserver", spigotServer.getServerName());
 	}
 
 	public boolean isMaintenance() {

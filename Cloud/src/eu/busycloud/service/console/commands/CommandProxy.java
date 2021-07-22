@@ -23,4 +23,15 @@ public class CommandProxy extends ConsoleCommand {
 		}
 	}
 	
+	/*
+	 * proxy list
+	 * proxy control <> info
+	 * proxy control <> rcon
+	 * proxy control <> ping
+	 * proxy control <> stop
+	 * proxy setup create
+	 * proxy setup edit
+	 * proxy setup delete
+	 */
+	
 }

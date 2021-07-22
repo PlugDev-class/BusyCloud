@@ -192,11 +192,21 @@ public class SpigotServer {
 			CloudInstance.LOGGER.info("}");
 			CloudInstance.LOGGER.info("Intern-Connection: {");
 			CloudInstance.LOGGER.info("\tConnectionstate: " + (getConnection() != null));
-			CloudInstance.LOGGER.info("\tConnectionID: " + getConnection().getId());
-			CloudInstance.LOGGER.info("\tRemoteAddress-Hostname: " + getConnection().getRemoteAddress().getHostName());
-			CloudInstance.LOGGER
-					.info("\tRemoteAddress-Hoststring: " + getConnection().getRemoteAddress().getHostString());
-			CloudInstance.LOGGER.info("\tRemoteAddress-Port: " + getConnection().getRemoteAddress().getPort());
+			if (getConnection() != null) {
+				CloudInstance.LOGGER.info("\tConnectionID: " + getConnection().getId());
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hostname: " + getConnection().getRemoteAddress().getHostName());
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hoststring: " + getConnection().getRemoteAddress().getHostString());
+				CloudInstance.LOGGER.info("\tRemoteAddress-Port: " + getConnection().getRemoteAddress().getPort());
+			} else {
+				CloudInstance.LOGGER.info("\tConnectionID: " + null);
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hostname: " + null);
+				CloudInstance.LOGGER
+						.info("\tRemoteAddress-Hoststring: " + null);
+				CloudInstance.LOGGER.info("\tRemoteAddress-Port: " + null);
+			}
 			CloudInstance.LOGGER.info("}");
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -215,20 +225,17 @@ public class SpigotServer {
 		if (prefferedGroup != null) {
 			prefferedGroup.getGroupList().remove(this);
 		}
-		CloudInstance.LOGGER.info("[CORE] Stopping SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
+		CloudInstance.LOGGER.info("Stopping SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
 		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().remove(this);
 
-		if (instance.isAlive()) {
+		if (instance.isAlive())
 			instance.destroyForcibly();
-		}
 
-		if (prefferedProxy != null) {
+		if (prefferedProxy != null)
 			prefferedProxy.removeSpigotServer(this);
-		}
 
-		if (isStatic) {
+		if (isStatic)
 			return;
-		}
 
 		FileUtils.deleteFolderRecursivly(new File("server/" + ("temp") + "/" + this.getServerName()).getPath());
 		FileUtils.deleteFile("server/" + ("temp") + "/" + this.getServerName());

@@ -6,9 +6,9 @@ import eu.busycloud.service.console.ConsoleCommand;
 import eu.busycloud.service.infrastructure.ServerSoftware;
 import eu.busycloud.service.infrastructure.SpigotServer;
 
-public class CommandStaticserver extends ConsoleCommand {
+public class CommandStaticServer extends ConsoleCommand {
 
-	public CommandStaticserver(String help) {
+	public CommandStaticServer(String help) {
 		super(help);
 	}
 
@@ -66,5 +66,16 @@ public class CommandStaticserver extends ConsoleCommand {
 			}
 		}
 	}
+	
+	/*
+	 * staticserver list
+	 * staticserver control <> info
+	 * staticserver control <> rcon
+	 * staticserver control <> ping
+	 * staticserver control <> stop
+	 * staticserver setup create
+	 * staticserver setup edit
+	 * staticserver setup delete
+	 */
 
 }

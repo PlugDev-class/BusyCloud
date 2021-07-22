@@ -26,6 +26,7 @@ public class CommandDeleteCloud extends ConsoleCommand {
 			CloudInstance.LOGGER.warning("YOU WON'T GET ANY SUPPORT IF YOU LOSE SOMETHING YOU DOESN'T WANTED TO!");
 			CloudInstance.LOGGER.warning("-> if the less part of your brain thinks, you're ready, type in: */deletecloud confirm* <-");
 			needToConfirm = false;
+			return;
 		}
 		if(!needToConfirm && deletecode == null) {
 			if(args.length != 2) {
@@ -54,6 +55,7 @@ public class CommandDeleteCloud extends ConsoleCommand {
 					CloudInstance.LOGGER.warning("Deletioncode: " + (deletecode = generateRandomCode(6)));
 				}
 			}.run();
+			return;
 		}
 		if(!needToConfirm && deletecode != null) {
 			if(args.length == 3) {
@@ -62,6 +64,7 @@ public class CommandDeleteCloud extends ConsoleCommand {
 			} else {
 				CloudInstance.LOGGER.warning("You've made an typo. '/deletecloud <Networkname> <Deletioncode>'");
 			}
+			return;
 		}
 	}
 	
@@ -98,7 +101,7 @@ public class CommandDeleteCloud extends ConsoleCommand {
 		System.out.print(" validated\n");
 		CloudInstance.LOGGER.warning("========================= {Part 2 | Stopping} =========================");
 		for (ServerGroup runningGroups : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
-			CloudInstance.LOGGER.info("Stop group: " + runningGroups.getGroupName());
+			CloudInstance.LOGGER.info("Stop group: " + runningGroups.getServerGroupContainer().getGroupName());
 			runningGroups.stopServers();
 		}
 		
@@ -139,7 +142,7 @@ public class CommandDeleteCloud extends ConsoleCommand {
 		CloudInstance.LOGGER.warning("and reinstall the cloud.");
 		ApplicationInterface.getAPI().getConsole().getConsoleDefault().getCommandMap().clear();
 		ApplicationInterface.getAPI().getConsole().getConsoleDefault().getCommandMap().put("shutdown", new CommandShutdown("~"));
-		ApplicationInterface.getAPI().getConsole().getConsoleDefault().getCommandMap().put("help", new CommandCloud("~"));
+		ApplicationInterface.getAPI().getConsole().getConsoleDefault().getCommandMap().put("help", new CommandHelp("~"));
 	}
 	
 	

@@ -36,19 +36,25 @@ public class CloudSetupContainer {
 
 	public boolean validateAnswer(String input) {
 		if(input.equalsIgnoreCase("skip") && optional) {
-			CloudInstance.LOGGER.info("CloudSetup «~» You skipped that question.");
+			CloudInstance.LOGGER.info("You skipped that question.");
 			answer = null;
 			return true;
 		} else if(input.equalsIgnoreCase("skip") && !optional) {
-			CloudInstance.LOGGER.info("CloudSetup «~» This question isn't skippable.");
+			CloudInstance.LOGGER.info("This question isn't skippable.");
 			return false;
 		}
 		switch (answerType) {
 			case INTEGER:
-				answer = ParseUtils.parseInt(input);
+				if(input != null)
+					answer = ParseUtils.parseInt(input);
 				break;
 			case BOOLEAN:
-				answer = ParseUtils.parseBool(input, false);
+				if(input != null)
+					answer = ParseUtils.parseBool(input, false);
+				break;
+			case STRING:
+				if(input != null)
+					answer = input;
 				break;
 			default:
 				answer = input;

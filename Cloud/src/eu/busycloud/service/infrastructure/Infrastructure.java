@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.infrastructure.ServerSoftware.ServerSoftwareType;
+import eu.busycloud.service.utils.ServerGroupContainer;
 
 @SuppressWarnings("unused")
 public class Infrastructure {
@@ -26,6 +27,9 @@ public class Infrastructure {
 
 	public ServerSoftware[] serverSoftwares = {
 
+			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Interface", "0.1", "PlugDev"),
+			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-General", "0.1", "PlugDev"),
+			
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.17", "md5"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.16", "md5"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.15", "md5"),
@@ -256,6 +260,7 @@ public class Infrastructure {
 
 			new ServerSoftware(ServerSoftwareType.FORGE, "Mohist", "1.16.5", "MohistMC"),
 			new ServerSoftware(ServerSoftwareType.FORGE, "Mohist", "1.12.2", "MohistMC"),
+			
 
 	};
 
@@ -273,13 +278,13 @@ public class Infrastructure {
 			return;
 		if (backendDownloads.listFiles() == null)
 			return;
-		if (backendDownloads.listFiles().length != 0) {
-			for (File file : backendDownloads.listFiles()) {
-				final String name = file.getName().replaceAll(".jar", "");
-				for (ServerSoftware serverSoftware : serverSoftwares)
-					if (serverSoftware.getVersionName().equalsIgnoreCase(name))
-						serverSoftware.setAvailable(true);
-			}
+		if (backendDownloads.listFiles().length == 0)
+			return;
+		for (File file : backendDownloads.listFiles()) {
+			final String name = file.getName().replaceAll(".jar", "");
+			for (ServerSoftware serverSoftware : serverSoftwares)
+				if (serverSoftware.getVersionName().equalsIgnoreCase(name))
+					serverSoftware.setAvailable(true);
 		}
 	}
 
@@ -304,30 +309,7 @@ public class Infrastructure {
 	}
 
 	public int startServerGroup(String serverGroupName) {
-		try {
-			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/servergroups.json").toPath()), "UTF-8"));
-			for(String key : jsonObject.keySet()) {
-				if(key.toLowerCase().equals(serverGroupName.toLowerCase())) {
-					return startServerGroup(jsonObject.getJSONObject(key), serverGroupName);
-				}
-			}
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return 0;
-	}
-
-	public int startServerGroup(JSONObject jsonObject, String serverGroupName) {
-		ServerSoftware serverSoftware = getVersionById(jsonObject.getString("serverSoftware"));
-		int startPort = jsonObject.getInt("startPort");
-		int groupId = jsonObject.getInt("groupId");
-		int maxRamEachServer = jsonObject.getInt("maxRamEachServer");
-		int startServerByGroupstart = jsonObject.getInt("startServerByGroupstart");
-		int startNewserverByPercentage = jsonObject.getInt("startNewServerByPercentage");
-		boolean lobbyState = jsonObject.getBoolean("lobbyState");
-
-		return new ServerGroup(serverSoftware, startPort, serverGroupName, groupId, null, maxRamEachServer,
-				startServerByGroupstart, startNewserverByPercentage, lobbyState).getGroupID();
+		return new ServerGroup(new ServerGroupContainer(serverGroupName)).getServerGroupContainer().getGroupId();
 	}
 
 	public void stopProxyServer(boolean disconnectSpigots, int proxyId) {
@@ -404,13 +386,9 @@ public class Infrastructure {
 
 	public ServerGroup getGroupbyName(String key) {
 		for (ServerGroup group : runningGroups)
-			if (group.getGroupName().equals(key))
+			if (group.getServerGroupContainer().getGroupName().equals(key))
 				return group;
 		return null;
-	}
-
-	@Deprecated
-	public void addTask(Runnable runnable) {
 	}
 
 	public void shutdownTask() {

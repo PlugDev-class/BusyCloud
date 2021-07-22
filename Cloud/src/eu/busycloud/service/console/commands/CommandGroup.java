@@ -3,8 +3,12 @@ package eu.busycloud.service.console.commands;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleCommand;
+import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupCreate;
+import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupDelete;
+import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupEdit;
 import eu.busycloud.service.infrastructure.ServerGroup;
 import eu.busycloud.service.infrastructure.SpigotServer;
+import eu.busycloud.service.utils.TextUtils;
 
 public class CommandGroup extends ConsoleCommand {
 
@@ -17,9 +21,9 @@ public class CommandGroup extends ConsoleCommand {
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("list")) {
 				for(ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
-					CloudInstance.LOGGER.info("-> " + group.getGroupName() + " [" + group.getGroupID() + "]");
+					CloudInstance.LOGGER.info(group.getServerGroupContainer().getGroupName() + " [" + group.getServerGroupContainer().getGroupId() + "]");
 					for(SpigotServer server : group.getGroupList())
-						CloudInstance.LOGGER.info("->-> " + server.getServerName() + " [" + server.getId() + "]");
+						CloudInstance.LOGGER.info("\t" + server.getServerName() + " [" + server.getId() + "]");
 				}
 				if(ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().size() == 0) {
 					CloudInstance.LOGGER.info("No group is running. Do you need help with cloudsetup? /introduction");
@@ -27,55 +31,85 @@ public class CommandGroup extends ConsoleCommand {
 				return;
 			}
 		}
-		
-		
-		if (args.length <= 4) {
+
+		if(args.length < 3) {
 			printHelp();
 			return;
 		}
-
-		switch (args[2].toLowerCase()) {
+		if(args[1].toLowerCase().equals("control")) {
+			if(args.length < 4) {
+				printHelp();
+				return;
+			}
+		}
+		
+		
+		switch (args[1].toLowerCase()) {
 		case "control":
 
-			if (ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[4]) == null) {
+			if (ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[2]) == null) {
 				CloudInstance.LOGGER.warning("Servergroup not found!");
 				printHelp();
 				return;
 			}
-			ServerGroup serverGroup = ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[4]);
+			ServerGroup serverGroup = ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[2]);
 
-			switch (args[4].toLowerCase()) {
+			switch (args[3].toLowerCase()) {
 			case "rcon":
-				if (args.length >= 5) {
+				if (args.length >= 4) {
+					TextUtils.sendFatLine();
 					StringBuilder builder = new StringBuilder();
-					for (int i = 5; i < args.length; i++)
+					for (int i = 4; i < args.length; i++)
 						builder.append(args[i] + " ");
-					serverGroup.rconGroup(builder.substring(0, builder.toString().length() - 1));
 					CloudInstance.LOGGER.info("Send command '" + builder.substring(0, builder.toString().length() - 1)
-							+ "' to '" + serverGroup.getGroupName() + "'.");
+					+ "' to '" + serverGroup.getServerGroupContainer().getGroupName() + "'.");
+					serverGroup.rconGroup(builder.substring(0, builder.toString().length() - 1));
+					TextUtils.sendFatLine();
 					return;
 				}
 				printHelp();
-				return;
+				break;
 			case "startserver":
-				serverGroup.startServer(true, serverGroup.getStartPort()+serverGroup.getGroupList().size()+1);
+				serverGroup.startServer();
+				break;
 			case "stopgroup":
-				for(SpigotServer spigotServer : serverGroup.getGroupList())
-					spigotServer.stopServer();
+				TextUtils.sendFatLine();
+				serverGroup.stopServers();
+				TextUtils.sendFatLine();
+				break;
 			case "ping":
+				TextUtils.sendFatLine();
 				for(SpigotServer spigotServer : serverGroup.getGroupList())
 					spigotServer.ping();
+				TextUtils.sendFatLine();
+				break;
 			case "info":
+				TextUtils.sendFatLine();
 				for(SpigotServer spigotServer : serverGroup.getGroupList())
 					spigotServer.printInfo();
+				TextUtils.sendFatLine();
+				break;
 			default:
+				printHelp();
 				break;
 			}
 
 			break;
 		case "setup":
 			
-			
+			switch (args[2].toLowerCase()) {
+			case "create":
+				new ConsoleAssistantGroupCreate();
+				break;
+			case "delete":
+				new ConsoleAssistantGroupDelete();
+				break;
+			case "edit":
+				new ConsoleAssistantGroupEdit();
+				break;
+			default:
+				break;
+			}
 			
 			
 			break;
@@ -93,9 +127,9 @@ public class CommandGroup extends ConsoleCommand {
 		CloudInstance.LOGGER.info("/group control <groupname> stopgroup");
 		CloudInstance.LOGGER.info("/group control <groupname> ping");
 		CloudInstance.LOGGER.info("/group control <groupname> info");
-		CloudInstance.LOGGER.info("/group setup create <groupname>");
-		CloudInstance.LOGGER.info("/group setup delete <groupname>");
-		CloudInstance.LOGGER.info("/group setup edit <groupname>");
+		CloudInstance.LOGGER.info("/group setup create");
+		CloudInstance.LOGGER.info("/group setup delete");
+		CloudInstance.LOGGER.info("/group setup edit");
 	}
 
 }

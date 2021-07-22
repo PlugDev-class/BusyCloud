@@ -9,38 +9,32 @@ import eu.busycloud.service.console.ConsoleCommand;
 import eu.busycloud.service.console.ConsoleScreen;
 import eu.busycloud.service.console.commands.CommandBackup;
 import eu.busycloud.service.console.commands.CommandClearConsole;
-import eu.busycloud.service.console.commands.CommandCloud;
+import eu.busycloud.service.console.commands.CommandHelp;
 import eu.busycloud.service.console.commands.CommandDeleteCloud;
 import eu.busycloud.service.console.commands.CommandGroup;
 import eu.busycloud.service.console.commands.CommandInstallSoftware;
-import eu.busycloud.service.console.commands.CommandPingserver;
+import eu.busycloud.service.console.commands.CommandIntroduction;
 import eu.busycloud.service.console.commands.CommandProxy;
-import eu.busycloud.service.console.commands.CommandRconServer;
-import eu.busycloud.service.console.commands.CommandServerInfo;
 import eu.busycloud.service.console.commands.CommandShutdown;
-import eu.busycloud.service.console.commands.CommandStaticserver;
-import eu.busycloud.service.console.commands.CommandStopServer;
+import eu.busycloud.service.console.commands.CommandStaticServer;
 
-public class ConsoleDefault implements ConsoleScreen {
+public class ConsoleCloudDefault implements ConsoleScreen {
 
 	private Map<String, ConsoleCommand> commandMap = new HashMap<>();
 
-	public ConsoleDefault() {
+	public ConsoleCloudDefault() {
 
 		ApplicationInterface.getAPI().getConsole().setConsoleDefault(this);
 
+		commandMap.put("/introduction", new CommandIntroduction("This command provides informations for beginners."));
 		commandMap.put("/backup", new CommandBackup("Make a backup of the whole filesystem."));
-		commandMap.put("/help", new CommandCloud("Shows the relevant BusyCloud-Commands"));
+		commandMap.put("/help", new CommandHelp("Shows the relevant BusyCloud-Commands"));
 		commandMap.put("/shutdown", new CommandShutdown("Shutdowns the network"));
-		commandMap.put("/rcon", new CommandRconServer("Send a console-command to a specific server/proxy"));
-		commandMap.put("/ping", new CommandPingserver("Ask for a pluginwise-feedback from a specific server/proxy"));
-		commandMap.put("/serverinfo", new CommandServerInfo("Shows the relevant BusyCloud-Serverinfos"));
-		commandMap.put("/stopserver", new CommandStopServer("Stops a specific server"));
 		commandMap.put("/group", new CommandGroup("Complex group-command for setups/pings/commands/rcons etc."));
-		commandMap.put("/clearconsole", new CommandClearConsole("Clears the console-log"));
+		commandMap.put("/clear", new CommandClearConsole("Clears the console-log"));
 		commandMap.put("/install", new CommandInstallSoftware("Install serversoftware like Spigotdistributions, proxies etc."));
 		commandMap.put("/proxy", new CommandProxy("Complex proxy-command for setups/pings/commands/rcons etc."));
-		commandMap.put("/staticserver", new CommandStaticserver("Complex staticserver-command for setups/pings/commands/rcons etc."));
+		commandMap.put("/staticserver", new CommandStaticServer("Complex staticserver-command for setups/pings/commands/rcons etc."));
 		commandMap.put("/deletecloud", new CommandDeleteCloud("The last command you touch! It will delete the whole cloud!"));
 	}
 

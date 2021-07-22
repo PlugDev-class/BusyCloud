@@ -2,6 +2,7 @@ package eu.busycloud.service.infrastructure;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -10,17 +11,16 @@ public class ServerSoftware {
 	
 	public enum ServerSoftwareType {
 
-		PROXY, FORGE, JAVA, BEDROCK, CUSTOM;
+		PROXY, FORGE, JAVA, BEDROCK, BUSYCLOUD, CUSTOM;
 
 	}
 
-	private ServerSoftwareType type;
-	private File rootFile;
-	private URL downloadURL;
-	private String versionName;
-	private String author;
-	private long release;
-	private boolean available;
+	protected ServerSoftwareType type;
+	protected File rootFile;
+	protected URL downloadURL;
+	protected String versionName;
+	protected String author;
+	protected boolean available;
 
 	public ServerSoftware(ServerSoftwareType type, String parent, String version, String author) {
 		try {
@@ -29,7 +29,6 @@ public class ServerSoftware {
 			this.downloadURL = new URL("https://serverjars.com/api/fetchJar/" + parent.toLowerCase() + "/" + version);
 			this.versionName = parent + "-" + version;
 			this.author = author;
-			this.release = 0;
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -44,6 +43,14 @@ public class ServerSoftware {
 			exception.printStackTrace();
 		}
 	}
+	
+	public void download0() throws IOException {
+		FileOutputStream stream = new FileOutputStream(rootFile);
+		ReadableByteChannel rbc = Channels.newChannel(downloadURL.openStream());
+		stream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		setAvailable(true);
+		stream.close();
+	}
 
 	public File getRootFile() {
 		return rootFile;
@@ -55,10 +62,6 @@ public class ServerSoftware {
 	
 	public String getAuthor() {
 		return author;
-	}
-
-	public long getRelease() {
-		return release;
 	}
 
 	public ServerSoftwareType getType() {

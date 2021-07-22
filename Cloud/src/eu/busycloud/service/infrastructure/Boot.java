@@ -3,23 +3,20 @@ package eu.busycloud.service.infrastructure;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleInstance;
 import eu.busycloud.service.utils.FileUtils;
+import eu.busycloud.service.utils.TextUtils;
 
 public class Boot {
-
-	private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	/*
 	 * The start and initiating of some elements. (Firstboot)
@@ -52,17 +49,17 @@ public class Boot {
 		jsonObject.put("useViaVersion", useViaversion);
 		jsonObject.put("bungeeCord.maxPlayers", 40);
 		jsonObject.put("bungeeCord.motdPlayerInfo", "§5BusyCloud");
-		jsonObject.put("bungeeCord.motdLine1", "§cBusyCloud-Service §3²");
+		jsonObject.put("bungeeCord.motdLine1", "§cBusyCloud-Service §32");
 		jsonObject.put("bungeeCord.motdLine2", "§edeveloped by PlugDev");
 		jsonObject.put("bungeeCord.motdProtocol", "§aPublic-Beta v2");
-		FileUtils.writeFile(localSettingsFile, gson.toJson(JsonParser.parseString(jsonObject.toString())));
+		FileUtils.writeFile(localSettingsFile, TextUtils.GSON.toJson(JsonParser.parseString(jsonObject.toString())));
 
 		File groupsSettingsFile = new File("configurations/servergroups.json");
 		if (!groupsSettingsFile.exists())
 			groupsSettingsFile.createNewFile();
 		jsonObject = new JSONObject();
 		
-		Map<String, Object> lobbyServer = new HashMap<String, Object>();
+		Map<String, Object> lobbyServer = new LinkedHashMap<String, Object>();
 		lobbyServer.put("serverSoftware", "Spigot-1.8.8");
 		lobbyServer.put("startPort", 25580);
 		lobbyServer.put("groupId", 1);
@@ -71,7 +68,7 @@ public class Boot {
 		lobbyServer.put("startNewServerByPercentage", 75);
 		lobbyServer.put("lobbyState", true);
 		jsonObject.put("Lobby", lobbyServer);
-		FileUtils.writeFile(groupsSettingsFile, gson.toJson(JsonParser.parseString(jsonObject.toString())));
+		FileUtils.writeFile(groupsSettingsFile, TextUtils.GSON.toJson(JsonParser.parseString(jsonObject.toString())));
 		
 		if(bungeeCord != null)
 			bungeeCord.download();
