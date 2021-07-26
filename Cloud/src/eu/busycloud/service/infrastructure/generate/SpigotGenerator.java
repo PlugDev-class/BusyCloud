@@ -41,6 +41,8 @@ public class SpigotGenerator extends ServerGenerator {
 				new File(spigotServerPath + "/" + spigotServer.getServerSoftware().getVersionName() + ".jar").toPath());
 		FileUtils.writeFile(new File(spigotServerPath + "/" + spigotServer.getRegisterKey()),
 				spigotServer.getRegisterKey());
+		FileUtils.mkdirs(spigotServerPath + "/plugins");
+		FileUtils.copyFile(Paths.get("saves/environment-plugins", "CloudAPI.jar"), Paths.get(spigotServerPath + "/plugins", "CloudAPI.jar"));
 		generateSpigotProperties();
 	}
 

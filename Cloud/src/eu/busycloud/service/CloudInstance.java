@@ -8,9 +8,23 @@ import java.util.logging.Logger;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.infrastructure.Boot;
 
+/**
+ * 
+ * <h1>BusyCloud</h1>
+ * This cloud isn't complete or stable and it contains bugs, I've to fix.
+ * But for the first, what is BusyCloud?
+ * BusyCloud is an program, that can dynamically deploy Spigotserver oriented software.
+ * The main goal is to simplify the work with a Minecraft-Server-Network.
+ * 
+ * @author PlugDev
+ * @version 2
+ * 
+ */
+
+
 public class CloudInstance {
 
-	/*
+	/**
 	 * BusyCloud Documentation. This commentary is like an explanation to the Code
 	 * and is conductible to the original code.
 	 * 
@@ -24,11 +38,12 @@ public class CloudInstance {
 
 	public static int currentMajorVersion = 2;
 	public static int currentMinorVersion = 0;
-	public static int currentBuildVersion = 84;
-	/*
+	public static int currentBuildVersion = 87;
+	
+	/**
+	 *
 	 * @since 0.1
-	 * 
-	 * @param args Some arguments which pushs the JVM.
+	 * @param args Some arguments which the JVM pushs
 	 * 
 	 */
 
@@ -46,7 +61,7 @@ public class CloudInstance {
 		cloud.boot();
 	}
 
-	/*
+	/**
 	 * 
 	 * This method starts the Bootsector of BusyCloud. If local/settings.json doesn't exists the
 	 * setup-console should starts.

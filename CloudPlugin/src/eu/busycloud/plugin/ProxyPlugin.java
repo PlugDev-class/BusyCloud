@@ -52,10 +52,6 @@ public class ProxyPlugin extends Plugin {
 		client.sendData("Proxy", "onDisable()", cloudInformations.getCloudKey());
 		super.onDisable();
 	}
-
-	@Override
-	public void onLoad() {
-	}
 	
 	public static ProxyPlugin getPluginInstance() {
 		return pluginInstance;

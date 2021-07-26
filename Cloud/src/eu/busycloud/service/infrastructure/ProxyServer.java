@@ -63,11 +63,11 @@ public class ProxyServer {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("java ");
 		for(Object string : jvmParameter.toList()) {
-			stringBuilder.append(replace((String) string) + " ");
+			stringBuilder.append("-" + replace((String) string) + " ");
 		}
 		
 		try {
-			this.instance = Runtime.getRuntime().exec(stringBuilder.toString(), null,
+			this.instance = Runtime.getRuntime().exec(stringBuilder.toString().split(" "), null,
 					new File("server/" + ("temp") + "/" + this.getProxyName()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -216,7 +216,7 @@ public class ProxyServer {
 	}
 	
 	private String replace(String input) {
-		return input.replaceAll("%MAXRAM%", String.valueOf(maxRam)).replaceAll("%VERSION-IN-JAR%", software.getVersionName());
+		return input.replaceAll("%MAX%", String.valueOf(maxRam)).replaceAll("%VERSION-IN-JAR%", software.getVersionName());
 	}
 
 	public void printInfo() {

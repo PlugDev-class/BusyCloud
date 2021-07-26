@@ -63,12 +63,12 @@ public class SpigotServer {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("java ");
 		for(Object string : jvmParameter.toList()) {
-			stringBuilder.append(((String) string).replaceAll("%MAX%", maxRam + "")
+			stringBuilder.append("-" + ((String) string).replaceAll("%MAX%", maxRam + "")
 					.replaceAll("%VERSION-IN-JAR%", serverSoftware.getVersionName() + "") + " ");
 		}
 		
 		try {
-			this.instance = Runtime.getRuntime().exec(stringBuilder.toString(), null,
+			this.instance = Runtime.getRuntime().exec(stringBuilder.toString().split(" "), null,
 					new File("server/" + ("temp") + "/" + this.getServerName()));
 		} catch (IOException e) {
 			e.printStackTrace();

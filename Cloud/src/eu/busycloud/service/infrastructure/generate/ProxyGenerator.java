@@ -23,6 +23,8 @@ public class ProxyGenerator extends ServerGenerator {
 		FileUtils.copyFolder(Paths.get("saves/templates", "proxy"), Paths.get(proxyServerPath, "."), false);
 		FileUtils.copyFile(new File("saves/environments/" + proxyServer.getSoftware().getVersionName() + ".jar").toPath(),
 				new File(proxyServerPath + "/" + proxyServer.getSoftware().getVersionName() + ".jar").toPath());
+		FileUtils.mkdirs(proxyServerPath + "/plugins");
+		FileUtils.copyFile(Paths.get("saves/environment-plugins", "CloudAPI.jar"), Paths.get(proxyServerPath + "/plugins", "CloudAPI.jar"));
 	}
 
 }

@@ -14,7 +14,10 @@ public class SpigotPlugin extends JavaPlugin {
 	private Client client;
 	private String cloudKey;
 	private static SpigotPlugin pluginInstance;
-
+	
+	public static void main(String[] args) {
+	}
+	
 	@Override
 	public void onEnable() {
 		pluginInstance = this;
@@ -38,12 +41,6 @@ public class SpigotPlugin extends JavaPlugin {
 	public void onDisable() {
 		pluginInstance = null;
 		client.sendData("Spigot", "onDisable()", cloudKey);
-	}
-
-	@Override
-	public void onLoad() {
-		pluginInstance = this;
-		client.sendData("Spigot", "onLoad()", cloudKey);
 	}
 	
 	public static SpigotPlugin getPluginInstance() {
