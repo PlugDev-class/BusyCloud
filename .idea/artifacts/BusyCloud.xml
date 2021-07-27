@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BusyCloud">
+    <output-path>G:/Cloud-v2 (2)</output-path>
+    <root id="archive" name="BusyCloud.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="BusyCloud" />
+      <element id="library" level="project" name="BusyCloud-libs" />
+    </root>
+  </artifact>
+</component>
