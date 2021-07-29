@@ -33,7 +33,7 @@ public class SpigotGenerator extends ServerGenerator {
 				FileUtils.download(
 						"https://github.com/ViaVersion/ViaVersion/releases/download/4.0.1/ViaVersion-4.0.1.jar",
 						"saves/environment-plugins/ViaVersions-latest.jar");
-			FileUtils.copyFile(new File("saves\\environment-plugins\\ViaVersions-latest.jar").toPath(),
+			FileUtils.copyFile(new File("saves/environment-plugins/ViaVersions-latest.jar").toPath(),
 					new File(spigotServerPath + "/plugins/ViaVersion-latest.jar").toPath());
 		}
 		FileUtils.copyFile(

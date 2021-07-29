@@ -6,6 +6,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,8 @@ public class Infrastructure {
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.10", "PaperMC"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.9", "PaperMC"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.8", "PaperMC"),
+			
+			new WaterdogSoftware(ServerSoftwareType.PROXY, "WaterdogPE", "latest", "TobiasDev"),
 
 			new ServerSoftware(ServerSoftwareType.JAVA, "Bukkit", "1.17", "Mojang"),
 			new ServerSoftware(ServerSoftwareType.JAVA, "Bukkit", "1.16.5", "Mojang"),
@@ -260,8 +263,7 @@ public class Infrastructure {
 			new ServerSoftware(ServerSoftwareType.JAVA, "Tuinity", "1.16.3", "Tuinity Ltd."),
 			new ServerSoftware(ServerSoftwareType.JAVA, "Tuinity", "1.16.2", "Tuinity Ltd."),
 
-			new ServerSoftware(ServerSoftwareType.BEDROCK, "NukkitX", "1.16", "Cloudburst"),
-			new ServerSoftware(ServerSoftwareType.BEDROCK, "NukkitX", "1.14", "Cloudburst"),
+			new NukkitSoftware(ServerSoftwareType.BEDROCK, "PowerNukkit", "1.5.1.0", "PowerNukkit"),
 
 			new ServerSoftware(ServerSoftwareType.FORGE, "Mohist", "1.16.5", "MohistMC"),
 			new ServerSoftware(ServerSoftwareType.FORGE, "Mohist", "1.12.2", "MohistMC"),
@@ -272,7 +274,7 @@ public class Infrastructure {
 	public boolean useViaVersion = false;
 	public String serverName = "Unknown";
 	public int maxRam = 1024;
-	ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+	private ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
 	public Infrastructure() {
 		checkVersions();
@@ -286,20 +288,24 @@ public class Infrastructure {
 			return;
 		if (backendDownloads.listFiles().length == 0)
 			return;
-		for (File file : backendDownloads.listFiles()) {
-			final String name = file.getName().replaceAll(".jar", "");
-			for (ServerSoftware serverSoftware : serverSoftwares)
-				if (serverSoftware.getVersionName().equalsIgnoreCase(name))
-					serverSoftware.setAvailable(true);
-		}
+		
+		Arrays.asList(backendDownloads.listFiles()).forEach((file) -> {
+			Arrays.asList(serverSoftwares).forEach((software) -> {
+				if(software.getVersionName()
+						.equalsIgnoreCase(file.getName().replaceAll(".jar", "")))
+					software.setAvailable(true);
+			});
+		});
 	}
 	
 	
 	public void callEvents(Event event) {
-		for(Application application : applications)
-			for(Event event2 : application.getEventList())
-				if(event2 instanceof Event)
-					event2.onEvent();
+		applications.forEach((plugin) -> {
+			plugin.getEventList().forEach((pluginEvent) -> {
+				if(pluginEvent instanceof Event)
+					pluginEvent.onEvent();
+			});
+		});
 	}
 
 	public int startProxyServer(String serverName, ServerSoftware serverSoftware) {
@@ -337,8 +343,7 @@ public class Infrastructure {
 	public void stopProxyServer(boolean disconnectSpigots, int proxyId) {
 		ProxyServer proxy = getProxyById(proxyId);
 		if (disconnectSpigots)
-			for (SpigotServer runningServers : proxy.getRegisteredServer())
-				runningServers.stopServer();
+			proxy.getRegisteredServer().forEach((runningServer) -> { runningServer.stopServer(); });
 		proxy.stopProxy();
 		runningProxies.remove(proxy);
 	}
@@ -415,16 +420,12 @@ public class Infrastructure {
 	public void shutdownTask() {
 		CloudInstance.LOGGER.info("Received Shutdown-Task");
 		CloudInstance.LOGGER.info("Shutting down every proxy with their spigot-instances.");
-		for (ProxyServer runningProxies : runningProxies) {
-			CloudInstance.LOGGER.info("Stop proxy: " + runningProxies.getProxyName());
-			stopProxyServer(true, runningProxies.getProxyid());
-		}
-
-		CloudInstance.LOGGER.info("Try to stop any other servers attached to this program.");
-		for (SpigotServer runningServers : runningServers) {
-			CloudInstance.LOGGER.info("Stop serverinstance: " + runningServers.getServerName());
-			stopSpigotServer(runningServers.getId());
-		}
+		runningProxies.forEach((runningServer) -> { 
+			runningServer.stopProxy();
+		});
+		runningServers.forEach((runningServer) -> {
+			runningServer.stopServer();
+		});
 		CloudInstance.LOGGER.info("Cleaning up...");
 		CloudInstance.LOGGER.info("Thank you for using this program! See you later! <3");
 

@@ -28,7 +28,7 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 			(new CloudSetupContainer("How much memory do you want to use for the busycloud in MB", "RAM-in-MB", AnswerType.INTEGER, false)),
 			(new CloudSetupContainer("If you are permitted to, do you want to use the latest ViaVersion?", "ViaVersion", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Please type in your networks-name", "Network-Name", AnswerType.STRING, false)),
-			(new CloudSetupContainer(" Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
+			(new CloudSetupContainer("Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Soon: Do you want to do the servers cross-compatible? (Java <-> Bedrock)", "Java <=> Bedrock", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Did you answer this questions truthfully and you're sure about it?", "Truthful answered", AnswerType.BOOLEAN, false))
 			
@@ -72,7 +72,7 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 				null, 
 				null, 
 				(boolean) cloudSetupContainers[4].getAnswer(), 
-				(boolean) cloudSetupContainers[10].getAnswer(),
+				(boolean) cloudSetupContainers[6].getAnswer(),
 				(int) cloudSetupContainers[3].getAnswer());
 		
 

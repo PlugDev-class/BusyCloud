@@ -6,7 +6,7 @@ import eu.busycloud.service.CloudInstance;
 
 public class DecodeGeneral implements DecodeListener {
 	
-	/*
+	/**
 	 * @since 0.1
 	 * @author PlugDev
 	 */

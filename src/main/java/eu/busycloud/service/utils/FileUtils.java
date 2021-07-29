@@ -13,11 +13,10 @@ import java.util.stream.Stream;
 
 public class FileUtils {
 
-	/*
+	/**
 	 * Deletes a file in specific path
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 
@@ -25,11 +24,10 @@ public class FileUtils {
 		new File(path).delete();
 	}
 
-	/*
+	/**
 	 * Generate a folder in specific path
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 
@@ -37,11 +35,10 @@ public class FileUtils {
 		new File(path).mkdir();
 	}
 
-	/*
+	/**
 	 * Generate a folder in specific path with parentfolders behind it.
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 
@@ -49,13 +46,11 @@ public class FileUtils {
 		new File(path).mkdirs();
 	}
 
-	/*
+	/**
 	 * Generate file with in specific path.
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 
@@ -67,11 +62,10 @@ public class FileUtils {
 		}
 	}
 
-	/*
+	/**
 	 * Delete a folder recursivly at specific path
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 
@@ -86,15 +80,12 @@ public class FileUtils {
 		dir.delete();
 	}
 
-	/*
+	/**
 	 * Delete a folder recursivly at specific path
 	 * 
 	 * @param file A path to a specific file
-	 * 
 	 * @param string The content in file.
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 
@@ -108,15 +99,12 @@ public class FileUtils {
 		}
 	}
 
-	/*
+	/**
 	 * Downloads content in specific url.
 	 * 
 	 * @param url An url to specific online-file.
-	 * 
 	 * @param path The path whereto download the file.
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 
@@ -127,11 +115,10 @@ public class FileUtils {
 		}
 	}
 
-	/*
+	/**
 	 * Check if folder exists, if no, create a new one.
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 
@@ -140,11 +127,10 @@ public class FileUtils {
 			mkdir(path);
 	}
 
-	/*
+	/**
 	 * Check if folder exists, if no, create a new one.
 	 * 
 	 * @param path A path to a specific file
-	 * 
 	 * @since 1.02
 	 */
 	public static void checkFolder(File file) {
@@ -152,15 +138,12 @@ public class FileUtils {
 			mkdir(file.getPath());
 	}
 
-	/*
+	/**
 	 * Copy whole folder in specific path to specific path.
 	 * 
 	 * @param src The sourcepath of copying.
-	 * 
 	 * @param dest The destinationpath of copying.
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 
@@ -172,15 +155,12 @@ public class FileUtils {
 		}
 	}
 
-	/*
+	/**
 	 * Copy whole folder in specific path to specific path.
 	 * 
 	 * @param src The sourcepath of copying.
-	 * 
 	 * @param dest The destinationpath of copying.
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 
@@ -193,15 +173,12 @@ public class FileUtils {
 		}
 	}
 
-	/*
+	/**
 	 * Copy a single file in specific path to specific path.
 	 * 
 	 * @param src The sourcepath of copying.
-	 * 
 	 * @param dest The destinationpath of copying.
-	 * 
 	 * @throws IOException
-	 * 
 	 * @since 1.02
 	 */
 	public static void copyFile(Path source, Path dest) {

@@ -5,26 +5,25 @@ import eu.busycloud.service.networking.decoder.DecodeGeneral;
 import eu.busycloud.service.networking.decoder.DecodeProxy;
 import eu.busycloud.service.networking.decoder.DecodeSpigotServer;
 
+/**
+ * The sourceclass of networking.
+ * Anyway if it's decoding or encoding.
+ * 
+ * Used API in this project -> 
+ *  Netty by netty
+ *  NetListening by terrarier2111
+ * 
+ * @since 0.1
+ * @author PlugDev
+ */
 public class Networking {
 
-	/*
-	 * The sourceclass of networking.
-	 * Anyway if it's decoding or encoding.
-	 * 
-	 * Used API in this project -> 
-	 * • Netty by netty
-	 * • NetListening by terrarier2111
-	 * 
-	 * @since 0.1
-	 * @author PlugDev, terrarier2111
-	 */
-	
-	/*
+	/**
 	 * Initiating servernetworking.
-	 * Registering some Listeners.
+	 * Registering some listeners.
 	 * 
 	 * @since 0.1
-	 * @author PlugDev, terrarier2111
+	 * @author PlugDev
 	 */
 	Server server;
 	public void initNetworking() {

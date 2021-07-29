@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,48 +26,46 @@ import eu.busycloud.service.utils.TextUtils;
 
 public class Boot {
 
-	/*
+	/**
 	 * The start and initiating of some elements. (Firstboot)
 	 * 
 	 * @since 1.02
+	 * @recode 2.0
 	 * @author PlugDev
-	 * @throws IOException
-	 * @param agreeLicensement Agree BusyCloud-Licensement.
-	 * @param agreeStatistics Agree some unused statistics.
+	 * @Deprecated -> @throws IOException
 	 * @param serverName Used servername for purpose.
-	 * @param optimizationType Maybe later used optimizationType. Reserved for
-	 * furtureuse.
-	 * @param bungeeCordType BungeeCord version to easily download the version.
-	 * @param spigotFork Used Spigotfork for future use.
-	 * @param spigotServerVersion Used Spigotversion by MinecraftVersion-Instance.
+	 * @param bungeeCordSoftware BungeeCord version to easily download the version.
+	 * @param spigotServerSoftware Used Spigotversion by MinecraftVersion-Instance.
 	 * @param useViaVersion If the server want to use ViaVersion.
-	 * @param ressourceScanner Used Scanner to close quietly without canceling the
-	 * task.
+	 * @param nibblecompression If the server should use nibble-compression
+	 * @param maxRam The maxRam used by BusyCloud
 	 */
 
-	public Boot(String servername, ServerSoftware bungeeCord, ServerSoftware spigotServer, boolean useViaversion, boolean nibblecompression, int maxRam)
-			throws IOException {
+	public Boot(String servername, ServerSoftware bungeeCordSoftware, ServerSoftware spigotServerSoftware, boolean useViaversion, boolean nibblecompression, int maxRam) {
 
 		File localSettingsFile = new File("configurations/cloudconfig.json");
 		if (!localSettingsFile.exists())
-			localSettingsFile.createNewFile();
+			try {
+				localSettingsFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("servername", servername);
 		jsonObject.put("maxRam", maxRam);
 
 		JSONObject bungeeCordMotdObject = new JSONObject();
-		bungeeCordMotdObject.put("motdPlayerInfo", "§5BusyCloud");
-		bungeeCordMotdObject.put("motdLine1", "§cBusyCloud-Service §32");
-		bungeeCordMotdObject.put("motdLine2", "§edeveloped by PlugDev");
-		bungeeCordMotdObject.put("motdProtocol", "§aPublic-Beta v2");
+		bungeeCordMotdObject.put("motdPlayerInfo", "Â§5BusyCloud");
+		bungeeCordMotdObject.put("motdLine1", "Â§cBusyCloud-Service Â§32");
+		bungeeCordMotdObject.put("motdLine2", "Â§edeveloped by PlugDev");
+		bungeeCordMotdObject.put("motdProtocol", "Â§aPublic-Beta v2");
 		
 		JSONObject bungeeCordObject = new JSONObject();
 		bungeeCordObject.put("maxPlayers", 40);
 		bungeeCordObject.put("startport", 25575);
 		bungeeCordObject.put("maxRam", 512);
 		bungeeCordObject.put("motdSettings", bungeeCordMotdObject);
-		
 		
 		JSONObject featureObject = new JSONObject();
 		featureObject.put("enable-motdModification", true);
@@ -94,7 +93,11 @@ public class Boot {
 
 		File groupsSettingsFile = new File("configurations/servergroups.json");
 		if (!groupsSettingsFile.exists())
-			groupsSettingsFile.createNewFile();
+			try {
+				groupsSettingsFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		jsonObject = new JSONObject();
 		
 		Map<String, Object> lobbyServer = new LinkedHashMap<String, Object>();
@@ -108,10 +111,10 @@ public class Boot {
 		jsonObject.put("Lobby", lobbyServer);
 		FileUtils.writeFile(groupsSettingsFile, TextUtils.GSON.toJson(JsonParser.parseString(jsonObject.toString())));
 		
-		if(bungeeCord != null)
-			bungeeCord.download();
-		if(spigotServer != null)
-			spigotServer.download();
+		if(bungeeCordSoftware != null)
+			bungeeCordSoftware.download();
+		if(spigotServerSoftware != null)
+			spigotServerSoftware.download();
 		ApplicationInterface.getAPI().getInfrastructure().checkVersions();
 		ApplicationInterface.getAPI().getInfrastructure().useViaVersion = useViaversion;
 		new ConsoleInstance(false);
@@ -119,7 +122,7 @@ public class Boot {
 		ApplicationInterface.getAPI().getInfrastructure().startServerGroup("Lobby");
 	}
 
-	/*
+	/**
 	 * The start and initiating of some elements.
 	 * 
 	 * @since 1.02
@@ -128,14 +131,14 @@ public class Boot {
 	 */
 	
 
-	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+	@SuppressWarnings("deprecation")
 	public Boot(boolean startsWithSetup) {
 		if(startsWithSetup)
 			new ConsoleInstance(startsWithSetup);
 				
 		FileUtils.deleteFolderRecursivly("server/temp");
 		FileUtils.mkdirs("server/temp");
-		
+
 		new AutoUpdater(false, false);
 		try {
 			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/cloudconfig.json").toPath()), "UTF-8"));
@@ -164,7 +167,7 @@ public class Boot {
 			return;
 		}
 
-		for (File root : new File("server/static").listFiles()) {
+		Arrays.asList(new File("server/static").listFiles()).forEach((root) -> {
 			String version = "";
 			for (File subroot : new File(root.getAbsolutePath()).listFiles())
 				if (subroot.getName().endsWith(".jar"))
@@ -174,13 +177,14 @@ public class Boot {
 			ApplicationInterface.getAPI().getInfrastructure().getRunningServers().add(server);
 			server.startStaticServer(root.getName(),
 					ApplicationInterface.getAPI().getInfrastructure().getVersionById(version), true, 512);
-		}
+		});
 
 		
 		try {
-			Path p = Paths.get("developer/logs", format.format(new Date(System.currentTimeMillis())) + ".log");
-			if (!Files.exists(p.getParent()))
-	            Files.createDirectory(p.getParent());
+			SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+			Path path = Paths.get("developer/logs", format.format(new Date(System.currentTimeMillis())) + ".log");
+			if (!Files.exists(path.getParent()))
+	            Files.createDirectory(path.getParent());
 			CloudInstance.LOGGER.addHandler(new FileHandler("developer/logs/" + format.format(new Date(System.currentTimeMillis())) + ".log", true));
 		} catch (SecurityException | IOException e) {
 			e.printStackTrace();

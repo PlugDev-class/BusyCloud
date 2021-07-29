@@ -18,7 +18,7 @@ public class CommandHelp extends ConsoleCommand {
 	@Override
 	public void runCommand(String command, String[] args) {
 
-		TextUtils.sendPainHeader();
+		TextUtils.sendPlainHeader();
 		CloudInstance.LOGGER.info("  _  _     _              _    _    _   ");
 		CloudInstance.LOGGER.info(" | || |___| |_ __   ___  | |  (_)__| |_ ");
 		CloudInstance.LOGGER.info(" | __ / -_) | '_ \\ |___| | |__| (_-<  _|");

@@ -1,5 +1,0 @@
-name: BusyCloudAPI
-version: 1.0
-main: eu.busycloud.plugin.ProxyPlugin
-author: PlugDev
-commands:

@@ -34,6 +34,17 @@ public class CloudSetupContainer {
 		return answer;
 	}
 
+	/**
+	 * 
+	 * 
+	 * This method validates a string like words to
+	 * the primitive datatype 'boolean'.
+	 * 
+	 * @since 2.0
+	 * @param input
+	 * @return true or false
+	 */
+	
 	public boolean validateAnswer(String input) {
 		if(input.equalsIgnoreCase("skip") && optional) {
 			CloudInstance.LOGGER.info("You skipped that question.");

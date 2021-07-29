@@ -9,7 +9,7 @@ import eu.busycloud.service.tasks.ServerDisableCheckTask;
 
 public class DecodeSpigotServer implements DecodeListener {
 
-	/*
+	/**
 	 * @since 0.1
 	 * @author PlugDev
 	 */
@@ -27,7 +27,7 @@ public class DecodeSpigotServer implements DecodeListener {
 						spigotServer.setConnection(event.getConnection());
 						CloudInstance.LOGGER.info("SpigotChannel \"" + spigotServer.getId() + "\" connected!");
 						ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().get(0).getConnection().sendData("changebungeeinfo",
-								"change#motd", "§9BusyCloud §c| §aCloud loaded successfully.");
+								"change#motd", "Â§9BusyCloud Â§c| Â§aCloud loaded successfully.");
 						break;
 					}
 				}

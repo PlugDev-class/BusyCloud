@@ -12,7 +12,7 @@ public class CommandIntroduction extends ConsoleCommand {
 
 	@Override
 	public void runCommand(String command, String[] args) {
-		TextUtils.sendPainHeader();
+		TextUtils.sendPlainHeader();
 		CloudInstance.LOGGER.info("  ___     _               _         _   _          ");
 		CloudInstance.LOGGER.info(" |_ _|_ _| |_ _ _ ___  __| |_  _ __| |_(_)___ _ _  ");
 		CloudInstance.LOGGER.info("  | || ' \\  _| '_/ _ \\/ _` | || / _|  _| / _ \\ ' \\ ");

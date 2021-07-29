@@ -17,9 +17,8 @@ import eu.busycloud.service.infrastructure.ProxyServer;
 
 public class DecodeProxy implements DecodeListener {
 
-	/*
+	/**
 	 * @since 0.1
-	 * 
 	 * @author PlugDev
 	 */
 	@Override
@@ -57,7 +56,7 @@ public class DecodeProxy implements DecodeListener {
 
 				if (ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).isMaintenance()) {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey)
-							.sendRCON("kick " + playername + " §cThe server is currently in maintenance-mode.");
+							.sendRCON("kick " + playername + " Â§cThe server is currently in maintenance-mode.");
 				}
 			}
 				break;

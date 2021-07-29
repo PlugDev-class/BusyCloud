@@ -6,6 +6,7 @@ import java.net.URL;
 
 import eu.busycloud.service.utils.FileUtils;
 
+@Deprecated
 public class AutoUpdater {
 
 	
@@ -16,7 +17,7 @@ public class AutoUpdater {
 			doBridgesCheck();
 	}
 	
-	/*
+	/**
 	 * This method checks if a new version is available.
 	 * @since 1.02
 	 * @throws IOException
@@ -48,7 +49,7 @@ public class AutoUpdater {
 //		}
 	}
 
-	/*
+	/**
 	 * This method autodownloads the 
 	 * spigotcloudbridge and the bungeecloudbridge.
 	 * @since 1.02
