@@ -21,6 +21,7 @@ import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.api.PlayerInfo;
 import eu.busycloud.service.infrastructure.generate.ProxyGenerator;
 import eu.busycloud.service.utils.FileUtils;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 public class ProxyServer {
 
@@ -40,8 +41,8 @@ public class ProxyServer {
 	private Connection connection;
 	private String registerKey;
 
-	private List<SpigotServer> registeredServer = new LinkedList<>();
-	private List<PlayerInfo> registeredPlayer = new LinkedList<>();
+	private List<SingleServerInstance> registeredServers = new LinkedList<>();
+	private List<PlayerInfo> registeredPlayers = new LinkedList<>();
 
 	public void startProxy(ServerSoftware software) {
 		setRegisterKey("KEY_" + new Random().nextInt(Integer.MAX_VALUE));
@@ -90,7 +91,7 @@ public class ProxyServer {
 
 	public void addSpigotServer(SpigotServer spigotServer, boolean isMain) {
 
-		registeredServer.add(spigotServer);
+		registeredServers.add(spigotServer);
 
 		new Timer().schedule(new TimerTask() {
 
@@ -103,6 +104,10 @@ public class ProxyServer {
 			}
 		}, 1000, 1000);
 
+	}
+	
+	public void addNukkitServer(NukkitServer nukkitServer, boolean isMain) {
+		
 	}
 
 	public void sendRCON(String command) {
@@ -162,12 +167,12 @@ public class ProxyServer {
 		return connection;
 	}
 
-	public List<SpigotServer> getRegisteredServer() {
-		return registeredServer;
+	public List<SingleServerInstance> getRegisteredServer() {
+		return registeredServers;
 	}
 
 	public List<PlayerInfo> getOnlinePlayer() {
-		return registeredPlayer;
+		return registeredPlayers;
 	}
 	
 	public void setPort(int port) {

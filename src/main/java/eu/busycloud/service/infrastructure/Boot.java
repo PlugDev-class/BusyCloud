@@ -21,6 +21,7 @@ import com.google.gson.JsonParser;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleInstance;
+import eu.busycloud.service.utils.BootContainer;
 import eu.busycloud.service.utils.FileUtils;
 import eu.busycloud.service.utils.TextUtils;
 
@@ -33,16 +34,10 @@ public class Boot {
 	 * @recode 2.0
 	 * @author PlugDev
 	 * @Deprecated -> @throws IOException
-	 * @param serverName Used servername for purpose.
-	 * @param bungeeCordSoftware BungeeCord version to easily download the version.
-	 * @param spigotServerSoftware Used Spigotversion by MinecraftVersion-Instance.
-	 * @param useViaVersion If the server want to use ViaVersion.
-	 * @param nibblecompression If the server should use nibble-compression
-	 * @param maxRam The maxRam used by BusyCloud
+	 * @param bootContainer
 	 */
 
-	public Boot(String servername, ServerSoftware bungeeCordSoftware, ServerSoftware spigotServerSoftware, boolean useViaversion, boolean nibblecompression, int maxRam) {
-
+	public Boot(BootContainer bootContainer) {
 		File localSettingsFile = new File("configurations/cloudconfig.json");
 		if (!localSettingsFile.exists())
 			try {
@@ -52,8 +47,9 @@ public class Boot {
 			}
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("servername", servername);
-		jsonObject.put("maxRam", maxRam);
+		jsonObject.put("servername", bootContainer.getNetworkName());
+		jsonObject.put("maxRam", bootContainer.getMaxRam());
+		jsonObject.put("minecraftJava", bootContainer.isMinecraftJavaUse());
 
 		JSONObject bungeeCordMotdObject = new JSONObject();
 		bungeeCordMotdObject.put("motdPlayerInfo", "§5BusyCloud");
@@ -70,8 +66,8 @@ public class Boot {
 		JSONObject featureObject = new JSONObject();
 		featureObject.put("enable-motdModification", true);
 		featureObject.put("enable-bungeePermissions", true);
-		featureObject.put("nibble-compression", nibblecompression);
-		featureObject.put("viaversion", useViaversion);
+		featureObject.put("nibble-compression", bootContainer.isNibbleCompression());
+		featureObject.put("viaversion", bootContainer.isUseViaVersion());
 
 		JSONArray jvmStartparameter = new JSONArray();
 		jvmStartparameter.put("XX:+UseG1GC");
@@ -82,8 +78,8 @@ public class Boot {
 		jvmStartparameter.put("Dcom.mojang.eula.agree=true");
 		jvmStartparameter.put("Dio.netty.recycler.maxCapacity=0");
 		jvmStartparameter.put("Dio.netty.recycler.maxCapacity.default=0");
-		jvmStartparameter.put("-Xmx%MAX%M");
-		jvmStartparameter.put("-jar %VERSION-IN-JAR%.jar");
+		jvmStartparameter.put("Xmx%MAX%M");
+		jvmStartparameter.put("jar %VERSION-IN-JAR%.jar");
 		
 		jsonObject.put("bungeeCord", bungeeCordObject);
 		jsonObject.put("features", featureObject);
@@ -100,26 +96,29 @@ public class Boot {
 			}
 		jsonObject = new JSONObject();
 		
+		if(bootContainer.isPreinstall()) {
+			if(bootContainer.isMinecraftJavaUse()) {
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Waterfall-1.17").download();
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Spigot-1.8.8").download();
+			} else {
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("WaterdogPE-latest").download();
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Powernukkit-1.5.1.0").download();
+			}
+		}
+		
 		Map<String, Object> lobbyServer = new LinkedHashMap<String, Object>();
-		lobbyServer.put("serverSoftware", "Spigot-1.8.8");
-		lobbyServer.put("startPort", 25580);
+		lobbyServer.put("serverSoftware", bootContainer.isMinecraftJavaUse() ? "Spigot-1.8.8" : "PowerNukkit-1.5.1.0");
+		lobbyServer.put("startPort", bootContainer.isMinecraftJavaUse() ? 25580 : 19140);
+		lobbyServer.put("maxRamEachServer", bootContainer.isMinecraftJavaUse() ? 256 : 512);
 		lobbyServer.put("groupId", 1);
-		lobbyServer.put("maxRamEachServer", 256);
-		lobbyServer.put("startServerByGroupstart", 3);
-		lobbyServer.put("startNewServerByPercentage", 75);
+		lobbyServer.put("startServerByGroupstart", 2);
+		lobbyServer.put("startNewServerByPercentage", 80);
 		lobbyServer.put("lobbyState", true);
 		jsonObject.put("Lobby", lobbyServer);
 		FileUtils.writeFile(groupsSettingsFile, TextUtils.GSON.toJson(JsonParser.parseString(jsonObject.toString())));
-		
-		if(bungeeCordSoftware != null)
-			bungeeCordSoftware.download();
-		if(spigotServerSoftware != null)
-			spigotServerSoftware.download();
 		ApplicationInterface.getAPI().getInfrastructure().checkVersions();
-		ApplicationInterface.getAPI().getInfrastructure().useViaVersion = useViaversion;
+		ApplicationInterface.getAPI().getInfrastructure().useViaVersion = bootContainer.isUseViaVersion();
 		new ConsoleInstance(false);
-
-		ApplicationInterface.getAPI().getInfrastructure().startServerGroup("Lobby");
 	}
 
 	/**
@@ -129,9 +128,6 @@ public class Boot {
 	 * @author PlugDev
 	 * @throws IOException
 	 */
-	
-
-	@SuppressWarnings("deprecation")
 	public Boot(boolean startsWithSetup) {
 		if(startsWithSetup)
 			new ConsoleInstance(startsWithSetup);
@@ -139,7 +135,6 @@ public class Boot {
 		FileUtils.deleteFolderRecursivly("server/temp");
 		FileUtils.mkdirs("server/temp");
 
-		new AutoUpdater(false, false);
 		try {
 			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/cloudconfig.json").toPath()), "UTF-8"));
 			ApplicationInterface.getAPI().getInfrastructure().useViaVersion = jsonObject.getJSONObject("features").getBoolean("viaversion");
@@ -151,9 +146,8 @@ public class Boot {
 
 		try {
 			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/servergroups.json").toPath()), "UTF-8"));
-			for(String key : jsonObject.keySet()) {
+			for(String key : jsonObject.keySet())
 				ApplicationInterface.getAPI().getInfrastructure().startServerGroup(key);
-			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -172,11 +166,9 @@ public class Boot {
 			for (File subroot : new File(root.getAbsolutePath()).listFiles())
 				if (subroot.getName().endsWith(".jar"))
 					version = subroot.getName().replaceAll(".jar", "");
-			SpigotServer server;
-			server = new SpigotServer();
+			SpigotServer server = new SpigotServer(root.getName(), ApplicationInterface.getAPI().getInfrastructure().getSoftwareById(version), true, 512);
 			ApplicationInterface.getAPI().getInfrastructure().getRunningServers().add(server);
-			server.startStaticServer(root.getName(),
-					ApplicationInterface.getAPI().getInfrastructure().getVersionById(version), true, 512);
+			server.startStaticServer();
 		});
 
 		

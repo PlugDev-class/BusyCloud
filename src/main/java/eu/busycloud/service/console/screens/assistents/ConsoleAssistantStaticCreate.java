@@ -37,11 +37,11 @@ public class ConsoleAssistantStaticCreate implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("Validating answers...");
 		CloudInstance.LOGGER.info(cloudSetupContainers[0].getAnswer() + " .. okay");
 		if (ApplicationInterface.getAPI().getInfrastructure()
-				.isValidVersion(((String) cloudSetupContainers[1].getAnswer()))) {
+				.isValidSoftware(((String) cloudSetupContainers[1].getAnswer()))) {
 			if (!ApplicationInterface.getAPI().getInfrastructure()
-					.getVersionById(((String) cloudSetupContainers[1].getAnswer())).isAvailable())
+					.getSoftwareById(((String) cloudSetupContainers[1].getAnswer())).isAvailable())
 				ApplicationInterface.getAPI().getInfrastructure()
-						.getVersionById((String) cloudSetupContainers[1].getAnswer()).download();
+						.getSoftwareById((String) cloudSetupContainers[1].getAnswer()).download();
 			CloudInstance.LOGGER.info(cloudSetupContainers[1].getAnswer() + " .. okay");
 		} else {
 			CloudInstance.LOGGER.info(cloudSetupContainers[1].getAnswer() + " .. doesn't exists! ~ ABORT");
@@ -73,7 +73,7 @@ public class ConsoleAssistantStaticCreate implements ConsoleScreen {
 		}
 		CloudInstance.LOGGER.warning("Starting server...");
 		ApplicationInterface.getAPI().getInfrastructure().startStaticSpigotServer((String) cloudSetupContainers[0].getAnswer(), 
-				ApplicationInterface.getAPI().getInfrastructure().getVersionById((String) cloudSetupContainers[1].getAnswer()), (Integer) null, ram, true, port);
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById((String) cloudSetupContainers[1].getAnswer()), (Integer) null, ram, true, port);
 		CloudInstance.LOGGER.warning("Closing assistant...");
 		TextUtils.sendFatLine();
 

@@ -4,8 +4,8 @@ import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
-import eu.busycloud.service.infrastructure.SpigotServer;
 import eu.busycloud.service.tasks.ServerDisableCheckTask;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 public class DecodeSpigotServer implements DecodeListener {
 
@@ -21,8 +21,7 @@ public class DecodeSpigotServer implements DecodeListener {
 			switch (title.toLowerCase()) {
 			case "onenable()": {
 				final String key = event.getData().read();
-				for (SpigotServer spigotServer : ApplicationInterface.getAPI().getInfrastructure()
-						.getRunningServers()) {
+				for (SingleServerInstance spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
 					if (spigotServer.getRegisterKey().equals(key)) {
 						spigotServer.setConnection(event.getConnection());
 						CloudInstance.LOGGER.info("SpigotChannel \"" + spigotServer.getId() + "\" connected!");
@@ -35,8 +34,7 @@ public class DecodeSpigotServer implements DecodeListener {
 			}
 			case "ondisable()": {
 				final String key = event.getData().read();
-				for (SpigotServer spigotServer : ApplicationInterface.getAPI().getInfrastructure()
-						.getRunningServers()) {
+				for (SingleServerInstance spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
 					if (spigotServer.getRegisterKey().equals(key)) {
 						spigotServer.setConnection(null);
 						new ServerDisableCheckTask(spigotServer);

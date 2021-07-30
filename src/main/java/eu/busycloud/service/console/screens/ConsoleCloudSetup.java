@@ -13,6 +13,7 @@ import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleScreen;
 import eu.busycloud.service.infrastructure.Boot;
+import eu.busycloud.service.utils.BootContainer;
 import eu.busycloud.service.utils.CloudSetupContainer;
 import eu.busycloud.service.utils.TextUtils;
 import eu.busycloud.service.utils.CloudSetupContainer.AnswerType;
@@ -22,14 +23,16 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 	private CloudSetupContainer[] cloudSetupContainers = {
 		
-			(new CloudSetupContainer("Are you accepting our current guidelines?", "Guidlines-Accept", AnswerType.BOOLEAN, false)),
+			(new CloudSetupContainer("Are you accepting our current guidelines?", "Guidelines-Accept", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Are you accepting any other by BusyCloud used guidelines?", "TP-Accept", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Please type in your License-Key:", "License-Key", AnswerType.STRING, true)),
-			(new CloudSetupContainer("How much memory do you want to use for the busycloud in MB", "RAM-in-MB", AnswerType.INTEGER, false)),
+			(new CloudSetupContainer("Will you host a Minecraft-Java Server?", "Java-Server", AnswerType.BOOLEAN, true)),
+			(new CloudSetupContainer("How much memory do you want to use for the busycloud in MB?", "RAM-in-MB", AnswerType.INTEGER, false)),
 			(new CloudSetupContainer("If you are permitted to, do you want to use the latest ViaVersion?", "ViaVersion", AnswerType.BOOLEAN, false)),
-			(new CloudSetupContainer("Please type in your networks-name", "Network-Name", AnswerType.STRING, false)),
+			(new CloudSetupContainer("What's the name of your network?", "Network-Name", AnswerType.STRING, false)),
 			(new CloudSetupContainer("Do you want to use any compression for internal networking?", "Nibble-Networking", AnswerType.BOOLEAN, false)),
-			(new CloudSetupContainer("Soon: Do you want to do the servers cross-compatible? (Java <-> Bedrock)", "Java <=> Bedrock", AnswerType.BOOLEAN, false)),
+			(new CloudSetupContainer("Should BusyCloud preinstall some preferred proxy and spigot/nukkit-server", "Preinstall?", AnswerType.BOOLEAN, false)),
+			(new CloudSetupContainer("Do you want to do the servers cross-compatible? (Java <-> Bedrock)", "Java <=> Bedrock", AnswerType.BOOLEAN, false)),
 			(new CloudSetupContainer("Did you answer this questions truthfully and you're sure about it?", "Truthful answered", AnswerType.BOOLEAN, false))
 			
 	};
@@ -68,12 +71,18 @@ public class ConsoleCloudSetup implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("(Re/Force)installing BusyCloud, finished");
 		CloudInstance.LOGGER.info("Please install some software with '/install'");
 
-		new Boot((String) cloudSetupContainers[5].getAnswer(), 
-				null, 
-				null, 
-				(boolean) cloudSetupContainers[4].getAnswer(), 
-				(boolean) cloudSetupContainers[6].getAnswer(),
-				(int) cloudSetupContainers[3].getAnswer());
+		BootContainer bootContainer = new BootContainer();
+		bootContainer.setAcceptGuidelines((boolean) cloudSetupContainers[0].getAnswer());
+		bootContainer.setAccept3Guidelines((boolean) cloudSetupContainers[1].getAnswer());
+		bootContainer.setLicenseKey((String) cloudSetupContainers[2].getAnswer());
+		bootContainer.setMinecraftJavaUse((boolean) cloudSetupContainers[3].getAnswer());
+		bootContainer.setMaxRam((int) cloudSetupContainers[4].getAnswer());
+		bootContainer.setUseViaVersion((boolean) cloudSetupContainers[5].getAnswer());
+		bootContainer.setNetworkName((String) cloudSetupContainers[6].getAnswer());
+		bootContainer.setNibbleCompression((boolean) cloudSetupContainers[7].getAnswer());
+		bootContainer.setPreinstall((boolean) cloudSetupContainers[8].getAnswer());
+		bootContainer.setCrossCompatible((boolean) cloudSetupContainers[9].getAnswer());
+		new Boot(bootContainer);
 		
 
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");

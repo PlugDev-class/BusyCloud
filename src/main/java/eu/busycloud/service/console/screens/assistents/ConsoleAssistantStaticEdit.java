@@ -6,8 +6,8 @@ import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleScreen;
 import eu.busycloud.service.console.screens.ConsoleCloudDefault;
-import eu.busycloud.service.infrastructure.SpigotServer;
 import eu.busycloud.service.utils.CloudSetupContainer;
+import eu.busycloud.service.utils.SingleServerInstance;
 import eu.busycloud.service.utils.CloudSetupContainer.AnswerType;
 import eu.busycloud.service.utils.TextUtils;
 
@@ -35,14 +35,14 @@ public class ConsoleAssistantStaticEdit implements ConsoleScreen {
 
 	public void completeInstallation() throws IOException {
 		CloudInstance.LOGGER.warning("Validating answers...");
-		if(ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()) == null) {
+		if(ApplicationInterface.getAPI().getInfrastructure().getServerByName((String) cloudSetupContainers[0].getAnswer()) == null) {
 			CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. not found ~ ABORT");
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
 			return;
 		}
 		if (!ApplicationInterface.getAPI().getInfrastructure()
-				.getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()).isStatic()) {
+				.getServerByName((String) cloudSetupContainers[0].getAnswer()).isStatic()) {
 			CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. not static ~ ABORT");
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
@@ -51,10 +51,10 @@ public class ConsoleAssistantStaticEdit implements ConsoleScreen {
 		CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. okay");
 		
 		
-		SpigotServer spigotServer = ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName((String) cloudSetupContainers[0].getAnswer());
+		SingleServerInstance spigotServer = ApplicationInterface.getAPI().getInfrastructure().getServerByName((String) cloudSetupContainers[0].getAnswer());
 		if(cloudSetupContainers[1].getAnswer() != null)
-			if(ApplicationInterface.getAPI().getInfrastructure().isValidVersion((String) cloudSetupContainers[1].getAnswer()))
-				spigotServer.setServerSoftware(ApplicationInterface.getAPI().getInfrastructure().getVersionById((String) cloudSetupContainers[1].getAnswer()));
+			if(ApplicationInterface.getAPI().getInfrastructure().isValidSoftware((String) cloudSetupContainers[1].getAnswer()))
+				spigotServer.setServerSoftware(ApplicationInterface.getAPI().getInfrastructure().getSoftwareById((String) cloudSetupContainers[1].getAnswer()));
 		if(cloudSetupContainers[2].getAnswer() != null)
 			spigotServer.setPort((int) cloudSetupContainers[2].getAnswer());
 		if(cloudSetupContainers[3].getAnswer() != null)
@@ -62,8 +62,8 @@ public class ConsoleAssistantStaticEdit implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("Closing assistant...");
 		TextUtils.sendFatLine();
 		
-		ApplicationInterface.getAPI().getInfrastructure().stopSpigotServer(spigotServer.getId());
-		spigotServer.startStaticServer(spigotServer.getServerName(), spigotServer.getServerSoftware(), true, spigotServer.getMaxRam());
+		ApplicationInterface.getAPI().getInfrastructure().stopServer(spigotServer.getId());
+		spigotServer.startServer();
 		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().add(spigotServer);
 		
 		ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
@@ -74,7 +74,7 @@ public class ConsoleAssistantStaticEdit implements ConsoleScreen {
 	public void scanLine(String input) {
 		CloudSetupContainer question = cloudSetupContainers[position];
 		if (!question.validateAnswer(input)) {
-			CloudInstance.LOGGER.info("We couldn't recognize your input, please check the answertype.");
+			CloudInstance.LOGGER.info("We couldn't recognize your input, please check the answertype and try again.");
 			return;
 		}
 		if (cloudSetupContainers.length == position + 1) {

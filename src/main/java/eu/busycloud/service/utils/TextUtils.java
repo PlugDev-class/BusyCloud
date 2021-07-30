@@ -78,6 +78,7 @@ public class TextUtils {
 				+ CloudInstance.currentMinorVersion + " | Build: " + CloudInstance.currentBuildVersion);
 		sendLine();
 		CloudInstance.LOGGER.info("Help? -> type '/help' to get more help.");
+		CloudInstance.LOGGER.info("Introduction? -> type '/introduction' to get more help with setup.");
 		sendFatLine();
 	}
 

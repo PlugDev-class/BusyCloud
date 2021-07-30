@@ -7,7 +7,7 @@ import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupCrea
 import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupDelete;
 import eu.busycloud.service.console.screens.assistents.ConsoleAssistantGroupEdit;
 import eu.busycloud.service.infrastructure.ServerGroup;
-import eu.busycloud.service.infrastructure.SpigotServer;
+import eu.busycloud.service.utils.SingleServerInstance;
 import eu.busycloud.service.utils.TextUtils;
 
 public class CommandGroup extends ConsoleCommand {
@@ -22,7 +22,7 @@ public class CommandGroup extends ConsoleCommand {
 			if(args[1].equalsIgnoreCase("list")) {
 				for(ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
 					CloudInstance.LOGGER.info(group.getServerGroupContainer().getGroupName() + " [" + group.getServerGroupContainer().getGroupId() + "]");
-					for(SpigotServer server : group.getGroupList())
+					for(SingleServerInstance server : group.getGroupList())
 						CloudInstance.LOGGER.info("\t" + server.getServerName() + " [" + server.getId() + "]");
 				}
 				if(ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().size() == 0) {
@@ -47,12 +47,12 @@ public class CommandGroup extends ConsoleCommand {
 		switch (args[1].toLowerCase()) {
 		case "control":
 
-			if (ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[2]) == null) {
+			if (ApplicationInterface.getAPI().getInfrastructure().getGroupByName(args[2]) == null) {
 				CloudInstance.LOGGER.warning("Servergroup not found!");
 				printHelp();
 				return;
 			}
-			ServerGroup serverGroup = ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(args[2]);
+			ServerGroup serverGroup = ApplicationInterface.getAPI().getInfrastructure().getGroupByName(args[2]);
 
 			switch (args[3].toLowerCase()) {
 			case "rcon":
@@ -79,13 +79,13 @@ public class CommandGroup extends ConsoleCommand {
 				break;
 			case "ping":
 				TextUtils.sendFatLine();
-				for(SpigotServer spigotServer : serverGroup.getGroupList())
+				for(SingleServerInstance spigotServer : serverGroup.getGroupList())
 					spigotServer.ping();
 				TextUtils.sendFatLine();
 				break;
 			case "info":
 				TextUtils.sendFatLine();
-				for(SpigotServer spigotServer : serverGroup.getGroupList())
+				for(SingleServerInstance spigotServer : serverGroup.getGroupList())
 					spigotServer.printInfo();
 				TextUtils.sendFatLine();
 				break;

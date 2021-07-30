@@ -50,10 +50,11 @@ public class SpigotGenerator extends ServerGenerator {
 	public void generateSpigotProperties() {
 		try {
 			StringBuilder builder = new StringBuilder();
+			builder.append("motd=Spigotserver hosted by BusyCloud\n");
 			builder.append("server-ip=localhost\n");
 			builder.append("server-port=" + spigotServer.getPort() + "\n");
 			builder.append("network-compression-threshold=256\n");
-			builder.append("online-mode=false\n\n\n");
+			builder.append("online-mode=false\n");
 			Files.write(Paths.get(spigotServerPath, "server.properties"), builder.toString().getBytes(),
 					StandardOpenOption.CREATE_NEW);
 			Files.write(Paths.get(spigotServerPath, "bukkit.yml"), "connection-throttle: -1".getBytes(),

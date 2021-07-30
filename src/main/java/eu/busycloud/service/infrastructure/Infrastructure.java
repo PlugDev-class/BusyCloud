@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,12 +22,13 @@ import eu.busycloud.service.api.plugins.Application;
 import eu.busycloud.service.api.plugins.Event;
 import eu.busycloud.service.infrastructure.ServerSoftware.ServerSoftwareType;
 import eu.busycloud.service.utils.ServerGroupContainer;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 @SuppressWarnings("unused")
 public class Infrastructure {
 
 	private List<ProxyServer> runningProxies = new LinkedList<>();
-	private List<SpigotServer> runningServers = new LinkedList<>();
+	private List<SingleServerInstance> runningServers = new LinkedList<>();
 	private List<ServerGroup> runningGroups = new LinkedList<>();
 	
 	private List<Application> applications = new ArrayList<Application>();
@@ -34,7 +36,7 @@ public class Infrastructure {
 	public ServerSoftware[] serverSoftwares = {
 
 			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Interface", "0.1", "PlugDev"),
-			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-General", "0.1", "PlugDev"),
+			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Introduction", "0.1", "PlugDev"),
 			
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.17", "md5"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.16", "md5"),
@@ -272,6 +274,7 @@ public class Infrastructure {
 	};
 
 	public boolean useViaVersion = false;
+	public boolean nibbleCompression = true;
 	public String serverName = "Unknown";
 	public int maxRam = 1024;
 	private ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -280,6 +283,14 @@ public class Infrastructure {
 		checkVersions();
 	}
 
+	/**
+	 * 
+	 * This method iterates over files to detect
+	 * softwares.
+	 * 
+	 * @since 1.00a
+	 * 
+	 */
 	public void checkVersions() {
 		File backendDownloads = new File("saves/environments/");
 		if (backendDownloads == null)
@@ -298,7 +309,13 @@ public class Infrastructure {
 		});
 	}
 	
-	
+	/**
+	 * 
+	 * This method calls an event in every application.
+	 * 
+	 * @param event
+	 * @since 2.0
+	 */
 	public void callEvents(Event event) {
 		applications.forEach((plugin) -> {
 			plugin.getEventList().forEach((pluginEvent) -> {
@@ -308,6 +325,16 @@ public class Infrastructure {
 		});
 	}
 
+	/**
+	 * 
+	 * This method starts a proxyserver.
+	 * 
+	 * @param serverName
+	 * @param serverSoftware
+	 * @return
+	 * @since 1.02
+	 */
+	
 	public int startProxyServer(String serverName, ServerSoftware serverSoftware) {
 		CloudInstance.LOGGER.info("Starting Proxy(\"" + serverName + "\",\"" + serverSoftware.getVersionName() + "\")");
 		ProxyServer proxy = new ProxyServer();
@@ -316,29 +343,122 @@ public class Infrastructure {
 		return proxy.getProxyid();
 	}
 
-	public int startSpigotServer(String serverGroup, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port, boolean isMain) {
+	
+	/**
+	 * 
+	 * This method starts a spigotserver
+	 * 
+	 * @param serverGroup
+	 * @param serverSoftware
+	 * @param proxyId
+	 * @param maxRam
+	 * @param acceptEula
+	 * @param port
+	 * @param isMain
+	 * @return
+	 * @since 1.02
+	 */
+	public UUID startSpigotServer(String serverGroup, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port, boolean isMain) {
 		CloudInstance.LOGGER.info("Starting SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
-		SpigotServer spigotServer = new SpigotServer();
-		spigotServer.setMaxRam(maxRam);
+		SpigotServer spigotServer = new SpigotServer(serverGroup, serverSoftware, true, maxRam, isMain);
 		spigotServer.setPort(port);
-		spigotServer.startServer(serverGroup, serverSoftware, acceptEula, maxRam, isMain);
+		spigotServer.startServer();
 		runningServers.add(spigotServer);
 		return spigotServer.getId();
 	}
 	
-	public int startStaticSpigotServer(String serverName, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port) {
-		CloudInstance.LOGGER.info("Starting SpigotServer*(\"" + serverName + " - localhost:" + port + "\")");
-		SpigotServer spigotServer = new SpigotServer();
-		spigotServer.setMaxRam(maxRam);
+	/**
+	 * 
+	 * This method starts a nukkitserver
+	 * 
+	 * @param serverGroup
+	 * @param serverSoftware
+	 * @param proxyId
+	 * @param maxRam
+	 * @param acceptEula
+	 * @param port
+	 * @param isMain
+	 * @return
+	 * @since 2.0
+	 */
+	
+	public UUID startNukkitServer(String serverGroup, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port, boolean isMain) {
+		CloudInstance.LOGGER.info("Starting NukkitServer(\"" + serverGroup + " - localhost:" + port + "\")");
+		NukkitServer spigotServer = new NukkitServer(serverGroup, serverSoftware, true, maxRam, isMain);
 		spigotServer.setPort(port);
-		spigotServer.startStaticServer(serverName, serverSoftware, acceptEula, maxRam);
+		spigotServer.startServer();
+		runningServers.add(spigotServer);
+		return spigotServer.getId();
+	}
+	
+	/**
+	 * 
+	 * This method starts a static spigotserver
+	 * 
+	 * @param serverName
+	 * @param serverSoftware
+	 * @param proxyId
+	 * @param maxRam
+	 * @param acceptEula
+	 * @param port
+	 * @return
+	 * @since 2.0
+	 */
+	
+	public UUID startStaticSpigotServer(String serverName, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port) {
+		CloudInstance.LOGGER.info("Starting SpigotServer*(\"" + serverName + " - localhost:" + port + "\")");
+		SpigotServer spigotServer = new SpigotServer(serverName, serverSoftware, acceptEula, maxRam);
+		spigotServer.setPort(port);
+		spigotServer.startStaticServer();
+		runningServers.add(spigotServer);
+		return spigotServer.getId();
+	}
+	
+	/**
+	 * 
+	 * This method starts a static nukkitserver
+	 * 
+	 * @param serverName
+	 * @param serverSoftware
+	 * @param proxyId
+	 * @param maxRam
+	 * @param acceptEula
+	 * @param port
+	 * @return
+	 * @since 2.0
+	 */
+	
+	public UUID startStaticNukkitServer(String serverName, ServerSoftware serverSoftware, int proxyId, int maxRam, boolean acceptEula, int port) {
+		CloudInstance.LOGGER.info("Starting NukkitServer*(\"" + serverName + " - localhost:" + port + "\")");
+		NukkitServer spigotServer = new NukkitServer(serverName, serverSoftware, acceptEula, maxRam);
+		spigotServer.setPort(port);
+		spigotServer.startStaticServer();
 		runningServers.add(spigotServer);
 		return spigotServer.getId();
 	}
 
+	
+	/**
+	 * 
+	 * This method starts a servergroup
+	 * 
+	 * @param serverGroupName
+	 * @return
+	 * @since 2.0
+	 */
+	
 	public int startServerGroup(String serverGroupName) {
 		return new ServerGroup(new ServerGroupContainer(serverGroupName)).getServerGroupContainer().getGroupId();
 	}
+	
+	/**
+	 * 
+	 * This method stops a proxyserver
+	 * 
+	 * @param disconnectSpigots
+	 * @param proxyId
+	 * @since 1.02
+	 */
 
 	public void stopProxyServer(boolean disconnectSpigots, int proxyId) {
 		ProxyServer proxy = getProxyById(proxyId);
@@ -348,19 +468,114 @@ public class Infrastructure {
 		runningProxies.remove(proxy);
 	}
 
-	public void stopSpigotServer(int serverId) {
-		getSpigotServerById(serverId).stopServer();
-		runningServers.remove(getSpigotServerById(serverId));
+	/**
+	 * 
+	 * This method stops a nukkit/spigot-server
+	 * 
+	 * @param serverId
+	 * @since 2.0
+	 */
+	
+	public void stopServer(UUID serverId) {
+		getServerById(serverId).stopServer();
+		runningServers.remove(getServerById(serverId));
 	}
 
-	public void rconSpigotServer(int serverId, String command) {
-		getSpigotServerById(serverId).sendRCON(command);
+	
+	/**
+	 * 
+	 * This method sends a command to a specific server
+	 * 
+	 * @param servername
+	 * @param command
+	 * @since 2.0
+	 */
+	
+	public void rconServer(String servername, String command) {
+		getServerByName(servername).rconServer(command);
+	}
+	
+	/**
+	 * 
+	 * This method sends a command to a specific server
+	 * 
+	 * @param servername
+	 * @param command
+	 * @since 2.0
+	 */
+	public void rconServer(UUID id, String command) {
+		getServerById(id).rconServer(command);
 	}
 
+	/**
+	 * 
+	 * This method sends a command to a specific proxy
+	 * 
+	 * @param servername
+	 * @param command
+	 * @since 1.00
+	 */
 	public void rconProxy(int serverId, String command) {
 		getProxyById(serverId).sendRCON(command);
 	}
 
+	
+	
+	/**
+	 * 
+	 * This method returns a server by uuid
+	 * 
+	 * @param id
+	 * @return
+	 * @since 2.0
+	 */
+	
+	public SingleServerInstance getServerById(UUID id) {
+		for(SingleServerInstance serverInstance : runningServers)
+			if(serverInstance.getId() == id)
+				return serverInstance;
+		return null;
+	}
+
+	/**
+	 * 
+	 * This method returns a server by name
+	 * 
+	 * @param name
+	 * @return
+	 * @since 2.0
+	 */
+	public SingleServerInstance getServerByName(String name) {
+		for(SingleServerInstance serverInstance : runningServers)
+			if(serverInstance.getPartServerName().equalsIgnoreCase(name))
+				return serverInstance;
+		return null;
+	}
+
+	
+	/**
+	 * 
+	 * This method returns a server by a networkkey.
+	 * 
+	 * @param key
+	 * @return
+	 * @since 2.0
+	 */
+	public SingleServerInstance getServerByKey(String key) {
+		for (SingleServerInstance server : runningServers)
+			if (server.getRegisterKey().equals(key))
+				return server;
+		return null;
+	}
+	
+	/**
+	 * 
+	 * This method returns a proxy by id
+	 * 
+	 * @param id
+	 * @since 1.02
+	 */
+	
 	public ProxyServer getProxyById(int id) {
 		for (ProxyServer proxy : runningProxies)
 			if (proxy.getProxyid() == id)
@@ -368,6 +583,14 @@ public class Infrastructure {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * This method returns a proxy by name
+	 * 
+	 * @param proxyName
+	 * @return
+	 * @since 2.0
+	 */
 	public ProxyServer getProxyByName(String proxyName) {
 		for (ProxyServer proxy : runningProxies)
 			if (proxy.getProxyName().equalsIgnoreCase(proxyName))
@@ -375,20 +598,15 @@ public class Infrastructure {
 		return null;
 	}
 
-	public SpigotServer getSpigotServerById(int id) {
-		for (SpigotServer spigotServer : runningServers)
-			if (spigotServer.getId() == id)
-				return spigotServer;
-		return null;
-	}
-
-	public SpigotServer getSpigotServerByName(String name) {
-		for (SpigotServer spigotServer : runningServers)
-			if (spigotServer.getServerName().equalsIgnoreCase(name))
-				return spigotServer;
-		return null;
-	}
-
+	/**
+	 * 
+	 * This method returns a proxy by a networkkey.
+	 * 
+	 * @param id
+	 * @return
+	 * @since 1.02
+	 */
+	
 	public ProxyServer getProxyByKey(String id) {
 		for (ProxyServer proxy : runningProxies)
 			if (proxy.getKey().toLowerCase().equalsIgnoreCase(id.toLowerCase()))
@@ -396,35 +614,60 @@ public class Infrastructure {
 		return null;
 	}
 
-	public ServerSoftware getVersionById(String input) {
+	/**
+	 * 
+	 * This method returns a software by string-input
+	 * 
+	 * @param input
+	 * @return
+	 * @since 1.02
+	 */
+	
+	public ServerSoftware getSoftwareById(String input) {
 		for (ServerSoftware serverSoftware : serverSoftwares)
 			if (serverSoftware.getVersionName().toLowerCase().equals(input.toLowerCase()))
 				return serverSoftware;
 		return null;
 	}
 
-	public SpigotServer getSpigotServerByKey(String key) {
-		for (SpigotServer server : runningServers)
-			if (server.getRegisterKey().equals(key))
-				return server;
-		return null;
-	}
-
-	public ServerGroup getGroupbyName(String key) {
+	/**
+	 * 
+	 * This method returns a group by string-input
+	 * 
+	 * @param key
+	 * @return
+	 * @since 2.0
+	 */
+	
+	public ServerGroup getGroupByName(String key) {
 		for (ServerGroup group : runningGroups)
 			if (group.getServerGroupContainer().getGroupName().equals(key))
 				return group;
 		return null;
 	}
 
+	/**
+	 * 
+	 * @since 1.00a
+	 * 
+	 */
 	public void shutdownTask() {
 		CloudInstance.LOGGER.info("Received Shutdown-Task");
 		CloudInstance.LOGGER.info("Shutting down every proxy with their spigot-instances.");
+		List<Object> objectList = new ArrayList<>();
 		runningProxies.forEach((runningServer) -> { 
-			runningServer.stopProxy();
+			objectList.add(runningServer.getProxyid());
 		});
+		objectList.forEach((runningServerId) -> {
+			stopProxyServer(true, (int) runningServerId);
+		});
+		objectList.clear();
+		
 		runningServers.forEach((runningServer) -> {
-			runningServer.stopServer();
+			objectList.add(runningServer.getId());
+		});
+		objectList.forEach((runningServerId) -> {
+			stopServer((UUID) runningServerId);
 		});
 		CloudInstance.LOGGER.info("Cleaning up...");
 		CloudInstance.LOGGER.info("Thank you for using this program! See you later! <3");
@@ -438,20 +681,43 @@ public class Infrastructure {
 		System.exit(0);
 	}
 
+	/**
+	 * 
+	 * @return
+	 * @since 1.00
+	 */
+	
 	public List<ProxyServer> getRunningProxies() {
 		return runningProxies;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 * @since 1.00
+	 */
 
-	public List<SpigotServer> getRunningServers() {
+	public List<SingleServerInstance> getRunningServers() {
 		return runningServers;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * @since 1.00
+	 */
 	public List<ServerGroup> getRunningGroups() {
 		return runningGroups;
 	}
 
-	public boolean isValidVersion(String input) {
-		return getVersionById(input) != null;
+	/**
+	 * 
+	 * @param input
+	 * @return
+	 * @since 1.00
+	 */
+	public boolean isValidSoftware(String input) {
+		return getSoftwareById(input) != null;
 	}
 
 }

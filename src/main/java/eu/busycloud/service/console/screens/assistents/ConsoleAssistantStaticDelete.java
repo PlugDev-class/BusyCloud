@@ -34,14 +34,14 @@ public class ConsoleAssistantStaticDelete implements ConsoleScreen {
 	public void completeInstallation() throws IOException {
 		CloudInstance.LOGGER.warning("Validating answers...");
 		if (ApplicationInterface.getAPI().getInfrastructure()
-				.getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()) == null) {
+				.getServerByName((String) cloudSetupContainers[0].getAnswer()) == null) {
 			CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. not found ~ ABORT");
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
 			return;
 		}
 		if (!ApplicationInterface.getAPI().getInfrastructure()
-				.getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()).isStatic()) {
+				.getServerByName((String) cloudSetupContainers[0].getAnswer()).isStatic()) {
 			CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. not static ~ ABORT");
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
@@ -50,9 +50,9 @@ public class ConsoleAssistantStaticDelete implements ConsoleScreen {
 		CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. okay");
 		CloudInstance.LOGGER.warning("Stopping instance...");
 		ApplicationInterface.getAPI().getInfrastructure()
-				.getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()).stopServer();
+				.getServerByName((String) cloudSetupContainers[0].getAnswer()).stopServer();
 		ApplicationInterface.getAPI().getInfrastructure().getRunningServers().remove(ApplicationInterface.getAPI()
-				.getInfrastructure().getSpigotServerByName((String) cloudSetupContainers[0].getAnswer()));
+				.getInfrastructure().getServerByName((String) cloudSetupContainers[0].getAnswer()));
 		CloudInstance.LOGGER.warning("Deleting files...");
 		FileUtils.deleteFolderRecursivly("server/static/" + (String) cloudSetupContainers[0].getAnswer());
 		CloudInstance.LOGGER.warning("Closing assistant...");

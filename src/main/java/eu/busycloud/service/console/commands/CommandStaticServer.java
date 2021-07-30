@@ -6,7 +6,7 @@ import eu.busycloud.service.console.ConsoleCommand;
 import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticCreate;
 import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticDelete;
 import eu.busycloud.service.console.screens.assistents.ConsoleAssistantStaticEdit;
-import eu.busycloud.service.infrastructure.SpigotServer;
+import eu.busycloud.service.utils.SingleServerInstance;
 import eu.busycloud.service.utils.TextUtils;
 
 public class CommandStaticServer extends ConsoleCommand {
@@ -20,7 +20,7 @@ public class CommandStaticServer extends ConsoleCommand {
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("list")) {
 				boolean did = false;
-				for(SpigotServer spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers())
+				for(SingleServerInstance spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers())
 					if(spigotServer.isStatic()) {
 						did = true;
 						CloudInstance.LOGGER.info(spigotServer.getServerName() + " [" + spigotServer.getId() + "]");
@@ -46,18 +46,18 @@ public class CommandStaticServer extends ConsoleCommand {
 		switch (args[1].toLowerCase()) {
 		case "control":
 
-			if (ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]) == null) {
+			if (ApplicationInterface.getAPI().getInfrastructure().getServerByName(args[2]) == null) {
 				CloudInstance.LOGGER.warning("Staticserver not found!");
 				printHelp();
 				return;
 			}
-			if (ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]) == null) {
+			if (ApplicationInterface.getAPI().getInfrastructure().getServerByName(args[2]) == null) {
 				CloudInstance.LOGGER.warning("Staticserver not found!");
 				printHelp();
 				return;
 			}
 
-			SpigotServer spigotServer = ApplicationInterface.getAPI().getInfrastructure().getSpigotServerByName(args[2]);
+			SingleServerInstance spigotServer = ApplicationInterface.getAPI().getInfrastructure().getServerByName(args[2]);
 			
 			switch (args[3].toLowerCase()) {
 			case "rcon":
@@ -68,7 +68,7 @@ public class CommandStaticServer extends ConsoleCommand {
 						builder.append(args[i] + " ");
 					CloudInstance.LOGGER.info("Send command '" + builder.substring(0, builder.toString().length() - 1)
 					+ "' to '" + spigotServer.getServerName() + "'.");
-					spigotServer.sendRCON(builder.substring(0, builder.toString().length() - 1));
+					spigotServer.rconServer(builder.substring(0, builder.toString().length() - 1));
 					TextUtils.sendFatLine();
 					return;
 				}

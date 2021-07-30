@@ -2,9 +2,22 @@ package eu.busycloud.service.infrastructure;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import eu.busycloud.service.utils.FileUtils;
+
+/**
+ * 
+ * This class represents an autoupdater for BusyCloud v1.
+ * Anyway this class is deprecated and shouldn't be used
+ * in real use. This class will be deleted in future.
+ * 
+ * @author PlugDev
+ * @since 1.02
+ *
+ */
+
 
 @Deprecated
 public class AutoUpdater {
@@ -23,16 +36,16 @@ public class AutoUpdater {
 	 * @throws IOException
 	 */
 	private void doCloudCheck() {
-//		try {
-//			int subversion = 0;
-//			boolean continueState = true;
-//			while (continueState) {
-//				URL url = new URL("https://github.com/PlugDev-class/BusyCloud/releases/download/1.0" + subversion++ + "/Cloud.jar");
-//				HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-//				huc.setRequestMethod("HEAD");
-//				huc.connect();
+		try {
+			int subversion = 0;
+			boolean continueState = true;
+			while (continueState) {
+				URL url = new URL("https://github.com/PlugDev-class/BusyCloud/releases/download/1.0" + subversion++ + "/Cloud.jar");
+				HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+				huc.setRequestMethod("HEAD");
+				huc.connect();
 //				int responseCode = huc.getResponseCode();
-//				huc.disconnect();
+				huc.disconnect();
 //				if (responseCode != HttpURLConnection.HTTP_OK) {
 //					if(CloudInstance.currentSubversion < subversion) {
 //						CloudInstance.LOGGER.info("[UPDATER] A new update is available! Update it to be on the safe side!");
@@ -41,12 +54,12 @@ public class AutoUpdater {
 //					} else {
 //						CloudInstance.LOGGER.info("[UPDATER] You're up-to-date!"  + (CloudInstance.currentSubversion > subversion ? " (Maybe higher. - Unstablewarning)" :""));
 //					}
-//					continueState = false;
+					continueState = false;
 //				}
-//			}
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//		}
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	/**

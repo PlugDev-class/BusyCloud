@@ -2,15 +2,18 @@ package eu.busycloud.service.infrastructure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
+import eu.busycloud.service.infrastructure.ServerSoftware.ServerSoftwareType;
 import eu.busycloud.service.utils.ServerGroupContainer;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 public class ServerGroup {
 
 	ServerGroupContainer serverGroupContainer = null;
-	private List<SpigotServer> groupList = new ArrayList<>();
+	private List<SingleServerInstance> groupList = new ArrayList<>();
 	private int onlinePlayers;
 
 	public ServerGroup(ServerGroupContainer serverGroupContainer) {
@@ -30,50 +33,60 @@ public class ServerGroup {
 	}
 
 	public void startServer() {
-		int serverID = ApplicationInterface.getAPI().getInfrastructure().startSpigotServer(
-				serverGroupContainer.getGroupName(), 
-				serverGroupContainer.getServerSoftware(), 
-				1, 
-				serverGroupContainer.getMaxRamEachServer(), 
-				true,
-				groupList.size() + serverGroupContainer.getStartPort(), 
-				serverGroupContainer.isLobbyState());
-		groupList.add(ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverID));
+		UUID serverID = null;
+		if (serverGroupContainer.getServerSoftware().getType() == ServerSoftwareType.BEDROCK)
+			serverID = ApplicationInterface.getAPI().getInfrastructure().startNukkitServer(
+					serverGroupContainer.getGroupName(), serverGroupContainer.getServerSoftware(), 1,
+					serverGroupContainer.getMaxRamEachServer(), true,
+					groupList.size() + serverGroupContainer.getStartPort(), serverGroupContainer.isLobbyState());
+		if (serverGroupContainer.getServerSoftware().getType() == ServerSoftwareType.JAVA)
+			serverID = ApplicationInterface.getAPI().getInfrastructure().startSpigotServer(
+					serverGroupContainer.getGroupName(), serverGroupContainer.getServerSoftware(), 1,
+					serverGroupContainer.getMaxRamEachServer(), true,
+					groupList.size() + serverGroupContainer.getStartPort(), serverGroupContainer.isLobbyState());
+		groupList.add(ApplicationInterface.getAPI().getInfrastructure().getServerById(serverID));
 	}
 
 	public int getOnlinePlayers() {
 		return onlinePlayers;
 	}
 
-	public void stopServer(int serverID) {
-		ApplicationInterface.getAPI().getInfrastructure().stopSpigotServer(serverID);
-		groupList.remove(ApplicationInterface.getAPI().getInfrastructure().getSpigotServerById(serverID));
+	public void stopServer(UUID serverID) {
+		ApplicationInterface.getAPI().getInfrastructure().stopServer(serverID);
+		groupList.remove(ApplicationInterface.getAPI().getInfrastructure().getServerById(serverID));
+	}
+
+	public void stopServer(String serverName) {
+		UUID uuid = ApplicationInterface.getAPI().getInfrastructure().getServerByName(serverName).getId();
+		ApplicationInterface.getAPI().getInfrastructure().stopServer(uuid);
+		groupList.remove(ApplicationInterface.getAPI().getInfrastructure().getServerById(uuid));
 	}
 
 	public void stopServers() {
-		List<Integer> ids = new ArrayList<Integer>();
-		for (SpigotServer server : getGroupList())
+		List<UUID> ids = new ArrayList<>();
+		for (SingleServerInstance server : getGroupList())
 			ids.add(server.getId());
-		for (Integer i : ids)
-			ApplicationInterface.getAPI().getInfrastructure().stopSpigotServer(i);
+		ids.forEach((id) -> {
+			ApplicationInterface.getAPI().getInfrastructure().stopServer(id);
+		});
 		ids.clear();
 	}
-	
+
 	public void rconGroup(String command) {
-		for (SpigotServer server : groupList) {
-			server.sendRCON(command);
-		}
+		groupList.forEach((server) -> {
+			server.rconServer(command);
+		});
 	}
 
-	public void rconServer(int serverID, String command) {
-		ApplicationInterface.getAPI().getInfrastructure().rconSpigotServer(serverID, command);
+	public void rconServer(String serverName, String command) {
+		ApplicationInterface.getAPI().getInfrastructure().rconServer(serverName, command);
 	}
 
-	public List<SpigotServer> getGroupList() {
+	public List<SingleServerInstance> getGroupList() {
 		return groupList;
 	}
 
-	public void setGroupList(List<SpigotServer> groupList) {
+	public void setGroupList(List<SingleServerInstance> groupList) {
 		this.groupList = groupList;
 	}
 

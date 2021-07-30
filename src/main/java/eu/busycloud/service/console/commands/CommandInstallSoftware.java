@@ -44,27 +44,27 @@ public class CommandInstallSoftware extends ConsoleCommand {
 				listBuilder.clear();
 				break;
 			default:
-				if (!ApplicationInterface.getAPI().getInfrastructure().isValidVersion(args[1])) {
+				if (!ApplicationInterface.getAPI().getInfrastructure().isValidSoftware(args[1])) {
 					CloudInstance.LOGGER.warning("The specific version isn't valid.");
 					return;
 				}
-				if(ApplicationInterface.getAPI().getInfrastructure().getVersionById(args[1]).isAvailable()) {
+				if(ApplicationInterface.getAPI().getInfrastructure().getSoftwareById(args[1]).isAvailable()) {
 					CloudInstance.LOGGER.warning("Software already installed. Lookup: /install info " + args[1]);
 					return;
 				}
 
 				System.out.print("Start download of " + args[1] + "");
-				ApplicationInterface.getAPI().getInfrastructure().getVersionById(args[1]).download();
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById(args[1]).download();
 				System.out.print(" .. done\n");
 				break;
 			}
 		} else if (args.length == 3) {
 			if(args[1].equalsIgnoreCase("info")) {
-				if (!ApplicationInterface.getAPI().getInfrastructure().isValidVersion(args[2])) {
+				if (!ApplicationInterface.getAPI().getInfrastructure().isValidSoftware(args[2])) {
 					CloudInstance.LOGGER.info("The specific version isn't valid.");
 					return;
 				}
-				ServerSoftware serverSoftware = ApplicationInterface.getAPI().getInfrastructure().getVersionById(args[2]);
+				ServerSoftware serverSoftware = ApplicationInterface.getAPI().getInfrastructure().getSoftwareById(args[2]);
 				CloudInstance.LOGGER.info("Softwarename: " + serverSoftware.getVersionName());
 				CloudInstance.LOGGER.info("Softwareauthor: " + serverSoftware.getAuthor());
 				CloudInstance.LOGGER.info("Software installed: " + serverSoftware.isAvailable());

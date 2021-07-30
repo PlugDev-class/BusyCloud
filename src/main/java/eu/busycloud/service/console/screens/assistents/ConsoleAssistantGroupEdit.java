@@ -55,7 +55,7 @@ public class ConsoleAssistantGroupEdit implements ConsoleScreen {
 
 	public void completeInstallation() throws IOException {
 		CloudInstance.LOGGER.warning("Validating answers...");
-		if(ApplicationInterface.getAPI().getInfrastructure().getGroupbyName((String) cloudSetupContainers[0].getAnswer()) == null) {
+		if(ApplicationInterface.getAPI().getInfrastructure().getGroupByName((String) cloudSetupContainers[0].getAnswer()) == null) {
 			CloudInstance.LOGGER.info((String) cloudSetupContainers[0].getAnswer() + " .. not found ~ ABORT");
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);
 			ApplicationInterface.getAPI().getConsole().getQueueMap().put(new ConsoleCloudDefault(), true);
@@ -65,7 +65,7 @@ public class ConsoleAssistantGroupEdit implements ConsoleScreen {
 		
 		ServerGroupContainer container = new ServerGroupContainer((String) cloudSetupContainers[0].getAnswer());
 		if(cloudSetupContainers[1].getAnswer() != null)
-			if(ApplicationInterface.getAPI().getInfrastructure().isValidVersion((String) cloudSetupContainers[1].getAnswer()))
+			if(ApplicationInterface.getAPI().getInfrastructure().isValidSoftware((String) cloudSetupContainers[1].getAnswer()))
 				container.setServerSoftware((String) cloudSetupContainers[1].getAnswer());
 		if(cloudSetupContainers[2].getAnswer() != null)
 			container.setStartPort((int) cloudSetupContainers[2].getAnswer());
@@ -97,9 +97,9 @@ public class ConsoleAssistantGroupEdit implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("Closing assistant...");
 		TextUtils.sendFatLine();
 
-		ApplicationInterface.getAPI().getInfrastructure().getGroupbyName(container.getGroupName()).stopServers();
+		ApplicationInterface.getAPI().getInfrastructure().getGroupByName(container.getGroupName()).stopServers();
 		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().remove(
-				ApplicationInterface.getAPI().getInfrastructure().getGroupbyName((String) cloudSetupContainers[0].getAnswer()));
+				ApplicationInterface.getAPI().getInfrastructure().getGroupByName((String) cloudSetupContainers[0].getAnswer()));
 		new ServerGroup(container);
 		
 		ApplicationInterface.getAPI().getConsole().getQueueMap().put(this, false);

@@ -1,12 +1,12 @@
 package eu.busycloud.service.tasks;
 
-import eu.busycloud.service.infrastructure.SpigotServer;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 public class ServerDisableCheckTask extends Thread {
 
-	private SpigotServer spigotServer;
-	public ServerDisableCheckTask(SpigotServer spigotServer) {
-		this.spigotServer = spigotServer;
+	private SingleServerInstance serverInstance;
+	public ServerDisableCheckTask(SingleServerInstance serverInstance) {
+		this.serverInstance = serverInstance;
 		run();
 	}
 	
@@ -27,8 +27,8 @@ public class ServerDisableCheckTask extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if(spigotServer.getConnection() == null)
-			spigotServer.stopServer();
+		if(serverInstance.getConnection() == null)
+			serverInstance.stopServer();
 		super.run();
 	}
 	

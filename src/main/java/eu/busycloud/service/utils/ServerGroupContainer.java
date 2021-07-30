@@ -59,7 +59,7 @@ public class ServerGroupContainer {
 	 * @since 2.0
 	 */
 	public void setServerSoftware(String serverSoftware) {
-		this.serverSoftware = ApplicationInterface.getAPI().getInfrastructure().getVersionById(serverSoftware);
+		this.serverSoftware = ApplicationInterface.getAPI().getInfrastructure().getSoftwareById(serverSoftware);
 	}
 
 	/**

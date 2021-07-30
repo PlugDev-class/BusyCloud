@@ -59,11 +59,11 @@ public class ConsoleAssistantGroupCreate implements ConsoleScreen {
 		CloudInstance.LOGGER.warning("Validating answers...");
 		CloudInstance.LOGGER.info(cloudSetupContainers[0].getAnswer() + " .. okay");
 		if (ApplicationInterface.getAPI().getInfrastructure()
-				.isValidVersion(((String) cloudSetupContainers[1].getAnswer()))) {
+				.isValidSoftware(((String) cloudSetupContainers[1].getAnswer()))) {
 			if (!ApplicationInterface.getAPI().getInfrastructure()
-					.getVersionById(((String) cloudSetupContainers[1].getAnswer())).isAvailable())
+					.getSoftwareById(((String) cloudSetupContainers[1].getAnswer())).isAvailable())
 				ApplicationInterface.getAPI().getInfrastructure()
-						.getVersionById((String) cloudSetupContainers[1].getAnswer()).download();
+						.getSoftwareById((String) cloudSetupContainers[1].getAnswer()).download();
 			CloudInstance.LOGGER.info(cloudSetupContainers[1].getAnswer() + " .. okay");
 		} else {
 			CloudInstance.LOGGER.info(cloudSetupContainers[1].getAnswer() + " .. doesn't exists! ~ ABORT");

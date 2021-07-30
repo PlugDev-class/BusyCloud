@@ -1,14 +1,17 @@
 package eu.busycloud.service.console.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.console.ConsoleCommand;
 import eu.busycloud.service.infrastructure.ProxyServer;
 import eu.busycloud.service.infrastructure.ServerGroup;
-import eu.busycloud.service.infrastructure.SpigotServer;
 import eu.busycloud.service.utils.FileUtils;
+import eu.busycloud.service.utils.SingleServerInstance;
 
 public class CommandDeleteCloud extends ConsoleCommand {
 	
@@ -105,15 +108,26 @@ public class CommandDeleteCloud extends ConsoleCommand {
 			runningGroups.stopServers();
 		}
 		
-		for (ProxyServer runningProxies : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
-			CloudInstance.LOGGER.info("Stop proxy: " + runningProxies.getProxyName());
-			ApplicationInterface.getAPI().getInfrastructure().stopProxyServer(true, runningProxies.getProxyid());
-		}
 
-		for (SpigotServer runningServers : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-			CloudInstance.LOGGER.info("Stop spigotinstance: " + runningServers.getServerName());
-			ApplicationInterface.getAPI().getInfrastructure().stopSpigotServer(runningServers.getId());
+		final List<Integer> uuids = new ArrayList<>();
+		for (ProxyServer runningProxies : ApplicationInterface.getAPI().getInfrastructure().getRunningProxies()) {
+			uuids.add(runningProxies.getProxyid());
 		}
+		uuids.forEach((id) -> {
+			CloudInstance.LOGGER.info("Stop proxy: " + id);
+			ApplicationInterface.getAPI().getInfrastructure().stopProxyServer(true, id);
+		});
+		uuids.clear();
+		
+		final List<UUID> uuids2 = new ArrayList<UUID>();
+		for (SingleServerInstance runningServers : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
+			uuids2.add(runningServers.getId());
+		}
+		uuids2.forEach((id) -> {
+			CloudInstance.LOGGER.info("Stop spigotinstance: " + id);
+			ApplicationInterface.getAPI().getInfrastructure().stopServer(id);
+		});
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
