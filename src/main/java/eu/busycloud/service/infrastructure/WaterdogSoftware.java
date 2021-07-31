@@ -1,24 +1,19 @@
 package eu.busycloud.service.infrastructure;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class WaterdogSoftware extends ServerSoftware {
-	
+
 	public WaterdogSoftware(ServerSoftwareType type, String parent, String version, String author) {
 		super(type, parent, version, author);
-		try {
-			this.downloadURL = new URL("https://github.com/WaterdogPE/WaterdogPE/releases/download/v1.1.2/Waterdog.jar");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
 	}
 	
-	@Override
-	public void download() {
+	public WaterdogSoftware(String version, String author) {
+		super(ServerSoftwareType.PROXY, version, "latest", author);
 		try {
-			download0();
-		} catch (IOException e) {
+			this.downloadURL = new URL("https://jenkins.waterdog.dev/job/Waterdog/job/Waterdog/job/master-zlib/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterdog.jar");
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 	}

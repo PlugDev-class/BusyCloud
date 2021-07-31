@@ -3,7 +3,8 @@ package eu.busycloud.service.networking;
 import de.terrarier.netlistening.Server;
 import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.networking.decoder.DecodeGeneral;
-import eu.busycloud.service.networking.decoder.DecodeProxy;
+import eu.busycloud.service.networking.decoder.DecodeNukkit;
+import eu.busycloud.service.networking.decoder.DecodeProxyServer;
 import eu.busycloud.service.networking.decoder.DecodeSpigotServer;
 
 /**
@@ -30,10 +31,12 @@ public class Networking {
 	public void initNetworking() {
 		server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
 				.nibbleCompression(ApplicationInterface.getAPI().getInfrastructure().nibbleCompression)
-				.varIntCompression(true).build().build();
+				.varIntCompression(true)
+				.build().build();
 		
-		server.registerListener(new DecodeProxy());
+		server.registerListener(new DecodeProxyServer());
 		server.registerListener(new DecodeSpigotServer());
+		server.registerListener(new DecodeNukkit());
 		server.registerListener(new DecodeGeneral());
 	}
 	

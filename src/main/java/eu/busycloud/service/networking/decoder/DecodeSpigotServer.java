@@ -4,6 +4,7 @@ import de.terrarier.netlistening.api.event.DecodeEvent;
 import de.terrarier.netlistening.api.event.DecodeListener;
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
+import eu.busycloud.service.infrastructure.ProxyServer;
 import eu.busycloud.service.tasks.ServerDisableCheckTask;
 import eu.busycloud.service.utils.SingleServerInstance;
 
@@ -21,12 +22,13 @@ public class DecodeSpigotServer implements DecodeListener {
 			switch (title.toLowerCase()) {
 			case "onenable()": {
 				final String key = event.getData().read();
-				for (SingleServerInstance spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-					if (spigotServer.getRegisterKey().equals(key)) {
-						spigotServer.setConnection(event.getConnection());
-						CloudInstance.LOGGER.info("SpigotChannel \"" + spigotServer.getId() + "\" connected!");
-						ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().get(0).getConnection().sendData("changebungeeinfo",
-								"change#motd", "§9BusyCloud §c| §aCloud loaded successfully.");
+				for (SingleServerInstance serverInstance : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
+					if (serverInstance.getRegisterKey().equalsIgnoreCase(key)) {
+						serverInstance.setConnection(event.getConnection());
+						final ProxyServer proxyServer = ApplicationInterface.getAPI().getInfrastructure().getProxyByName("Proxy-1");
+						CloudInstance.LOGGER.info("SpigotChannel \"" + serverInstance.getId() + "\" connected!");
+						proxyServer.getConnection().sendData("pushInformations", "pushServers", 
+									serverInstance.getPartServerName(), "localhost", serverInstance.getPort(), serverInstance.isLobbyServer());
 						break;
 					}
 				}
@@ -35,7 +37,7 @@ public class DecodeSpigotServer implements DecodeListener {
 			case "ondisable()": {
 				final String key = event.getData().read();
 				for (SingleServerInstance spigotServer : ApplicationInterface.getAPI().getInfrastructure().getRunningServers()) {
-					if (spigotServer.getRegisterKey().equals(key)) {
+					if (spigotServer.getRegisterKey().equalsIgnoreCase(key)) {
 						spigotServer.setConnection(null);
 						new ServerDisableCheckTask(spigotServer);
 						CloudInstance.LOGGER.info("SpigotChannel \"" + spigotServer.getId() + "\" disconnected! ~Check in 15 seconds for reconnect.");

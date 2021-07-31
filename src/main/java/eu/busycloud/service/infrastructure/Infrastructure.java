@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import eu.busycloud.service.CloudInstance;
 import eu.busycloud.service.api.ApplicationInterface;
+import eu.busycloud.service.api.PlayerInfo;
 import eu.busycloud.service.api.plugins.Application;
 import eu.busycloud.service.api.plugins.Event;
 import eu.busycloud.service.infrastructure.ServerSoftware.ServerSoftwareType;
@@ -33,10 +34,12 @@ public class Infrastructure {
 	
 	private List<Application> applications = new ArrayList<Application>();
 
+	@SuppressWarnings("deprecation")
 	public ServerSoftware[] serverSoftwares = {
 
 			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Interface", "0.1", "PlugDev"),
 			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Introduction", "0.1", "PlugDev"),
+			new APISoftware(ServerSoftwareType.BUSYCLOUD, "API", "latest", "PlugDev"),
 			
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.17", "md5"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "BungeeCord", "1.16", "md5"),
@@ -81,8 +84,9 @@ public class Infrastructure {
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.10", "PaperMC"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.9", "PaperMC"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.8", "PaperMC"),
-			
-			new WaterdogSoftware(ServerSoftwareType.PROXY, "WaterdogPE", "latest", "TobiasDev"),
+
+			new WaterdogPESoftware(ServerSoftwareType.PROXY, "WaterdogPE", "latest", "TobiasDev"),
+			new WaterdogSoftware("Waterdog", "TobiasDev, md5"),
 
 			new ServerSoftware(ServerSoftwareType.JAVA, "Bukkit", "1.17", "Mojang"),
 			new ServerSoftware(ServerSoftwareType.JAVA, "Bukkit", "1.16.5", "Mojang"),
@@ -609,7 +613,7 @@ public class Infrastructure {
 	
 	public ProxyServer getProxyByKey(String id) {
 		for (ProxyServer proxy : runningProxies)
-			if (proxy.getKey().toLowerCase().equalsIgnoreCase(id.toLowerCase()))
+			if (proxy.getKey().equalsIgnoreCase(id))
 				return proxy;
 		return null;
 	}
@@ -719,5 +723,20 @@ public class Infrastructure {
 	public boolean isValidSoftware(String input) {
 		return getSoftwareById(input) != null;
 	}
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @return player
+	 * @since 2.0
+	 */
+	public PlayerInfo getPlayer(UUID uuid) {
+		for(ProxyServer proxyServer : runningProxies)
+			for(PlayerInfo playerInfo : proxyServer.getOnlinePlayers())
+				if(playerInfo.getUniqueID() == uuid)
+					return playerInfo;
+		return null;
+	}
+	
 
 }

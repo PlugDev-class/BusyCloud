@@ -289,7 +289,7 @@ public class ServerGroupContainer {
 			ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().forEach((proxy) -> {
 				if (proxyServer == null)
 					proxyServer = proxy;
-				if (proxy.getOnlinePlayer().size() >= proxyServer.getOnlinePlayer().size())
+				if (proxy.getOnlinePlayers().size() >= proxyServer.getOnlinePlayers().size())
 					proxyServer = proxy;
 			});
 			return proxyServer;

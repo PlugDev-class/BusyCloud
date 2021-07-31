@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -42,14 +44,13 @@ public class ProxyServer {
 	private String registerKey;
 
 	private List<SingleServerInstance> registeredServers = new LinkedList<>();
-	private List<PlayerInfo> registeredPlayers = new LinkedList<>();
+	private Collection<PlayerInfo> registeredPlayers = new ArrayList<>();
 
 	public void startProxy(ServerSoftware software) {
 		setRegisterKey("KEY_" + new Random().nextInt(Integer.MAX_VALUE));
-		this.proxyid = new Random().nextInt(20000);
+		this.proxyid = ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size()+1;
 		setProxyName("Proxy-" + getProxyid());
 		setSoftware(software);
-		new ProxyGenerator(this);
 		
 		JSONObject jsonObject = null;
 		try {
@@ -59,6 +60,7 @@ public class ProxyServer {
 		}
 		maxRam = jsonObject.getJSONObject("bungeeCord").getInt("maxRam");
 		this.port = jsonObject.getJSONObject("bungeeCord").getInt("startport") + ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size();
+		new ProxyGenerator(this);
 
 		JSONArray jvmParameter = jsonObject.getJSONArray("jvmStartparameter");
 		StringBuilder stringBuilder = new StringBuilder();
@@ -171,7 +173,7 @@ public class ProxyServer {
 		return registeredServers;
 	}
 
-	public List<PlayerInfo> getOnlinePlayer() {
+	public Collection<PlayerInfo> getOnlinePlayers() {
 		return registeredPlayers;
 	}
 	

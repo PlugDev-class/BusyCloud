@@ -45,7 +45,7 @@ public class SpigotServer extends SingleServerInstance {
 	@Override
 	public void startServer() {
 		this.id = UUID.randomUUID();
-		registerKey = "KEY_" + new SecureRandom().nextInt(Integer.MAX_VALUE);
+		super.setRegisterKey("KEY_" + new SecureRandom().nextInt(Integer.MAX_VALUE));
 		if(isStatic) {
 			startStaticServer();
 			return;
@@ -279,7 +279,7 @@ public class SpigotServer extends SingleServerInstance {
 	}
 
 	public String getRegisterKey() {
-		return registerKey;
+		return super.registerKey;
 	}
 
 	public int getMaxRam() {

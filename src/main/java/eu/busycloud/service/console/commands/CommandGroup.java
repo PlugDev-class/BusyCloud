@@ -89,6 +89,8 @@ public class CommandGroup extends ConsoleCommand {
 					spigotServer.printInfo();
 				TextUtils.sendFatLine();
 				break;
+			case "template":
+				
 			default:
 				printHelp();
 				break;
@@ -127,6 +129,7 @@ public class CommandGroup extends ConsoleCommand {
 		CloudInstance.LOGGER.info("/servergroup control <groupname> stopgroup");
 		CloudInstance.LOGGER.info("/servergroup control <groupname> ping");
 		CloudInstance.LOGGER.info("/servergroup control <groupname> info");
+		CloudInstance.LOGGER.info("/servergroup control <groupname> dotemplate <serverid>");
 		CloudInstance.LOGGER.info("/servergroup setup create");
 		CloudInstance.LOGGER.info("/servergroup setup delete");
 		CloudInstance.LOGGER.info("/servergroup setup edit");

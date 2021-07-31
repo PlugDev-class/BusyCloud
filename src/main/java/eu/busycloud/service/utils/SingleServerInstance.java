@@ -24,7 +24,7 @@ public abstract class SingleServerInstance {
 	protected String registerKey;
 
 	protected ProxyServer preferredProxy = null;
-	protected boolean isLobbyServer;
+	protected boolean isLobbyServer = false;
 	
 	public abstract void startServer();
 	public abstract void stopServer();

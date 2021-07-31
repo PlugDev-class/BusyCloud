@@ -57,9 +57,19 @@ public class Boot {
 		bungeeCordMotdObject.put("motdLine2", "§edeveloped by PlugDev");
 		bungeeCordMotdObject.put("motdProtocol", "§aPublic-Beta v2");
 		
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.put("§5>====================<");
+		jsonArray.put("§c-!! BusyCloud | v2 !!-");
+		jsonArray.put("§c-!!    Public Beta !!-");
+		jsonArray.put("§5>--------------------<");
+		jsonArray.put("§e-!! New Feature:   !!-");
+		jsonArray.put("§e-!! NUKKIT_SUPPORT !!-");
+		jsonArray.put("§5>====================<");
+		bungeeCordMotdObject.put("motdPlayerInfo", jsonArray);
+		
 		JSONObject bungeeCordObject = new JSONObject();
 		bungeeCordObject.put("maxPlayers", 40);
-		bungeeCordObject.put("startport", 25575);
+		bungeeCordObject.put("startport", bootContainer.isMinecraftJavaUse() ? 25577 : 19132);
 		bungeeCordObject.put("maxRam", 512);
 		bungeeCordObject.put("motdSettings", bungeeCordMotdObject);
 		
@@ -97,14 +107,22 @@ public class Boot {
 		jsonObject = new JSONObject();
 		
 		if(bootContainer.isPreinstall()) {
+			CloudInstance.LOGGER.info("Preinstalling software...");
 			if(bootContainer.isMinecraftJavaUse()) {
+				CloudInstance.LOGGER.info("Starting download of: Waterfall-1.17, Spigot-1.8.8");
 				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Waterfall-1.17").download();
 				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Spigot-1.8.8").download();
 			} else {
-				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("WaterdogPE-latest").download();
+				CloudInstance.LOGGER.info("Starting download of: Waterdog-latest, Powernukkit-1.5.1.0");
+				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Waterdog-latest").download();
 				ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("Powernukkit-1.5.1.0").download();
 			}
+			CloudInstance.LOGGER.info("Preinstalling finished! Please restart the cloud to load Proxy and Lobby");
 		}
+
+		CloudInstance.LOGGER.info("Preinstalling CloudAPI...");
+		ApplicationInterface.getAPI().getInfrastructure().getSoftwareById("API-latest").download();
+		CloudInstance.LOGGER.info("Preinstalling CloudAPI finished! BusyCloud is ready to use!");
 		
 		Map<String, Object> lobbyServer = new LinkedHashMap<String, Object>();
 		lobbyServer.put("serverSoftware", bootContainer.isMinecraftJavaUse() ? "Spigot-1.8.8" : "PowerNukkit-1.5.1.0");
@@ -131,10 +149,12 @@ public class Boot {
 	public Boot(boolean startsWithSetup) {
 		if(startsWithSetup)
 			new ConsoleInstance(startsWithSetup);
-				
+		
 		FileUtils.deleteFolderRecursivly("server/temp");
 		FileUtils.mkdirs("server/temp");
 
+		
+		
 		try {
 			JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("configurations/cloudconfig.json").toPath()), "UTF-8"));
 			ApplicationInterface.getAPI().getInfrastructure().useViaVersion = jsonObject.getJSONObject("features").getBoolean("viaversion");

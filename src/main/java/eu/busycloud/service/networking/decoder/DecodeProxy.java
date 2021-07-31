@@ -15,8 +15,13 @@ import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.api.PlayerInfo;
 import eu.busycloud.service.infrastructure.ProxyServer;
 
+@Deprecated
 public class DecodeProxy implements DecodeListener {
 
+	{
+		System.out.println("Proxy|b-1");
+	}
+	
 	/**
 	 * @since 0.1
 	 * @author PlugDev
@@ -26,20 +31,28 @@ public class DecodeProxy implements DecodeListener {
 		final String receiver = event.getData().read();
 		if (receiver.equalsIgnoreCase("Proxy")) {
 			final String title = event.getData().read();
+			System.out.println("Proxy|b1");
 			switch (title.toLowerCase()) {
 			case "onenable()": {
+				System.out.println("Proxy|b2");
 				final String key = event.getData().read();
-				ProxyServer proxy;
-				(proxy = ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(key))
-						.setConnection(event.getConnection());
+				System.out.println("Proxy|b3 - " + key);
+				ProxyServer proxy = ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(key);
+				System.out.println("Proxy|b4 - " + proxy);
+				proxy.setConnection(event.getConnection());
+				System.out.println("Proxy|b5 - " + proxy.getConnection());
+				
+				System.out.println("Proxy: " + proxy);
+				System.out.println("Key: " + key);
+				System.out.println("Connection: " + event.getConnection());
+				
 				CloudInstance.LOGGER.info("ProxyChannel \"" + proxy.getProxyid() + "\" connected!");
 
 				event.getConnection().sendData("pushInformations", "maxPlayers", getInfo("bungeeCord.maxPlayers"));
-				event.getConnection().sendData("pushInformations", "motdPlayerInfo", getInfo("bungeeCord.motdPlayerInfo"));
-				event.getConnection().sendData("pushInformations", "motdDescription", getInfo("bungeeCord.motdLine1") + "\\n" + getInfo("bungeeCord.motdLine2"));
+				event.getConnection().sendData("pushInformations", "motdDescription", getInfo("bungeeCord.motdLine1") + "\n" + getInfo("bungeeCord.motdLine2"));
 				event.getConnection().sendData("pushInformations", "motdProtocol", getInfo("bungeeCord.motdProtocol"));
-			}
 				break;
+			}
 			case "playerconnect": {
 				String proxyKey = event.getData().read();
 				String playername = event.getData().read();
@@ -47,7 +60,7 @@ public class DecodeProxy implements DecodeListener {
 				String conectedServer = event.getData().read();
 				String address = event.getData().read();
 
-				ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer()
+				ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayers()
 						.add(new PlayerInfo(playername, playeruuid, conectedServer, address));
 
 				CloudInstance.LOGGER.info("Player " + playername + " connected to "
@@ -58,8 +71,8 @@ public class DecodeProxy implements DecodeListener {
 					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey)
 							.sendRCON("kick " + playername + " §cThe server is currently in maintenance-mode.");
 				}
-			}
 				break;
+			}
 			case "playerdisconnect": {
 				String proxyKey = event.getData().read();
 				UUID playerUUID = UUID.fromString(event.getData().read());
@@ -67,14 +80,14 @@ public class DecodeProxy implements DecodeListener {
 				PlayerInfo info = null;
 
 				for (PlayerInfo infos : ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey)
-						.getOnlinePlayer())
+						.getOnlinePlayers())
 					if (infos.getUniqueID().equals(playerUUID)) {
 						info = infos;
 						break;
 					}
 
 				if (info != null) {
-					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer()
+					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayers()
 							.remove(info);
 					CloudInstance.LOGGER.info("Player " + info.getPlayername() + " disconnected from "
 							+ ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getProxyName());
@@ -90,14 +103,14 @@ public class DecodeProxy implements DecodeListener {
 				PlayerInfo info = null;
 
 				for (PlayerInfo infos : ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey)
-						.getOnlinePlayer())
+						.getOnlinePlayers())
 					if (infos.getUniqueID().equals(playerUUID)) {
 						info = infos;
 						break;
 					}
 
 				if (info != null) {
-					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayer()
+					ApplicationInterface.getAPI().getInfrastructure().getProxyByKey(proxyKey).getOnlinePlayers()
 							.remove(info);
 					info.setConnectedServer(to);
 					CloudInstance.LOGGER.info("Player " + info.getPlayername() + " switched from " + from + " to " + to
@@ -119,11 +132,13 @@ public class DecodeProxy implements DecodeListener {
 			if (jsonObject == null)
 				jsonObject = new JSONObject(
 						new String(Files.readAllBytes(new File("configurations/cloudconfig.json").toPath()), "UTF-8"));
+			JSONObject bungeeObject = jsonObject.getJSONObject("bungeeCord");
+			return (String) bungeeObject.get(key);
 		} catch (JSONException | IOException e) {
 			e.printStackTrace();
 		}
 
-		return jsonObject.getString(key);
+		return null;
 	}
 
 }
