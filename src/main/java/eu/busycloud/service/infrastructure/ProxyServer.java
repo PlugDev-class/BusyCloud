@@ -60,15 +60,19 @@ public class ProxyServer {
 		}
 		maxRam = jsonObject.getJSONObject("bungeeCord").getInt("maxRam");
 		this.port = jsonObject.getJSONObject("bungeeCord").getInt("startport") + ApplicationInterface.getAPI().getInfrastructure().getRunningProxies().size();
+
+		
+		
 		new ProxyGenerator(this);
 
+		
+		
 		JSONArray jvmParameter = jsonObject.getJSONArray("jvmStartparameter");
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("java ");
 		for(Object string : jvmParameter.toList()) {
 			stringBuilder.append("-" + replace((String) string) + " ");
 		}
-		
 		try {
 			this.instance = Runtime.getRuntime().exec(stringBuilder.toString().split(" "), null,
 					new File("server/" + ("temp") + "/" + this.getProxyName()));
@@ -77,7 +81,7 @@ public class ProxyServer {
 		}
 
 	}
-
+	
 	public void stopProxy() {
 		if (getConnection() != null)
 			if (getConnection().isConnected())

@@ -34,7 +34,6 @@ public class Infrastructure {
 	
 	private List<Application> applications = new ArrayList<Application>();
 
-	@SuppressWarnings("deprecation")
 	public ServerSoftware[] serverSoftwares = {
 
 			new WebServerSoftware(ServerSoftwareType.BUSYCLOUD, "Web-Interface", "0.1", "PlugDev"),
@@ -85,7 +84,6 @@ public class Infrastructure {
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.9", "PaperMC"),
 			new ServerSoftware(ServerSoftwareType.PROXY, "Waterfall", "1.8", "PaperMC"),
 
-			new WaterdogPESoftware(ServerSoftwareType.PROXY, "WaterdogPE", "latest", "TobiasDev"),
 			new WaterdogSoftware("Waterdog", "TobiasDev, md5"),
 
 			new ServerSoftware(ServerSoftwareType.JAVA, "Bukkit", "1.17", "Mojang"),

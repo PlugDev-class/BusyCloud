@@ -3,7 +3,6 @@ package eu.busycloud.service.infrastructure.generate;
 import java.io.File;
 import java.nio.file.Paths;
 
-import eu.busycloud.service.api.ApplicationInterface;
 import eu.busycloud.service.infrastructure.ProxyServer;
 import eu.busycloud.service.utils.FileUtils;
 
@@ -25,7 +24,7 @@ public class ProxyGenerator extends ServerGenerator {
 		if (proxyServer.getSoftware().getVersionName().contains("Waterdog")) {
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.append("groups:\r\n");
-			stringBuilder.append("  PlugDev:\r\n");
+			stringBuilder.append("  md_5:\r\n");
 			stringBuilder.append("  - admin\r\n");
 			stringBuilder.append("bedrock_encryption: true\r\n");
 			stringBuilder.append("disabled_commands:\r\n");
@@ -38,8 +37,7 @@ public class ProxyGenerator extends ServerGenerator {
 			stringBuilder.append("    raknet: true\r\n");
 			stringBuilder.append("    motd: '&1Just another Waterfall - Forced Host'\r\n");
 			stringBuilder.append("    transfer_group: default\r\n");
-			stringBuilder.append("    address: localhost:" + ApplicationInterface.getAPI().getInfrastructure()
-					.getRunningGroups().get(0).getServerGroupContainer().getStartPort() + "\r\n");
+			stringBuilder.append("    address: localhost:25565\r\n");
 			stringBuilder.append("    restricted: false\r\n");
 			stringBuilder.append("server_connect_timeout: 5000\r\n");
 			stringBuilder.append("listeners:\r\n");
@@ -50,12 +48,12 @@ public class ProxyGenerator extends ServerGenerator {
 			stringBuilder.append("  proxy_protocol: false\r\n");
 			stringBuilder.append("  forced_hosts: &id036\r\n");
 			stringBuilder.append("    pvp.md-5.net: pvp\r\n");
-			stringBuilder.append("  ping_passthrough: false\r\n");
-			stringBuilder.append("  raknet: true\r\n");
+			stringBuilder.append("  ping_passthrough: true\r\n");
+			stringBuilder.append("  raknet: false\r\n");
 			stringBuilder.append("  priorities:\r\n");
 			stringBuilder.append("  - fallbackS\r\n");
 			stringBuilder.append("  bind_local_address: true\r\n");
-			stringBuilder.append("  host: 0.0.0.0:" + proxyServer.getPort() + "\r\n");
+			stringBuilder.append("  host: 0.0.0.0:25577\r\n");
 			stringBuilder.append("  max_players: 1\r\n");
 			stringBuilder.append("  tab_size: 60\r\n");
 			stringBuilder.append("  force_default_server: false\r\n");
@@ -65,12 +63,12 @@ public class ProxyGenerator extends ServerGenerator {
 			stringBuilder.append("  query_enabled: true\r\n");
 			stringBuilder.append("  proxy_protocol: false\r\n");
 			stringBuilder.append("  forced_hosts: *id036\r\n");
-			stringBuilder.append("  ping_passthrough: false\r\n");
+			stringBuilder.append("  ping_passthrough: true\r\n");
 			stringBuilder.append("  raknet: true\r\n");
 			stringBuilder.append("  priorities:\r\n");
 			stringBuilder.append("  - fallbackS\r\n");
 			stringBuilder.append("  bind_local_address: true\r\n");
-			stringBuilder.append("  host: 0.0.0.0:" + proxyServer.getPort() + "\r\n");
+			stringBuilder.append("  host: 0.0.0.0:19132\r\n");
 			stringBuilder.append("  max_players: 1\r\n");
 			stringBuilder.append("  tab_size: 60\r\n");
 			stringBuilder.append("  force_default_server: false\r\n");

@@ -26,27 +26,23 @@ public class NukkitGenerator extends ServerGenerator {
 		if (!nukkitServer.isStatic())
 			FileUtils.copyFolder(Paths.get("saves/templates/", nukkitServer.getServerGroup()),
 					Paths.get(nukkitServerPath, "."), false);
+		generateSpigotProperties();
 		FileUtils.checkFolder(nukkitServerPath + "/plugins");
 		FileUtils.copyFile(
 				new File("saves/environments/" + nukkitServer.getServerSoftware().getVersionName() + ".jar").toPath(),
 				new File(nukkitServerPath + "/" + nukkitServer.getServerSoftware().getVersionName() + ".jar").toPath());
 		FileUtils.writeFile(new File(nukkitServerPath + "/" + nukkitServer.getRegisterKey()),
 				nukkitServer.getRegisterKey());
+		FileUtils.checkFolder(nukkitServerPath + "/plugins");
 		FileUtils.mkdirs(nukkitServerPath + "/plugins");
 		FileUtils.copyFile(Paths.get("saves/environment-plugins", "CloudAPI.jar"),
 							Paths.get(nukkitServerPath + "/plugins", "CloudAPI.jar"));
-		generateSpigotProperties();
 	}
 
 	@Override
 	public void generateSpigotProperties() {
 		try {
 			StringBuilder builder = new StringBuilder();
-			builder.append("motd=Nukkit Server hosted by BusyCloud\n");
-			builder.append("server-port=" + nukkitServer.getPort() + "\n");
-			builder.append("server-ip=localhost\n");
-			Files.write(Paths.get(nukkitServerPath, "server.properties"), builder.toString().getBytes(),
-					StandardOpenOption.CREATE_NEW);
 			builder = new StringBuilder();
 			builder.append("# Advanced configuration file for Nukkit\r\n");
 			builder.append("# Some of these settings are safe, others can break your server if modified incorrectly\r\n");
@@ -145,6 +141,41 @@ public class NukkitGenerator extends ServerGenerator {
 			builder.append(" # seed: 404\r\n");
 			builder.append(" # generator: FLAT:2;7,59x1,3x3,2;1;decoration(treecount=80 grasscount=45)\r\n");
 			Files.write(Paths.get(nukkitServerPath, "nukkit.yml"), builder.toString().getBytes(),
+					StandardOpenOption.CREATE_NEW);
+			
+			builder = new StringBuilder();
+			builder.append("#Properties Config file\r\n");
+			builder.append("#2021-07-31 03:13:57\r\n");
+			builder.append("motd=Nukkit Server hosted by BusyCloud\r\n");
+			builder.append("server-port=" + nukkitServer.getPort() + "\r\n");
+			builder.append("server-ip=localhost\r\n");
+			builder.append("sub-motd=https://powernukkit.org\r\n");
+			builder.append("view-distance=10\r\n");
+			builder.append("white-list=off\r\n");
+			builder.append("achievements=on\r\n");
+			builder.append("announce-player-achievements=on\r\n");
+			builder.append("spawn-protection=16\r\n");
+			builder.append("max-players=20\r\n");
+			builder.append("allow-flight=off\r\n");
+			builder.append("spawn-animals=on\r\n");
+			builder.append("spawn-mobs=on\r\n");
+			builder.append("gamemode=0\r\n");
+			builder.append("force-gamemode=off\r\n");
+			builder.append("hardcore=off\r\n");
+			builder.append("pvp=on\r\n");
+			builder.append("difficulty=1\r\n");
+			builder.append("generator-settings=\r\n");
+			builder.append("level-name=world\r\n");
+			builder.append("level-seed=\r\n");
+			builder.append("level-type=DEFAULT\r\n");
+			builder.append("allow-nether=on\r\n");
+			builder.append("enable-query=on\r\n");
+			builder.append("enable-rcon=off\r\n");
+			builder.append("auto-save=on\r\n");
+			builder.append("force-resources=off\r\n");
+			builder.append("xbox-auth=off\r\n");
+			builder.append("disable-auto-bug-report=off\r\n");
+			Files.write(Paths.get(nukkitServerPath, "server.properties"), builder.toString().getBytes(),
 					StandardOpenOption.CREATE_NEW);
 		} catch (Exception exception) {
 			exception.printStackTrace();

@@ -6,6 +6,7 @@ import eu.busycloud.service.networking.decoder.DecodeGeneral;
 import eu.busycloud.service.networking.decoder.DecodeNukkit;
 import eu.busycloud.service.networking.decoder.DecodeProxyServer;
 import eu.busycloud.service.networking.decoder.DecodeSpigotServer;
+import eu.busycloud.service.networking.easypackets.EasyPacketHandler;
 
 /**
  * The sourceclass of networking.
@@ -27,12 +28,21 @@ public class Networking {
 	 * @since 0.1
 	 * @author PlugDev
 	 */
-	Server server;
+	private Server server;
+	private EasyPacketHandler easyPacketHandler;
 	public void initNetworking() {
 		server = new Server.Builder(1130).timeout(15000).encryption().build().compression()
 				.nibbleCompression(ApplicationInterface.getAPI().getInfrastructure().nibbleCompression)
 				.varIntCompression(true)
 				.build().build();
+		
+		new Runnable() {
+			
+			@Override
+			public void run() {
+				server.registerListener(new EasyPacketHandler());
+			}
+		};
 		
 		server.registerListener(new DecodeProxyServer());
 		server.registerListener(new DecodeSpigotServer());
@@ -42,6 +52,10 @@ public class Networking {
 	
 	public Server getServer() {
 		return server;
+	}
+	
+	public EasyPacketHandler getEasyPacketHandler() {
+		return easyPacketHandler;
 	}
 
 }
