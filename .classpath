@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="H:/Programmierung/API/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="H:/Programmierung/API/NetListening.jar"/>
+	<classpathentry kind="lib" path="H:/Programmierung/API/netty-all-4.1.63.Final.jar"/>
+	<classpathentry kind="lib" path="H:/Programmierung/API/lombok.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
