@@ -31,6 +31,8 @@ public class ServerGroup implements IService {
 	private int onlinePlayers;
 
 	public void init() {
+		if(!ApplicationInterface.getAPI().getInfrastructure().getGroupByName(name).isPresent())
+			ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(this);
 		for (int i = 0; i < defaultActiveServers; i++) {
 			start();
 		}

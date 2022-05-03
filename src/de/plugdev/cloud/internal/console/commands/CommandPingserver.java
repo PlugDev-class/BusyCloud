@@ -7,6 +7,7 @@ import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.console.ConsoleCommand;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.IService;
+import de.plugdev.cloud.packets.PacketSharedPing;
 
 public class CommandPingserver implements ConsoleCommand {
 	
@@ -30,7 +31,7 @@ public class CommandPingserver implements ConsoleCommand {
 			ConsoleOutput.write(ConsoleOutput.CYAN, "Service not linked!");
 			return;
 		}
-		iService.get().getConnection().sendData("ping", System.currentTimeMillis());
+		iService.get().getConnection().sendData(new PacketSharedPing(System.currentTimeMillis()));
 		ConsoleOutput.write(ConsoleOutput.CYAN, "Sent pingrequest");
 	}
 

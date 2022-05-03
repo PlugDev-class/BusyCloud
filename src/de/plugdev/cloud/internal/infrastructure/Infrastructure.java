@@ -110,8 +110,10 @@ public class Infrastructure {
 	}
 
 	public UUID startSpigotServer(String serverGroup, IVersion minecraftVersion, boolean isStatic, int maxRam, int port, boolean isLobby) {
-		
-		String serverName = getGroupByName(serverGroup).get().getName() + getGroupByName(serverGroup).get().getGroupList().size();
+		String serverName = "Static";
+		if(getGroupByName(serverGroup).isPresent()) {
+			serverName = getGroupByName(serverGroup).get().getName() + getGroupByName(serverGroup).get().getGroupList().size();
+		}
 		ConsoleOutput.write(ConsoleOutput.GREEN_BOLD, "Starting SpigotServer(\"" + serverGroup + " - localhost:" + port + "\")");
 		IService service = new SpigotServer(getProxy().getUniqueId(), serverName, serverGroup, maxRam, minecraftVersion, isStatic, isLobby);
 		service.start();

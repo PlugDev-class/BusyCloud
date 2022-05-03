@@ -10,14 +10,14 @@ public class CommandProxy implements ConsoleCommand {
 	@Override
 	public void runCommand(String command, String[] args) {
 		if(args.length != 2) {
-			ConsoleOutput.write(ConsoleOutput.RED, "[PLUGIN] Wrong syntax.");
-			ConsoleOutput.write(ConsoleOutput.RED, "[PLUGIN] /proxy template");
+			ConsoleOutput.write(ConsoleOutput.RED, "Wrong syntax.");
+			ConsoleOutput.write(ConsoleOutput.RED, "/proxy template");
 			return;
 		}
 		
 		if(args[1].equalsIgnoreCase("template")) {
 			((Proxy) ApplicationInterface.getAPI().getInfrastructure().getServiceByName("Proxy-1").get()).doTemplate();
-			ConsoleOutput.write(ConsoleOutput.GREEN, "[PLUGIN] Did template.");
+			ConsoleOutput.write(ConsoleOutput.GREEN, "Did template.");
 		}
 	}
 

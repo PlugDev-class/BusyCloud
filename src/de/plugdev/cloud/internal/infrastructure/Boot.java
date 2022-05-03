@@ -136,7 +136,6 @@ public class Boot {
 		
 		ServerGroup lobbyGroup = new ServerGroup(UUID.randomUUID(), "Lobby", 512, ApplicationInterface.getAPI().getInfrastructure().getVersionById(spigotServerVersion.getVersion()).get(), 20000, true, ApplicationInterface.getAPI().getInfrastructure().getProxy(), 1, 80);
 		lobbyGroup.init();
-		ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().add(lobbyGroup);
 	}
 	
 	/*

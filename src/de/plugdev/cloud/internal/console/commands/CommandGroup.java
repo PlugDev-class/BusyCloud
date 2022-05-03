@@ -1,4 +1,4 @@
-package de.plugdev.cloud.internal.console.commands;
+ package de.plugdev.cloud.internal.console.commands;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,6 +15,8 @@ import de.plugdev.cloud.internal.console.ConsoleOutput;
 import de.plugdev.cloud.internal.infrastructure.IService;
 import de.plugdev.cloud.internal.infrastructure.SpigotServer;
 import de.plugdev.cloud.internal.models.IVersion;
+import de.plugdev.cloud.internal.utils.FileUtils;
+import de.plugdev.cloud.lang.LanguageManager;
 
 public class CommandGroup implements ConsoleCommand {
 
@@ -27,7 +29,7 @@ public class CommandGroup implements ConsoleCommand {
 			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> stop");
 			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> template <ServerID>");
 			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> rcon <command>");
-			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> del");
+			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> delete");
 			ConsoleOutput.write(ConsoleOutput.RED, "/group <groupname> add <Version> <Startport> <MaxRamEachServer> <StartServersByGroupstart> <Percent> <LobbyServer? (true/false)>");
 			return;
 		}
@@ -37,61 +39,49 @@ public class CommandGroup implements ConsoleCommand {
 
 		if (!prefferedGroup.isPresent()) {
 			if (!(groupName.equalsIgnoreCase("list") || args[2].equalsIgnoreCase("add"))) {
-				ConsoleOutput.write(ConsoleOutput.RED, "ServerGroup with specific name not found.");
+				ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.group.groupNotFound", groupName));
 				return;
 			}
 		}
 
 		if (args.length == 2) {
 			if (args[1].equalsIgnoreCase("list")) {
-				ConsoleOutput.write(ConsoleOutput.CYAN, "The following groups are available:");
+				ConsoleOutput.write(ConsoleOutput.CYAN, LanguageManager.getVar("plugin.default.command.group.followingGroupsFound"));
 				for (ServerGroup group : ApplicationInterface.getAPI().getInfrastructure().getRunningGroups()) {
-					ConsoleOutput.write(ConsoleOutput.CYAN, "" + group.getName() + "(" + group.getUniqueId() + ")");
+					ConsoleOutput.write(ConsoleOutput.CYAN, LanguageManager.getVar("plugin.default.command.group.followingGroupsFound.specificGroup", group.getName(), group.getUniqueId().toString()));
 					for (IService server : group.getGroupList()) {
-						ConsoleOutput.write(ConsoleOutput.CYAN,
-								"- " + server.getName() + "(ID: " + server.getUniqueId() + ") | localhost:"
-										+ server.getPort() + " | Proxy: " + ((SpigotServer) server).getProxyId());
+						ConsoleOutput.write(ConsoleOutput.CYAN, LanguageManager.getVar("plugin.default.command.group.followingGroupsFounds.specificServer", server.getName(), server.getUniqueId().toString(), server.getPort() + "", ((SpigotServer) server).getProxyId() + ""));
 					}
 				}
 			}
 		} else if (args.length == 3) {
 			if (args[2].equalsIgnoreCase("stop")) {
-				if (prefferedGroup.get().getGroupList().size() != 0) {
-					for (IService server : prefferedGroup.get().getGroupList()) {
+				if (prefferedGroup.get().getGroupList().size() != 0)
+					for (IService server : prefferedGroup.get().getGroupList())
 						server.stop();
-					}
-				}
 			} else if (args[2].equalsIgnoreCase("startgroup")) {
 				if (prefferedGroup.get().getGroupList().size() != 0) {
-					ConsoleOutput.write(ConsoleOutput.RED, "Some servers are already running.");
+					ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.group.alreadyRunning"));
 					return;
 				}
 				prefferedGroup.get().init();
 			} else if (args[2].equalsIgnoreCase("startserver")) {
 				prefferedGroup.get().start();
-			} else if (args[2].equalsIgnoreCase("del")) {
-				for (IService server : prefferedGroup.get().getGroupList()) {
-					server.stop();
-				}
-
+			} else if (args[2].equalsIgnoreCase("delete")) {
 				try {
 					List<String> lines = Files.readAllLines(new File("local/groups.pdv").toPath());
 					StringBuilder builder = new StringBuilder();
-					for (String string : lines) {
-						if (!string.startsWith(prefferedGroup.get().getName())) {
+					for (String string : lines)
+						if (!string.startsWith(prefferedGroup.get().getName()))
 							builder.append(string + "\n");
-						}
-					}
-
-					BufferedWriter writer = new BufferedWriter(new FileWriter("local/groups.pdv"));
-					writer.write(builder.toString());
-					writer.close();
-
+					FileUtils.writeFile(new File("local/groups.pdv"), builder.toString());
 				} catch (Exception exception) {
-					ConsoleOutput.write(ConsoleOutput.RED_BOLD,
-							"Couldn't find file \"local/groups.pdv\". Please reinstall the cloud!");
+					ConsoleOutput.write(ConsoleOutput.RED_BOLD, LanguageManager.getVar("plugin.default.command.group.setupFileNotFound"));
 					ApplicationInterface.getAPI().getInfrastructure().shutdownTask();
+					return;
 				}
+				for (IService server : prefferedGroup.get().getGroupList())
+					server.stop();
 
 				ApplicationInterface.getAPI().getInfrastructure().getRunningGroups().remove(prefferedGroup.get());
 			}
@@ -106,40 +96,21 @@ public class CommandGroup implements ConsoleCommand {
 				int percent = Integer.parseInt(args[7]);
 				boolean isMain = Boolean.parseBoolean(args[8]);
 
-				ConsoleOutput.write(ConsoleOutput.CYAN, "==========================================================================");
-				ConsoleOutput.write(ConsoleOutput.CYAN, "Starting groupcreation.");
+				ConsoleOutput.write(ConsoleOutput.CYAN, "=================================================================================================");
+				ConsoleOutput.write(ConsoleOutput.CYAN, LanguageManager.getVar("plugin.default.command.group.add.start", "Starting group-setup."));
 
 				if (!version.isPresent()) {
-					ConsoleOutput.write(ConsoleOutput.RED, "Version not downloaded or invalid. Maybe renamed?");
-					ConsoleOutput.write(ConsoleOutput.RED, "Stopping task...");
+					ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.group.add.error.versionNotFound", args[3]));
+					ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.group.add.error.stoppingTask"));
 					return;
 				} else {
-					ConsoleOutput.write(ConsoleOutput.GREEN, "Version by ID " + version.get().getVersion() + " found.");
+					ConsoleOutput.write(ConsoleOutput.GREEN, LanguageManager.getVar("plugin.default.command.group.add.error.stoppingTask", version.get().getVersion()));
 				}
 
 				if (mainlystarted == 0) {
-					ConsoleOutput.write(ConsoleOutput.YELLOW, "Warning! You set your StartByServer-Value to 0!");
-					ConsoleOutput.write(ConsoleOutput.YELLOW, "Continuing task...");
+					ConsoleOutput.write(ConsoleOutput.YELLOW, LanguageManager.getVar("plugin.default.command.group.add.warning.starServerByValue0"));
 				} else {
-					ConsoleOutput.write(ConsoleOutput.GREEN, "Set StartServerByStartGroup " + version.get().getVersion() + " set.");
-				}
-
-				if (percent >= 0 && percent <= 10) {
-					ConsoleOutput.write(ConsoleOutput.RED, "The cloud doesn't support percentrates down 10 percent!");
-					ConsoleOutput.write(ConsoleOutput.RED, "Stopping task...");
-					return;
-				}
-
-				if (percent <= 30) {
-					ConsoleOutput.write(ConsoleOutput.YELLOW, "The cloud may crash, if <30% is set wrongly.");
-					ConsoleOutput.write(ConsoleOutput.RED, "Stopping task...");
-					return;
-				}
-
-				if (percent > 100) {
-					ConsoleOutput.write(ConsoleOutput.RED, "The could doesn't support percentrates above 100 percent.");
-					ConsoleOutput.write(ConsoleOutput.RED, "Stopping task...");
-					return;
+					ConsoleOutput.write(ConsoleOutput.GREEN, LanguageManager.getVar("plugin.default.command.group.add.success.starServerBy", "" + mainlystarted));
 				}
 
 				ConsoleOutput.write(ConsoleOutput.GREEN, "Percentrate " + percent + " set.");
@@ -162,14 +133,13 @@ public class CommandGroup implements ConsoleCommand {
 					writer.close();
 
 				} catch (Exception exception) {
-					ConsoleOutput.write(ConsoleOutput.RED_BOLD,
-							"Couldn't find file \"local/groups.pdv\". Please reinstall the cloud!");
+					ConsoleOutput.write(ConsoleOutput.RED_BOLD, LanguageManager.getVar("plugin.default.command.group.setupFileNotFound"));
 					ApplicationInterface.getAPI().getInfrastructure().shutdownTask();
+					return;
 				}
 
 				ConsoleOutput.write(ConsoleOutput.CYAN, "Starting ServerGroup!");
-				ConsoleOutput.write(ConsoleOutput.CYAN,
-						"==========================================================================");
+				ConsoleOutput.write(ConsoleOutput.CYAN, "=================================================================================================");
 
 				prefferedGroup = Optional.of(new ServerGroup(uuid, groupName, maxRam, version.get(), startport, isMain, null, mainlystarted, percent));
 				

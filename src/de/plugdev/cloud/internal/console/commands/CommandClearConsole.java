@@ -2,6 +2,7 @@ package de.plugdev.cloud.internal.console.commands;
 
 import de.plugdev.cloud.internal.console.ConsoleCommand;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
+import de.plugdev.cloud.lang.LanguageManager;
 
 public class CommandClearConsole implements ConsoleCommand {
 	
@@ -11,14 +12,13 @@ public class CommandClearConsole implements ConsoleCommand {
 			for(int i = 0; i < 255; i++) {
 				ConsoleOutput.write(ConsoleOutput.RESET, " ");
 			}
-			ConsoleOutput.write(ConsoleOutput.CYAN, "[PLUGIN] Console is cleared.");
+			ConsoleOutput.write(ConsoleOutput.CYAN, LanguageManager.getVar("plugin.default.command.clear"));
 		}
 	}
 
 	@Override
 	public String getHelp() {
-		// TODO Auto-generated method stub
-		return null;
+		return LanguageManager.getVar("plugin.default.command.clear.helpMessage");
 	}
 	
 }

@@ -93,6 +93,7 @@ public class Setup {
 					spigotServerVersion = ApplicationInterface.getAPI().getInfrastructure().getVersionById(spigotType.toLowerCase() + "-" + answer).get();
 					step++;
 				} else {
+					step--;
 					feedback = ("== Error >> Version not found! Please check the nature of your fork. << Error ==");
 				}
 				break;

@@ -15,6 +15,7 @@ import de.plugdev.cloud.internal.models.IVersion;
 import de.plugdev.cloud.internal.utils.FileUtils;
 import de.plugdev.cloud.packets.PacketProxyRegisterServer;
 import de.plugdev.cloud.packets.PacketProxyUnRegisterServer;
+import de.plugdev.cloud.packets.PacketSharedRconServer;
 import de.terrarier.netlistening.Connection;
 import lombok.Data;
 
@@ -95,7 +96,7 @@ public class Proxy implements IService {
 
 	@Override
 	public void rcon(String command) {
-		connection.sendData("rcon", command);
+		connection.sendData(new PacketSharedRconServer(command));
 	}
 
 	@Override

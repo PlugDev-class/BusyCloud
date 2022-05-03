@@ -1,0 +1,22 @@
+plugin.default.command.backup.createFor; [BackUp] Saving current serverfiles to %var0%.
+plugin.default.command.backup.createForCF; [BackUp] Saving current file %var0%.
+plugin.default.command.backup.deleteFolder; [Backup] Deleting old backup %var0%.
+plugin.default.command.backup.deleteFile; [Backup] Deleting file: %var0%.
+plugin.default.command.backup.helpMessage; Backup every serverfile in the current project.
+plugin.default.command.clear; Console cleared.
+plugin.default.command.clear.helpMessage; Clear the console.
+plugin.default.command.help.syntax; %var0% -> %var1%
+plugin.default.command.help.helpMessage; Show every registered command in BusyCloud.
+plugin.default.command.group.groupNotFound; ServerGroup with specific name %var0% not found.
+plugin.default.command.group.followingGroupsFound; The following groups are available:
+plugin.default.command.group.followingGroupsFound.specificGroup; %var0% (%var1%)
+plugin.default.command.group.followingGroupsFound.specificServer; - %var0%(ID: %var1%) | localhost:%var2% | Proxy: %var3%
+plugin.default.command.group.alreadyRunning; You can't start a group, which is already running.
+plugin.default.command.group.setupFileNotFound; Couldn't find file "local/groups.pdv". Please reinstall the cloud!
+plugin.default.command.group.add.start; Starting group-setup.
+plugin.default.command.group.add.success.versionFound; Version by ID %var0% found.
+plugin.default.command.group.add.error.versionNotFound; Version by ID %var0% not found.
+plugin.default.command.group.add.succes.startServerBy; The group will start with %var0% servers by default.
+plugin.default.command.group.add.warning.startServerByValue0; Warning! You set your StartByServer-Value to 0, no server will start, until you gonna do!
+plugin.default.command.group.add.error.versionNotFound; Version by ID %var0% not found.
+plugin.default.command.group.add.error.stoppingTask; Because of the previous reason, the setup is going to stop.

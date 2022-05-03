@@ -6,6 +6,7 @@ import de.plugdev.cloud.external.ApplicationInterface;
 import de.plugdev.cloud.internal.infrastructure.Boot;
 import de.plugdev.cloud.internal.infrastructure.Setup;
 import de.plugdev.cloud.lang.ApiStatus.Internal;
+import lombok.SneakyThrows;
 
 public class CloudInstance {
 
@@ -30,6 +31,7 @@ public class CloudInstance {
 	 */
 
 	@Internal
+	@SneakyThrows
 	public static void main(String[] args) {
 		System.out.println("Starting BusyCloud... Please wait a second.");
 		ApplicationInterface applicationInterface = new ApplicationInterface();

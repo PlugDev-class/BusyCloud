@@ -12,22 +12,23 @@ import java.util.stream.Stream;
 
 import de.plugdev.cloud.internal.console.ConsoleCommand;
 import de.plugdev.cloud.internal.console.ConsoleOutput;
+import de.plugdev.cloud.lang.LanguageManager;
 
 public class CommandBackup implements ConsoleCommand {
 
 
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy - HH_mm");
+	Date date = null;
 	
 	@Override
 	public void runCommand(String command, String[] args) {
 		if(args.length == 2) {
 			if(args[1].equalsIgnoreCase("create")) {
-				ConsoleOutput.write(ConsoleOutput.RED,
-						"[BACKUP] Backupping current serverfiles to backend/backups/" + format.format(new Date()));
+				ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.backup.createFor", format.format(date = new Date())));
 				try {
-					copyFolder(new File("server").toPath(), new File("backend/backups/" + format.format(new Date())).toPath());
+					copyFolder(new File("server").toPath(), new File("backend/backups/" + format.format(date)).toPath());
 				} catch (DirectoryNotEmptyException e) {
-					delete(new File("backend/backups/" + format.format(new Date())));
+					delete(new File("backend/backups/" + format.format(date)));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -36,10 +37,10 @@ public class CommandBackup implements ConsoleCommand {
 	}
 	
 	public void delete(File root) {
-		ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Deleting old backup: " + root.getPath());
+		ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.backup.deleteFolder", root.getPath()));
 		for(File file : root.listFiles()) {
 			if(file.isDirectory()) {
-				ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Deleting file: " + file.getName());
+				ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.backup.deleteFile", file.getName()));
 				delete(file);
 			}
 			file.delete();
@@ -58,9 +59,9 @@ public class CommandBackup implements ConsoleCommand {
 	private void copy(Path source, Path dest) {
 		try {
 			Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
-			ConsoleOutput.write(ConsoleOutput.RED, "[BACKUP] Backupping current file: " + source.toFile().getName());
+			ConsoleOutput.write(ConsoleOutput.RED, LanguageManager.getVar("plugin.default.command.backup.createForCF", source.toFile().getName()));
 		} catch (DirectoryNotEmptyException e) {
-			delete(new File("backend/backups/" + format.format(new Date())));
+			delete(new File("backend/backups/" + format.format(date)));
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
