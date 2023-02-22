@@ -16,10 +16,10 @@ The software is currently unstable. You can use it for a productive and/or comer
 Please report every error (exception) as "Issue" on my GitHub</p>
 <br>
 <h1>Huh v2?</h1>
-<p>Yes. I rewrote this cloud a year ago, but it didn't change much. Since then this cloud wasn't working either way.<br>
+<p>Yes. I rewrote this cloud a year ago, but it didn't change much. Since then this cloud wasn't working either way. 
 But anyway, it was fun ^^. Nearly every command is constructed with a low-resource-assistent.<br>
-But be sure, that only the v1 is published and built as a jar. Huh? You want to help? Just Fork the current cloud,<br>
-write something you want to add/remove and push the update to your fork. Are you done? Then click on "contribute" and<br>
+But be sure, that only the v1 is published and built as a jar. Huh? You want to help? Just Fork the current cloud, 
+write something you want to add/remove and push the update to your fork. Are you done? Then click on "contribute" 
 and open a pull-request! This helps a lot and saves some time. And if you want, you get some credits hehe<p>
 <br>
 <h2>Am I able to install it without any idea with programming?</h2>
